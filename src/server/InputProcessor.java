@@ -8,7 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputProcessor{
-    private static final Map<String, String> InfoRegexMap = Map.of("email", "^(.+)@(.+)$");
+    private static final Map<String, String> InfoRegexMap = Map.of(
+        "email", "^(.+)@(.+)$",
+        "date", "^\\d{2}/\\d{2}/\\d{4}$"
+        );
 
     public static String takeValidInput(String key) {
         String info = null;
@@ -39,10 +42,13 @@ public class InputProcessor{
 
     public static void main(String[] args) {
 
-        System.out.println("Please enter your email address");
-        String userEmail = InputProcessor.takeValidInput("email");
+        // System.out.println("Please enter your email address");
+        // String userEmail = InputProcessor.takeValidInput("email");
 
-        System.out.println("This is your email " + userEmail);
+        System.out.println("Please enter your date of birth");
+        String birthDate = InputProcessor.takeValidInput("date");
+
+        System.out.println(birthDate);
         
     }
 
