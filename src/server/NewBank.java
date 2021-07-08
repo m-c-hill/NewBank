@@ -1,5 +1,6 @@
 package server;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class NewBank {
@@ -42,14 +43,42 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 			switch(request) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "WITHDRAW" : return withdrawAmount(customer);
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
 	}
-	
+
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
+	}
+
+	public String withdrawAmount(CustomerID customer){
+
+		System.out.println("Please enter the name of the account you want to withdraw from:");	
+		System.out.println(showMyAccounts(customer));
+		
+		String accountName = InputProcessor.takeValidInput(customers.get(customer.getKey()).getAccounts());
+
+		for (int i = 0; i < customers.get(customer.getKey()).getAccounts().size(); i++) {
+			if (customers.get(customer.getKey()).getAccounts().get(i).getAccountName().equals(accountName)) {
+				
+				System.out.println("Enter the amount you want to withdraw:");	
+				double amount = InputProcessor.takeValidDoubleInput(customers.get(customer.getKey()).getAccounts().get(i).getOpeningBalance());
+				customers.get(customer.getKey()).getAccounts().get(i).withdrawMoney(amount);
+				
+				break;
+			}
+		}	
+
+		return "Process Ended.";
+	}
+
+	public static void main(String[] args) throws IOException {
+		NewBank nb = new NewBank();
+
+		System.out.println(nb.withdrawAmount(new CustomerID("Bhagy")));
 	}
 
 }

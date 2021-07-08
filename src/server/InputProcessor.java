@@ -3,6 +3,7 @@ package server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,10 +20,12 @@ public class InputProcessor{
         "date", "^\\d{2}/\\d{2}/\\d{4}$"
         );
 
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     // Method to take and validate input
     public static String takeValidInput(String key) {
         String info = null;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+        try {
             while (true) {
                 info = br.readLine();
                 // Check if the provided input is valid by comparing its format with the relevant regex
@@ -42,6 +45,63 @@ public class InputProcessor{
         return info;
     }
 
+    // Method Overload for capturing the correct account name
+    public static String takeValidInput(ArrayList<Account> accountsList){
+        String account = null;
+        try {
+            while (true) {
+                account = br.readLine();
+                // Check if the provided input is valid by comparing its format with the relevant regex
+                // Upon matching, break and return the given input
+                if (accountExists(account, accountsList)) {
+                    break;
+                }
+                else{
+                    // Display a message if the input is invalid. Loop again to take a new input
+                    System.out.println("Please enter a valid account name. \nTry again:");
+                    continue;
+                }
+            }
+
+        } catch (IOException e) {
+        }
+
+        return account;
+    }
+
+    public static double takeValidDoubleInput(double balance){
+        double requestedAmount = 0;
+
+        while (true) {
+            try {
+                String strRequestedAmount = br.readLine();
+                requestedAmount = Double.parseDouble(strRequestedAmount);
+
+                if (requestedAmount <= balance) {
+                    break;
+                }
+                else{
+                    System.out.println("The requested amount should be less than or equal to the available balance. Try again:");
+                    continue;
+                }
+            } catch (Exception e) {
+                System.out.println("Can't process non-numerical characters. Try again:");
+                continue;
+            }
+        }
+
+        return requestedAmount;
+    }
+
+    private static boolean accountExists(String account, ArrayList<Account> accountsList){
+        for (int i = 0; i < accountsList.size(); i++) {
+            if (account.equals(accountsList.get(i).getAccountName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Method Overload
     // public static String takeValidInput(String key, String oldPass)
 
@@ -58,15 +118,8 @@ public class InputProcessor{
 
     // Main method for unit testing (can be deleted before making the final submission)
     public static void main(String[] args) {
-
-        // System.out.println("Please enter your email address");
-        // String userEmail = InputProcessor.takeValidInput("email");
-
-        System.out.println("Please enter your date of birth");
-        String birthDate = InputProcessor.takeValidInput("date");
-
-        System.out.println(birthDate);
-        
+        // double d = InputProcessor.takeValidDoubleInput(1000);
+        // System.out.println(d);
     }
 
 }
