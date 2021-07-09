@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
@@ -43,6 +44,7 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 			switch(request) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			// Added "WITHDRAW" command
 			case "WITHDRAW" : return withdrawAmount(customer);
 			default : return "FAIL";
 			}
@@ -54,20 +56,24 @@ public class NewBank {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
 
+	// Withdrawal Feature
 	public String withdrawAmount(CustomerID customer){
 
-		System.out.println("Please enter the name of the account you want to withdraw from:");	
+		System.out.println("Please enter the name of the account you want to withdraw from:");
+		// Display Customer-related accounts as visual aid for providing a choice	
 		System.out.println(showMyAccounts(customer));
 		
-		String accountName = InputProcessor.takeValidInput(customers.get(customer.getKey()).getAccounts());
+		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		// The provided account must exist within the accounts ArrayList
+		String accountName = InputProcessor.takeValidInput(customerAccounts);
 
-		for (int i = 0; i < customers.get(customer.getKey()).getAccounts().size(); i++) {
-			if (customers.get(customer.getKey()).getAccounts().get(i).getAccountName().equals(accountName)) {
-				
+		for (int i = 0; i < customerAccounts.size(); i++) {
+			if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+				// Processing withdrawal amount
 				System.out.println("Enter the amount you want to withdraw:");	
-				double amount = InputProcessor.takeValidDoubleInput(customers.get(customer.getKey()).getAccounts().get(i).getOpeningBalance());
-				customers.get(customer.getKey()).getAccounts().get(i).withdrawMoney(amount);
-				
+				double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance());
+				// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
+				customerAccounts.get(i).withdrawAmount(amount);	
 				break;
 			}
 		}	
@@ -75,10 +81,5 @@ public class NewBank {
 		return "Process Ended.";
 	}
 
-	public static void main(String[] args) throws IOException {
-		NewBank nb = new NewBank();
-
-		System.out.println(nb.withdrawAmount(new CustomerID("Bhagy")));
-	}
 
 }

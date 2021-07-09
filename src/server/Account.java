@@ -22,7 +22,7 @@ public class Account {
 		return (accountName + ": " + openingBalance);
 	}
 
-	public void withdrawMoney(double amount){
+	public void withdrawAmount(double amount){
 		this.openingBalance = this.openingBalance - amount;
 	}
 }

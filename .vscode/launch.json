@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MessageWriter",
+            "request": "launch",
+            "mainClass": "server.MessageWriter",
+            "projectName": "NewBank_6b589a2f"
+        },
+        {
+            "type": "java",
             "name": "Launch NewBank",
             "request": "launch",
             "mainClass": "server.NewBank",

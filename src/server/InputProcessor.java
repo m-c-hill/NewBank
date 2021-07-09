@@ -40,35 +40,37 @@ public class InputProcessor{
             }
 
         } catch (IOException e) {
+            System.out.println("Input error");
         }
 
         return info;
     }
 
-    // Method Overload for capturing the correct account name
+    // Method overload for capturing the correct account name
     public static String takeValidInput(ArrayList<Account> accountsList){
         String account = null;
         try {
             while (true) {
                 account = br.readLine();
-                // Check if the provided input is valid by comparing its format with the relevant regex
+                // Check if the provided account name matches one of the accounts belonging to the Customer
                 // Upon matching, break and return the given input
                 if (accountExists(account, accountsList)) {
                     break;
                 }
                 else{
-                    // Display a message if the input is invalid. Loop again to take a new input
+                    // Display a message when no match is found
                     System.out.println("Please enter a valid account name. \nTry again:");
-                    continue;
                 }
             }
 
         } catch (IOException e) {
+            System.out.println("Input error");
         }
 
         return account;
     }
 
+    // Method to take and validate the requested amount to withdraw
     public static double takeValidDoubleInput(double balance){
         double requestedAmount = 0;
 
@@ -82,17 +84,16 @@ public class InputProcessor{
                 }
                 else{
                     System.out.println("The requested amount should be less than or equal to the available balance. Try again:");
-                    continue;
                 }
             } catch (Exception e) {
                 System.out.println("Can't process non-numerical characters. Try again:");
-                continue;
             }
         }
 
         return requestedAmount;
     }
 
+    // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
     private static boolean accountExists(String account, ArrayList<Account> accountsList){
         for (int i = 0; i < accountsList.size(); i++) {
             if (account.equals(accountsList.get(i).getAccountName())) {
@@ -114,12 +115,6 @@ public class InputProcessor{
 
         // Return true if there's a match and false if there isn't
         return m.matches();
-    }
-
-    // Main method for unit testing (can be deleted before making the final submission)
-    public static void main(String[] args) {
-        // double d = InputProcessor.takeValidDoubleInput(1000);
-        // System.out.println(d);
     }
 
 }
