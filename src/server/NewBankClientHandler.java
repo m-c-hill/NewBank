@@ -18,9 +18,9 @@ public class NewBankClientHandler extends Thread {
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
 
-	// Method that prompts the user to enter their username and password 
+	// Method that prompts the user to enter their username and password
 	// Returns a UserCredential object
-	private UserCredentials takeCredentials(BufferedReader in, PrintWriter out) throws IOException{
+	private UserCredentials takeCredentials(BufferedReader in, PrintWriter out) throws IOException {
 		// ask for user name
 		out.println("Enter Username");
 		String username = in.readLine();
@@ -37,29 +37,36 @@ public class NewBankClientHandler extends Thread {
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
-			// A welcome screen offering one option to login and another to register
-			out.println("Please choose an option:\n1. Login\n2. Register");
-			switch (in.readLine()) {
-				case "1":
-					UserCredentials uc = takeCredentials(in, out);
-					CustomerID customer = bank.checkLogInDetails(uc.getUsername(), uc.getPassword());
-					// if the user is authenticated then get requests from the user and process them
-					if (customer != null) {
-						out.println("Log In Successful. What do you want to do?");
-						while (true) {
-							String request = in.readLine();
-							System.out.println("Request from " + customer.getKey());
-							String responce = bank.processRequest(customer, request, in, out);
-							out.println(responce);
+			// This loop will ensure that the user will always have the option to exit back to the welcome screen
+			// User should execute "MENU" command
+			while (true) {
+				// A welcome screen offering one option to login and another to register
+				out.println("Please choose an option:\n1. Login\n2. Register");
+				switch (in.readLine()) {
+					case "1":
+						UserCredentials uc = takeCredentials(in, out);
+						CustomerID customer = bank.checkLogInDetails(uc.getUsername(), uc.getPassword());
+						// if the user is authenticated then get requests from the user and process them
+						if (customer != null) {
+							out.println("Log In Successful. What do you want to do?");
+							while (true) {
+								String request = in.readLine();
+								if (request.equals("MENU")) {
+									break;
+								}
+								System.out.println("Request from " + customer.getKey());
+								String responce = bank.processRequest(customer, request, in, out);
+								out.println(responce);
+							}
+						} else {
+							out.println("Log In Failed");
 						}
-					} else {
-						out.println("Log In Failed");
-					}
-					break;
+						break;
 
-				// You can use this for account creation? (Register)	
-				case "2":
-					break;
+					// You can use this for account creation? (Register)
+					case "2":
+						break;
+				}
 			}
 
 		} catch (IOException e) {
