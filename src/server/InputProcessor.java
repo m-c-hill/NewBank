@@ -2,7 +2,7 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,21 +20,19 @@ public class InputProcessor{
         "date", "^\\d{2}/\\d{2}/\\d{4}$"
         );
 
-    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
     // Method to take and validate input
-    public static String takeValidInput(String key) {
+    public static String takeValidInput(String key, BufferedReader in, PrintWriter out) {
         String info = null;
         try {
             while (true) {
-                info = br.readLine();
+                info = in.readLine();
                 // Check if the provided input is valid by comparing its format with the relevant regex
                 // Upon matching, break and return the given input
                 if (isValid(info, InfoRegexMap.get(key))) {
                     break;
                 } else {
                     // Display a message if the input is invalid. Loop again to take a new input
-                    System.out.println("Please enter a valid " + key + ". \nTry again:");
+                    out.println("Please enter a valid " + key + ". \nTry again:");
                     continue;
                 }
             }
@@ -47,11 +45,11 @@ public class InputProcessor{
     }
 
     // Method overload for capturing the correct account name
-    public static String takeValidInput(ArrayList<Account> accountsList){
+    public static String takeValidInput(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){
         String account = null;
         try {
             while (true) {
-                account = br.readLine();
+                account = in.readLine();
                 // Check if the provided account name matches one of the accounts belonging to the Customer
                 // Upon matching, break and return the given input
                 if (accountExists(account, accountsList)) {
@@ -59,34 +57,34 @@ public class InputProcessor{
                 }
                 else{
                     // Display a message when no match is found
-                    System.out.println("Please enter a valid account name. \nTry again:");
+                    out.println("Please enter a valid account name. \nTry again:");
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("Input error");
+            out.println("Input error");
         }
 
         return account;
     }
 
     // Method to take and validate the requested amount to withdraw
-    public static double takeValidDoubleInput(double balance){
+    public static double takeValidDoubleInput(double balance, BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
 
         while (true) {
             try {
-                String strRequestedAmount = br.readLine();
+                String strRequestedAmount = in.readLine();
                 requestedAmount = Double.parseDouble(strRequestedAmount);
 
                 if (requestedAmount <= balance) {
                     break;
                 }
                 else{
-                    System.out.println("The requested amount should be less than or equal to the available balance. Try again:");
+                    out.println("The requested amount should be less than or equal to the available balance. Try again:");
                 }
             } catch (Exception e) {
-                System.out.println("Can't process non-numerical characters. Try again:");
+                out.println("Can't process non-numerical characters. Try again:");
             }
         }
 

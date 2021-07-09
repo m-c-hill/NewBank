@@ -1,6 +1,7 @@
 package server;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ public class NewBank {
 		customers = new HashMap<>();
 		addTestData();
 	}
-	
+
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.addAccount(new Account("Main", 1000.0));
@@ -40,12 +41,12 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request) {
+	public synchronized String processRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
 		if(customers.containsKey(customer.getKey())) {
 			switch(request) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
 			// Added "WITHDRAW" command
-			case "WITHDRAW" : return withdrawAmount(customer);
+			case "WITHDRAW" : return withdrawAmount(customer, in, out);
 			default : return "FAIL";
 			}
 		}
@@ -57,28 +58,41 @@ public class NewBank {
 	}
 
 	// Withdrawal Feature
-	public String withdrawAmount(CustomerID customer){
+	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
 
-		System.out.println("Please enter the name of the account you want to withdraw from:");
+		out.println("Please enter the name of the account you want to withdraw from:");
 		// Display Customer-related accounts as visual aid for providing a choice	
-		System.out.println(showMyAccounts(customer));
+		out.println(showMyAccounts(customer));
 		
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
-		// The provided account must exist within the accounts ArrayList
-		String accountName = InputProcessor.takeValidInput(customerAccounts);
 
+		// The provided account must exist within the accounts ArrayList
+		String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
+
+		// These variables are for printing purposes
+		double withdrawPrntAmount = 0;
+		int accountPrntIndex = 0;
+		
 		for (int i = 0; i < customerAccounts.size(); i++) {
 			if (customerAccounts.get(i).getAccountName().equals(accountName)) {
 				// Processing withdrawal amount
-				System.out.println("Enter the amount you want to withdraw:");	
-				double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance());
+				out.println("Enter the amount you want to withdraw:");	
+				double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
 				// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
 				customerAccounts.get(i).withdrawAmount(amount);	
+				
+				// Values to be printed
+				accountPrntIndex = i;
+				withdrawPrntAmount = amount;
+				
 				break;
 			}
 		}	
 
-		return "Process Ended.";
+		return String.format("Process succeeded. You've withdrawn "
+		 + withdrawPrntAmount 
+		 + "\nRemining balance is: " 
+		 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
 	}
 
 
