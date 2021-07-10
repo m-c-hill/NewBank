@@ -74,7 +74,6 @@ public class NewBank {
 		int accountPrntIndex = 0;
 		
 		for (int i = 0; i < customerAccounts.size(); i++) {
-			// Ignoring the account name case
 			if (customerAccounts.get(i).getAccountName().equals(accountName)) {
 				// Processing withdrawal amount
 				out.println("Enter the amount you want to withdraw:");	
