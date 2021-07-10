@@ -44,9 +44,9 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
 		if(customers.containsKey(customer.getKey())) {
 			switch(request) {
-			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "1" : return showMyAccounts(customer);
 			// Added "WITHDRAW" command
-			case "WITHDRAW" : return withdrawAmount(customer, in, out);
+			case "2" : return withdrawAmount(customer, in, out);
 			default : return "FAIL";
 			}
 		}
@@ -60,7 +60,7 @@ public class NewBank {
 	// Withdrawal Feature
 	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
 
-		out.println("Please enter the name of the account you want to withdraw from:");
+		out.println("Please enter the name of the account you want to withdraw from (choose from the list below):");
 		// Display Customer-related accounts as visual aid for providing a choice	
 		out.println(showMyAccounts(customer));
 		
@@ -74,6 +74,7 @@ public class NewBank {
 		int accountPrntIndex = 0;
 		
 		for (int i = 0; i < customerAccounts.size(); i++) {
+			// Ignoring the account name case
 			if (customerAccounts.get(i).getAccountName().equals(accountName)) {
 				// Processing withdrawal amount
 				out.println("Enter the amount you want to withdraw:");	
@@ -91,7 +92,7 @@ public class NewBank {
 
 		return String.format("Process succeeded. You've withdrawn "
 		 + withdrawPrntAmount 
-		 + "\nRemining balance is: " 
+		 + "\nRemining balance: " 
 		 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
 	}
 
