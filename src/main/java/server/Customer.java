@@ -9,6 +9,10 @@ public class Customer {
 	public Customer() {
 		accounts = new ArrayList<>();
 	}
+
+	public ArrayList<Account> getAccounts() {
+		return accounts;
+	}
 	
 	public String accountsToString() {
 		String s = "";

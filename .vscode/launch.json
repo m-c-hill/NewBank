@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch MessageWriter",
+            "request": "launch",
+            "mainClass": "server.MessageWriter",
+            "projectName": "NewBank_6b589a2f"
+        },
+        {
+            "type": "java",
+            "name": "Launch NewBank",
+            "request": "launch",
+            "mainClass": "server.NewBank",
+            "projectName": "NewBank_6b589a2f"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch ExampleClient",
+            "request": "launch",
+            "mainClass": "client.ExampleClient",
+            "projectName": "NewBank_6b589a2f"
+        },
+        {
+            "type": "java",
+            "name": "Launch InputProcessor",
+            "request": "launch",
+            "mainClass": "server.InputProcessor",
+            "projectName": "NewBank_6b589a2f"
+        },
+        {
+            "type": "java",
+            "name": "Launch NewBankServer",
+            "request": "launch",
+            "mainClass": "server.NewBankServer",
+            "projectName": "NewBank_6b589a2f"
+        }
+    ]
+}

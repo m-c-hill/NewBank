@@ -10,8 +10,19 @@ public class Account {
 		this.openingBalance = openingBalance;
 	}
 	
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public double getOpeningBalance() {
+		return openingBalance;
+	}
+
 	public String toString() {
 		return (accountName + ": " + openingBalance);
 	}
 
+	public void withdrawAmount(double amount){
+		this.openingBalance = this.openingBalance - amount;
+	}
 }
