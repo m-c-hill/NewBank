@@ -24,3 +24,30 @@ hs_err_pid*
 
 # Intellij
 /.idea
+*.iml
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Inclusions
+!lib/**
+
+# Compiled Files
+*.class
+bin/
+build/
+/bin1/
+java/build/**
