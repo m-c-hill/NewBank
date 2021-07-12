@@ -50,11 +50,18 @@ public class InputProcessor{
         try {
             while (true) {
                 account = in.readLine();
+                
+                //if Exit is entered take it as a valid input to go back to main menu
+                if (account.equals("Exit")) {
+                   break;
+                }
+                
                 // Check if the provided account name matches one of the accounts belonging to the Customer
                 // Upon matching, break and return the given input
-                if (accountExists(account, accountsList)) {
+                else if (accountExists(account, accountsList)) {
                     break;
                 }
+                
                 else{
                     // Display a message when no match is found
                     out.println("Please enter a valid account name. \nTry again:");
@@ -97,6 +104,11 @@ public class InputProcessor{
         try {
             while (true) {
                 account = in.readLine();
+                //if Exit is entered take it as a valid input to go back to main menu
+                if (account.equals("Exit")) {
+                    break;
+                }
+                
                 // Check if the provided account name matches one of the accounts belonging to the Customer
                 // If the name is not used before then accept it
                 if (!accountExists(account, accountsList)) {

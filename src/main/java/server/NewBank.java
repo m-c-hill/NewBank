@@ -83,39 +83,49 @@ public class NewBank {
 		}
 		else {
 
-			out.println("Please enter the name of the account you want to withdraw from (choose from the list below):");
+			out.println("Please enter the name of the account you want to withdraw from" 
+						+ " (choose from the list below):" + "\nPlease enter Exit to go back to the main menu.");
 			// Display Customer-related accounts as visual aid for providing a choice	
 			out.println(showMyAccounts(customer));
-			
-			
+					
 			// The provided account must exist within the accounts ArrayList
 			String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
-	
-			// These variables are for printing purposes
-			double withdrawPrntAmount = 0;
-			int accountPrntIndex = 0;
+
+			//If the user enters Exit go back to main menu message appears
+			if(accountName.equals("Exit")){
+				return "Exit request is taken, going back to the main menu.";	
+			}
 			
-			for (int i = 0; i < customerAccounts.size(); i++) {
-				if (customerAccounts.get(i).getAccountName().equals(accountName)) {
-					// Processing withdrawal amount
-					out.println("Enter the amount you want to withdraw:");	
-					double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
-					// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
-					customerAccounts.get(i).withdrawAmount(amount);	
-					
-					// Values to be printed
-					accountPrntIndex = i;
-					withdrawPrntAmount = amount;
-					
-					break;
-				}
-			}	
-	
-			return String.format("Process succeeded. You've withdrawn "
-			 + withdrawPrntAmount 
-			 + "\nRemining balance: " 
-			 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+			else {
+				
+				// These variables are for printing purposes
+				double withdrawPrntAmount = 0;
+				int accountPrntIndex = 0;
+				
+				for (int i = 0; i < customerAccounts.size(); i++) {
+					if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+						// Processing withdrawal amount
+						out.println("Enter the amount you want to withdraw:");	
+						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+						// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
+						customerAccounts.get(i).withdrawAmount(amount);	
+						
+						// Values to be printed
+						accountPrntIndex = i;
+						withdrawPrntAmount = amount;
+						
+						break;
+					}
+				}	
+		
+				return String.format("Process succeeded. You've withdrawn "
+				 + withdrawPrntAmount 
+				 + "\nRemining balance: " 
+				 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+			}
+				
 		}
+			
 		
 	}
 	// Make Deposit Feature
@@ -127,57 +137,73 @@ public class NewBank {
 				return String.format("There is no account found under this customer.");
 			}
 			else {
-				out.println("Please enter the name of the account you want to make a deposit to (choose from the list below):");
+				out.println("Please enter the name of the account you want to make a deposit to" 
+						+ "(choose from the list below):" + "\nPlease enter Exit to go back to the main menu.");
+				
 				// Display Customer-related accounts as visual aid for providing a choice	
 				out.println(showMyAccounts(customer));
 					
 				String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-				// These variables are for printing purposes
-				double depositPrntAmount = 0;
-				int accountPrntIndex = 0;
-					
-				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountName().equals(accountName)) {
-						// Processing deposit amount
-						out.println("Enter the amount you want to deposit:");	
-						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getOpeningBalance(), in, out);
-						// Calling the given account makeDeposit()
-						customerAccounts.get(i).makeDeposit(amount);	
-						// Values to be printed
-						accountPrntIndex = i;
-						depositPrntAmount = amount;
-							
-							break;
-						}
-					}	
-
-					return String.format("Process succeeded. You've made a deposit of "
-					 +  depositPrntAmount + " to " + accountName 
-					 + "\nUpdated balance: " 
-					 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
-			
+				//If the user enters Exit go back to main menu message appears
+				if(accountName.equals("Exit")){
+					return "Exit request is taken, going back to the main menu.";	
 				}
+				
+				else {
+					// These variables are for printing purposes
+					double depositPrntAmount = 0;
+					int accountPrntIndex = 0;
+						
+					for (int i = 0; i < customerAccounts.size(); i++) {
+						if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+							// Processing deposit amount
+							out.println("Enter the amount you want to deposit:");	
+							double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+							// Calling the given account makeDeposit()
+							customerAccounts.get(i).makeDeposit(amount);	
+							// Values to be printed
+							accountPrntIndex = i;
+							depositPrntAmount = amount;
+								
+								break;
+							}
+						}	
+	
+						return String.format("Process succeeded. You've made a deposit of "
+						 +  depositPrntAmount + " to " + accountName 
+						 + "\nUpdated balance: " 
+						 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+				
+					}
 			}
+		}
 
 	// Creating New Account Feature
 	public String createAccount(CustomerID customer, BufferedReader in, PrintWriter out){
 		
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 				
-		out.println("Please enter a name for the account you want to create:");
+		out.println("Please enter a name for the account you want to create:" 
+				+ "\nPlease enter Exit to go back to the main menu.");
 				
 		String accountName = InputProcessor.createValidAccountName(customerAccounts, in, out);
-						
-		double openingBalance = 0;
-				
-		customers.get(customer.getKey()).addAccount(new Account(accountName, openingBalance));
-				
-		return String.format("Process succeeded. You've opened the new account: "
-							+ "\n" + accountName + " : " 
-							+ Double.toString(openingBalance));
-				
+		
+		//If the user enters Exit go back to main menu message appears
+		if(accountName.equals("Exit")){
+			return "Exit request is taken, going back to the main menu.";
+		}
+		
+		else {
+			double openingBalance = 0;
+					
+			customers.get(customer.getKey()).addAccount(new Account(accountName, openingBalance));
+					
+			return String.format("Process succeeded. You've opened the new account: "
+								+ "\n" + accountName + " : " 
+								+ Double.toString(openingBalance));
+					
+			}
 		}
 
-
-}
+	}
