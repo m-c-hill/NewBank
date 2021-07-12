@@ -90,6 +90,50 @@ public class InputProcessor{
 
         return requestedAmount;
     }
+    
+ // Method to take and validate a new account name when creating a new Account
+    public static String createValidAccountName(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){
+        String account = null;
+        try {
+            while (true) {
+                account = in.readLine();
+                // Check if the provided account name matches one of the accounts belonging to the Customer
+                // If the name is not used before then accept it
+                if (!accountExists(account, accountsList)) {
+                    break;
+                }
+                else{
+                    // Display a message that the name is already used
+                    out.println("This name exists. Please enter a new valid account name. ");
+                }
+            }
+
+        } catch (IOException e) {
+            out.println("Input error");
+        }
+
+        return account;
+     }
+ // Method to take and validate the requested amount to deposit
+    public static double takeValidDepositInput(double balance, BufferedReader in, PrintWriter out){
+        double requestedAmount = 0;
+
+        while (true) {
+            try {
+                String strRequestedAmount = in.readLine();
+                requestedAmount = Double.parseDouble(strRequestedAmount);
+                break;
+                   
+            } catch (Exception e) {
+                out.println("Can't process non-numerical characters. Try again:");
+            }
+        }
+
+        return requestedAmount;
+    }
+    
+    
+  
 
     // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
     private static boolean accountExists(String account, ArrayList<Account> accountsList){

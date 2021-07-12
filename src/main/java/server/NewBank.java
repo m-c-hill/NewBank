@@ -27,6 +27,10 @@ public class NewBank {
 		Customer john = new Customer();
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("John", john);
+		
+		//new test client with no account yet
+		Customer alex = new Customer();
+		customers.put("Alex", alex);
 	}
 	
 	public static NewBank getBank() {
@@ -47,6 +51,10 @@ public class NewBank {
 			case "1" : return showMyAccounts(customer);
 			// Added "WITHDRAW" command
 			case "2" : return withdrawAmount(customer, in, out);
+			//"DEPOSIT" command
+			case "3" : return depositAmount(customer, in, out);
+			//"CREATE ACCOUNT" command
+			case "4" : return createAccount(customer, in, out);
 			default : return "FAIL";
 			}
 		}
@@ -54,46 +62,122 @@ public class NewBank {
 	}
 
 	private String showMyAccounts(CustomerID customer) {
-		return (customers.get(customer.getKey())).accountsToString();
+		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		if (customerAccounts.isEmpty()) {
+			
+			return String.format("There is no account found under this customer.");
+		}
+		else {
+		
+			return (customers.get(customer.getKey())).accountsToString();
+		}
 	}
 
 	// Withdrawal Feature
 	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
-
-		out.println("Please enter the name of the account you want to withdraw from (choose from the list below):");
-		// Display Customer-related accounts as visual aid for providing a choice	
-		out.println(showMyAccounts(customer));
 		
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		if (customerAccounts.isEmpty()) {
+			
+			return String.format("There is no account found under this customer.");
+		}
+		else {
 
-		// The provided account must exist within the accounts ArrayList
-		String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
-
-		// These variables are for printing purposes
-		double withdrawPrntAmount = 0;
-		int accountPrntIndex = 0;
+			out.println("Please enter the name of the account you want to withdraw from (choose from the list below):");
+			// Display Customer-related accounts as visual aid for providing a choice	
+			out.println(showMyAccounts(customer));
+			
+			
+			// The provided account must exist within the accounts ArrayList
+			String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
+	
+			// These variables are for printing purposes
+			double withdrawPrntAmount = 0;
+			int accountPrntIndex = 0;
+			
+			for (int i = 0; i < customerAccounts.size(); i++) {
+				if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+					// Processing withdrawal amount
+					out.println("Enter the amount you want to withdraw:");	
+					double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+					// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
+					customerAccounts.get(i).withdrawAmount(amount);	
+					
+					// Values to be printed
+					accountPrntIndex = i;
+					withdrawPrntAmount = amount;
+					
+					break;
+				}
+			}	
+	
+			return String.format("Process succeeded. You've withdrawn "
+			 + withdrawPrntAmount 
+			 + "\nRemining balance: " 
+			 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+		}
 		
-		for (int i = 0; i < customerAccounts.size(); i++) {
-			if (customerAccounts.get(i).getAccountName().equals(accountName)) {
-				// Processing withdrawal amount
-				out.println("Enter the amount you want to withdraw:");	
-				double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
-				// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
-				customerAccounts.get(i).withdrawAmount(amount);	
-				
-				// Values to be printed
-				accountPrntIndex = i;
-				withdrawPrntAmount = amount;
-				
-				break;
-			}
-		}	
-
-		return String.format("Process succeeded. You've withdrawn "
-		 + withdrawPrntAmount 
-		 + "\nRemining balance: " 
-		 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
 	}
+	// Make Deposit Feature
+	public String depositAmount(CustomerID customer, BufferedReader in, PrintWriter out){
+			
+			ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+			if (customerAccounts.isEmpty()) {
+				
+				return String.format("There is no account found under this customer.");
+			}
+			else {
+				out.println("Please enter the name of the account you want to make a deposit to (choose from the list below):");
+				// Display Customer-related accounts as visual aid for providing a choice	
+				out.println(showMyAccounts(customer));
+					
+				String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
+
+				// These variables are for printing purposes
+				double depositPrntAmount = 0;
+				int accountPrntIndex = 0;
+					
+				for (int i = 0; i < customerAccounts.size(); i++) {
+					if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+						// Processing deposit amount
+						out.println("Enter the amount you want to deposit:");	
+						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+						// Calling the given account makeDeposit()
+						customerAccounts.get(i).makeDeposit(amount);	
+						// Values to be printed
+						accountPrntIndex = i;
+						depositPrntAmount = amount;
+							
+							break;
+						}
+					}	
+
+					return String.format("Process succeeded. You've made a deposit of "
+					 +  depositPrntAmount + " to " + accountName 
+					 + "\nUpdated balance: " 
+					 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+			
+				}
+			}
+
+	// Creating New Account Feature
+	public String createAccount(CustomerID customer, BufferedReader in, PrintWriter out){
+		
+		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+				
+		out.println("Please enter a name for the account you want to create:");
+				
+		String accountName = InputProcessor.createValidAccountName(customerAccounts, in, out);
+						
+		double openingBalance = 0;
+				
+		customers.get(customer.getKey()).addAccount(new Account(accountName, openingBalance));
+				
+		return String.format("Process succeeded. You've opened the new account: "
+							+ "\n" + accountName + " : " 
+							+ Double.toString(openingBalance));
+				
+		}
 
 
 }
