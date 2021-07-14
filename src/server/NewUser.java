@@ -143,7 +143,7 @@ public class NewUser {
     public void mobNumMethod(){
         try{
             out.println("Enter Mobile Phone Number");
-            String mobileNummber = in.readLine();    
+            String mobileNummber = InputProcessor.takeValidInput("phoneNumber");  
         }
         //validateMethod
     catch (IOException e) {
