@@ -87,10 +87,10 @@ public class NewUser {
         try{
         // ask for first name
         out.println("Enter First Name");
-        String firstName = in.readLine();
+        String firstName = InputProcessor.takeValidInput("name");
         // ask for last name
         out.println("Enter Surname");
-        String surname = in.readLine();
+        String surname = InputProcessor.takeValidInput("name");
         }
     catch (IOException e) {
         
@@ -103,7 +103,7 @@ public class NewUser {
     public void ssnMethod(){
         try{
         out.println("Enter SSN");
-        String ssn = in.readLine();
+        String ssn = InputProcessor.takeValidInput("number");
         }
     catch (IOException e) {
         
@@ -116,7 +116,7 @@ public class NewUser {
     public void dobMethod(){
         try{
             out.println("Enter Date of Birth in DDMMYYYY format");
-            String dob = in.readLine();
+            String dob = InputProcessor.takeValidInput("date");
         }
         catch (IOException e) {
 
@@ -144,7 +144,6 @@ public class NewUser {
         try{
             out.println("Enter Mobile Phone Number");
             String mobileNummber = in.readLine();    
-        String ssn = in.readLine();
         }
         //validateMethod
     catch (IOException e) {
@@ -158,8 +157,7 @@ public class NewUser {
     public void emailMethod(){
         try{
             out.println("Enter a valid email address");
-            String email = in.readLine();    
-        String ssn = in.readLine();
+            String email = InputProcessor.takeValidInput("email");
         }
         //validateMethod
     catch (IOException e) {
@@ -183,8 +181,6 @@ public class NewUser {
 
         out.println("Enter Postcode");
         String postcode = in.readLine();
-   
-        String ssn = in.readLine();
         }
         //validateMethod
     catch (IOException e) {
