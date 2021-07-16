@@ -19,8 +19,10 @@ public class Connection {
 	public static void main(String[] args) {
 
 		// AWS credential - will need to securely store these in the future rather than hard code them in as below
-		String accessKey = "AKIAUYHVPM3VAKLGPAXE";
-		String secretKey = "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";
+		// WARNING: these have been removed for now as github/aws was complaining. I need to find a secure way to
+		// store the credentials. I'll post them in the group chat for now.
+		String accessKey = "";
+		String secretKey = "";
 
 		// Create credential object to connect to AWS
 		BasicAWSCredentials credentials = new BasicAWSCredentials(
