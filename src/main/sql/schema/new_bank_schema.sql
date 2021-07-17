@@ -1,5 +1,8 @@
---DROP SCHEMA IF EXISTS newbank;
---CREATE SCHEMA IF NOT EXISTS newbank;
+DROP SCHEMA IF EXISTS newbank;
+CREATE SCHEMA IF NOT EXISTS newbank;
+
+USE newbank;
+SHOW tables;
 
 -- Create users table
 -- Description: user information, to be inherited by customer or admin
@@ -28,6 +31,7 @@ CREATE TABLE IF NOT EXISTS customer (
 -- Description: user login information - salt and hash are used to validate an encrypted plain text password
 CREATE TABLE IF NOT EXISTS password (
     user_id int REFERENCES user(user_id),
+    login varchar(255),
     pw_salt varchar(255),
     pw_hash varchar(255)
 );
@@ -93,6 +97,7 @@ CREATE TABLE IF NOT EXISTS currency (
     name varchar(255),
     usd_exchange_rate double,
     dt_updated datetime,
+    crypto boolean,
     description varchar(255)
 );
 
@@ -158,7 +163,9 @@ CREATE TABLE IF NOT EXISTS loans (
     loan_id int PRIMARY KEY AUTO_INCREMENT,
     customer_id int REFERENCES customer(customer_id),
     account_id int REFERENCES account(account_number),
-    approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending', -- Status includes: pending, approved, declined
+    amount double,
+    currency_id int REFERENCES currency(currency_id),
+    approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
     transfer_status ENUM('pending', 'received') DEFAULT 'pending'
 );
 
