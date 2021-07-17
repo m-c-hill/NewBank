@@ -139,19 +139,23 @@ public class Connection {
 			}
 		}
 
-		// Print all banks currently stored in the database, print as a table
+		// This query will print selected data for a number of customers
 		try(Statement stmt = con.createStatement()){
 
-			ResultSet transactions = stmt.executeQuery("SELECT * FROM bank");
+			String query = "SELECT prefix, first_names, last_name, date_of_birth, email_address, phone_number, national_insurance_number, address.postcode FROM customer\nLEFT JOIN user\nON user.user_id = customer.user_id\nLEFT JOIN address\nON user.address_id = address.address_id\n";
+
+			ResultSet transactions = stmt.executeQuery(query);
 			ResultSetMetaData rsmd = transactions.getMetaData();
 			int columnsNumber = rsmd.getColumnCount();
+
+			// Print results as table - reference: https://coderwall.com/p/609ppa/printing-the-result-of-resultset
 			while (transactions.next()) {
 				for (int i = 1; i <= columnsNumber; i++) {
-					if (i > 1) System.out.print(",  ");
+					if (i > 1) System.out.print("\n");
 					String columnValue = transactions.getString(i);
-					System.out.print(columnValue + " " + rsmd.getColumnName(i));
+					System.out.print(rsmd.getColumnName(i) + ": " + columnValue);
 				}
-				System.out.println("");
+				System.out.println("\n\n");
 			}
 
 		}
