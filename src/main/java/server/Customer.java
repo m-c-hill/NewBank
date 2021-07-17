@@ -13,8 +13,8 @@ public class Customer extends User{
 	}
 	
 	// Constructor overload
-	public Customer(String fName, String lName, String ssn, String dob, String pob, String email, String address) {
-		super(fName, lName, ssn, dob, pob, email, address);
+	public Customer(String fName, String lName, String ssn, String dob, String pob, String email, String phoneNum, String address) {
+		super(fName, lName, ssn, dob, pob, email, phoneNum, address);
 		accounts = new ArrayList<>();
 	}
 
