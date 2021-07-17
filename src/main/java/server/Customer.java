@@ -2,11 +2,16 @@ package server;
 
 import java.util.ArrayList;
 
-public class Customer {
+public class Customer extends User{
 	
 	private ArrayList<Account> accounts;
+
+	public Customer(){
+		accounts = new ArrayList<>();
+	}
 	
-	public Customer() {
+	public Customer(String fName, String lName, String ssn, String dob, String pob, String email, String address) {
+		super(fName, lName, ssn, dob, pob, email, address);
 		accounts = new ArrayList<>();
 	}
 
