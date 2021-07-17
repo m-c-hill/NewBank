@@ -34,6 +34,7 @@ public class NewBankClientHandler extends Thread {
 		return uc;
 	}
 
+	// While this chunk of code works, it's best to encapsulate the sign-up functionality in a different class
 	private String takeFirstName(){
 		out.println("Please enter your first name:");
 		String fName = InputProcessor.takeValidInput("letters", in, out);
@@ -80,6 +81,7 @@ public class NewBankClientHandler extends Thread {
 		return String.format(firstAddress + "\n" + secondAddress);
 	}
 
+	// Creating a new Customer object
 	private Customer createCustomer(){
 		String fName = takeFirstName();
 		String lName = takeLastName();
@@ -94,6 +96,7 @@ public class NewBankClientHandler extends Thread {
 		return nc;
 	}
 
+	// Adding the customer object to bank.customers<String, Customer> HashMap
 	private void registerCustomer(Customer c){
 		this.bank.addCustomer(c);
 	}

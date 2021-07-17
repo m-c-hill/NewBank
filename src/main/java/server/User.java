@@ -10,10 +10,13 @@ public abstract class User {
     private String email;
     private String address;
 
+    // This empty constructor will remain here to avoid getting a compilation error in Customer class
+    // Remove after deleting the original test data
     public User(){
 
     }
 
+    // Constructor overload
     public User(String fName, String lName, String ssn, String dob, String pob, String email, String address){
         this.firstName = fName;
         this.lastName = lName;
@@ -24,6 +27,7 @@ public abstract class User {
         this.address = address;
     }
 
+    // We're exposing the first name because we want to use it as a key in the customers<String, Customer> HashMap
     public String getFirstName() {
         return firstName;
     }
