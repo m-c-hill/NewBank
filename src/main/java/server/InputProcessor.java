@@ -18,7 +18,9 @@ public class InputProcessor{
     // The regexes could use some refinement for more precision
     private static final Map<String, String> InfoRegexMap = Map.of(
         "email", "^(.+)@(.+)$",
-        "date", "^\\d{2}/\\d{2}/\\d{4}$"
+        "date", "^\\d{2}/\\d{2}/\\d{4}$",
+        "letters", "^[A-Za-z]+$",
+        "numbers", "^[0-9]+$"
         );
 
     // Method to take and validate input
@@ -33,13 +35,13 @@ public class InputProcessor{
                     break;
                 } else {
                     // Display a message if the input is invalid. Loop again to take a new input
-                    out.println("Please enter a valid " + key + ". \nTry again:");
+                    out.println("Please enter a valid " + key + "(s). \nTry again:");
                     continue;
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("Input error");
+            out.println("Input error");
         }
 
         return info;

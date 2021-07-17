@@ -34,6 +34,70 @@ public class NewBankClientHandler extends Thread {
 		return uc;
 	}
 
+	private String takeFirstName(){
+		out.println("Please enter your first name:");
+		String fName = InputProcessor.takeValidInput("letters", in, out);
+		return fName;
+	}
+
+	private String takeLastName(){
+		out.println("Please enter your last name:");
+		String lName = InputProcessor.takeValidInput("letters", in, out);
+		return lName;
+	}
+
+	private String takeSsn(){
+		out.println("Please enter your social security number:");
+		String ssn = InputProcessor.takeValidInput("numbers", in, out);
+		return ssn;
+	}
+
+	private String takePob(){
+		out.println("Please enter your place of birth:");
+		String pob = InputProcessor.takeValidInput("letters", in, out);
+		return pob;
+	}
+
+	private String takeDob(){
+		out.println("Please enter your date of birth:");
+		String dob = InputProcessor.takeValidInput("date", in, out);
+		return dob;
+	}
+
+	private String takeEmail(){
+		out.println("Please enter your email address:");
+		String email = InputProcessor.takeValidInput("email", in, out);
+		return email;
+	}
+
+	private String takeAddress(){
+		out.println("Please enter your first address line:");
+		String firstAddress = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your second address line:");
+		String secondAddress = InputProcessor.takeValidInput("letters", in, out);
+
+		return String.format(firstAddress + "\n" + secondAddress);
+	}
+
+	private Customer createCustomer(){
+		String fName = takeFirstName();
+		String lName = takeLastName();
+		String ssn = takeSsn();
+		String dob = takeDob();
+		String pob = takePob();
+		String email = takeEmail();
+		String address = takeAddress();
+
+		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, address);
+
+		return nc;
+	}
+
+	private void registerCustomer(Customer c){
+		this.bank.addCustomer(c);
+	}
+
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
@@ -70,6 +134,8 @@ public class NewBankClientHandler extends Thread {
 
 					// You can use this for account creation? (Register)
 					case "2":
+						registerCustomer(createCustomer());
+						out.println("User registered successfully.");
 						break;
 				}
 			}
