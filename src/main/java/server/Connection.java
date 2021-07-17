@@ -9,12 +9,9 @@ import com.amazonaws.services.rds.model.DBInstance;
 import com.amazonaws.services.rds.model.DescribeDBInstancesResult;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.util.List;
 
 public class Connection {
@@ -45,40 +42,9 @@ public class Connection {
 		return new String[] {key, pw};
 	}
 
-	/*
-	private static String[] getDBCredentials(){
-		String instance = null;
-		String endpoint = null;
-		String port = null;
-		String user = null;
-		String password = null;
-		String region = null;
-
-		JSONParser parser = new JSONParser();
-		try{
-			// Read in credentials json file, parse to create a json object
-			FileReader credFile = new FileReader(".secrets/db_credentials.json");
-			Object obj = parser.parse(credFile);
-			JSONObject credJson = (JSONObject) obj;
-
-			// Index credJson to retrieve key and secret
-			instance = (String) credJson.get("instance");
-			endpoint = (String) credJson.get("endpoint");
-			port = (String) credJson.get("port");
-			user = (String) credJson.get("user");
-			password = (String) credJson.get("password");
-			region = (String) credJson.get("region");
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return new String[] {instance, endpoint, port, user, password, region};
-	}
-	*/
-
 	/**
-	 * Method to create the connection object for the aws database instance
-	 * @return AmazonRDS database connection object
+	 * Method to create the connection object for the aws instance
+	 * @return AmazonRDS connection object
 	 */
 	private static AmazonRDS getRDSConnection(){
 
@@ -108,34 +74,41 @@ public class Connection {
 		return awsRDS;
 	}
 
+	/**
+	 * Method to create the conncetion object for the newbank database
+	 * @return mysql database connection object
+	 */
 	public static java.sql.Connection getDBConnection() {
+
+		// Establish aws connection and retrieve newbank instance
 		AmazonRDS awsRDS = getRDSConnection();
 		DescribeDBInstancesResult dbInstResult = awsRDS.describeDBInstances();
 		DBInstance dbInstance = dbInstResult.getDBInstances().get(0);
 
+		// Retrieve database connection information from aws instance
 		String name = dbInstance.getDBInstanceIdentifier();
 		String engine = dbInstance.getEngine();
 		String username = dbInstance.getMasterUsername();
 		String endpoint = dbInstance.getEndpoint().getAddress();
 		String port = dbInstance.getEndpoint().getPort().toString();
-		String password = "password";
+		String password = "password"; // TODO: move this to a more secure location
 
 		java.sql.Connection con = null;
 
+		// Database url
+		// Reference: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/java-rds.html
 		String url = "jdbc:" + engine + "://" + endpoint + ":" + port + "/" + name + "?user" + username + "&password=" + password;
-		System.out.println(url);
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(url, username, "password");
-			System.out.println("Success!");
+			con = DriverManager.getConnection(url, username, password);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return con;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 
 		// Example of retrieving data - retrieves all database instances associated with the connection
 		AmazonRDS awsRDS = getRDSConnection();
@@ -151,6 +124,39 @@ public class Connection {
 			System.out.println("-------------------------\n");
 		}
 
+
+		// Create the database connection
 		java.sql.Connection con = getDBConnection();
+
+		// Example database queries
+
+		// Print all tables in the database
+		try(Statement stmt = con.createStatement()) {
+			ResultSet rs = stmt.executeQuery("Show tables");
+			while (rs.next()) {
+				System.out.println(rs.getString(1));
+				System.out.println();
+			}
+		}
+
+		// Print all banks currently stored in the database, print as a table
+		try(Statement stmt = con.createStatement()){
+
+			ResultSet transactions = stmt.executeQuery("SELECT * FROM bank");
+			ResultSetMetaData rsmd = transactions.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			while (transactions.next()) {
+				for (int i = 1; i <= columnsNumber; i++) {
+					if (i > 1) System.out.print(",  ");
+					String columnValue = transactions.getString(i);
+					System.out.print(columnValue + " " + rsmd.getColumnName(i));
+				}
+				System.out.println("");
+			}
+
+		}
 	}
 }
+
+
+
