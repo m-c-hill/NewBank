@@ -60,7 +60,7 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	private String takeDob(){
-		out.println("Please enter your date of birth:");
+		out.println("Please enter your date of birth (DD/MM/YYYY):");
 		String dob = InputProcessor.takeValidInput("date", in, out);
 		return dob;
 	}
@@ -69,6 +69,12 @@ public class NewBankClientHandler extends Thread {
 		out.println("Please enter your email address:");
 		String email = InputProcessor.takeValidInput("email", in, out);
 		return email;
+	}
+
+	private String takePhoneNum(){
+		out.println("Please enter your phone number:");
+		String phoneNum = InputProcessor.takeValidInput("phonenum", in, out);
+		return phoneNum;
 	}
 
 	private String takeAddress(){
@@ -89,9 +95,10 @@ public class NewBankClientHandler extends Thread {
 		String dob = takeDob();
 		String pob = takePob();
 		String email = takeEmail();
+		String phoneNum = takePhoneNum();
 		String address = takeAddress();
 
-		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, address);
+		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, phoneNum, address);
 
 		return nc;
 	}
