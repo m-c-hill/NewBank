@@ -8,6 +8,7 @@ public abstract class User {
     private String dob;
     private String pob;
     private String email;
+    private String phoneNum;
     private String address;
 
     // This empty constructor will remain here to avoid getting a compilation error in Customer class
@@ -17,13 +18,14 @@ public abstract class User {
     }
 
     // Constructor overload
-    public User(String fName, String lName, String ssn, String dob, String pob, String email, String address){
+    public User(String fName, String lName, String ssn, String dob, String pob, String email, String phoneNum, String address){
         this.firstName = fName;
         this.lastName = lName;
         this.ssn = ssn;
         this.dob = dob;
         this.pob = pob;
         this.email = email;
+        this.phoneNum = phoneNum;
         this.address = address;
     }
 
