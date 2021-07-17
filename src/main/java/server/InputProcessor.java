@@ -20,7 +20,8 @@ public class InputProcessor{
         "email", "^(.+)@(.+)$",
         "date", "^\\d{2}/\\d{2}/\\d{4}$",
         "letters", "^[A-Za-z]+$",
-        "numbers", "^[0-9]+$"
+        "numbers", "^[0-9]+$",
+        "phonenum", "^0[\\d]{10}$" //must start with a 0 and be followed by 10 numbers (basic version) OR 1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4} for international formats (advanced)
         );
 
     // Method to take and validate input
