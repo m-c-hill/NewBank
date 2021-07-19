@@ -72,8 +72,8 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	private String takePhoneNum(){
-		out.println("Please enter your phone number:");
-		String phoneNum = InputProcessor.takeValidInput("phonenum", in, out);
+		out.println("Please enter your phone number (must start with a 0 followed by 10 digits):");
+		String phoneNum = InputProcessor.takeValidInput("phonenumber", in, out);
 		return phoneNum;
 	}
 
