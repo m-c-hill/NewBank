@@ -15,9 +15,13 @@ import java.util.regex.Pattern;
 public class InputProcessor{
     // Mapping each key to its value (regex)
     // Add the rest of the keys with their relevant regexes to this Map
+    // The regexes could use some refinement for more precision
     private static final Map<String, String> InfoRegexMap = Map.of(
         "email", "^(.+)@(.+)$",
-        "date", "^\\d{2}/\\d{2}/\\d{4}$"
+        "date", "^\\d{2}/\\d{2}/\\d{4}$",
+        "letters", "^[A-Za-z]+$",
+        "numbers", "^[0-9]+$",
+        "phonenumber", "^0[\\d]{10}$" //must start with a 0 and be followed by 10 numbers (basic version) OR 1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4} for international formats (advanced)
         );
 
     // Method to take and validate input
@@ -32,13 +36,13 @@ public class InputProcessor{
                     break;
                 } else {
                     // Display a message if the input is invalid. Loop again to take a new input
-                    out.println("Please enter a valid " + key + ". \nTry again:");
+                    out.println("Please enter a valid " + key + "(s). \nTry again:");
                     continue;
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("Input error");
+            out.println("Input error");
         }
 
         return info;

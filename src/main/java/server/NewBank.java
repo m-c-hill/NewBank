@@ -15,6 +15,11 @@ public class NewBank {
 		addTestData();
 	}
 
+	// Exposing the functionality of adding a new customer to the HashMap
+	public void addCustomer(Customer c){
+		this.customers.put(c.getFirstName(), c);
+	}
+
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.addAccount(new Account("Main", 1000.0));

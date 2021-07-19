@@ -34,6 +34,80 @@ public class NewBankClientHandler extends Thread {
 		return uc;
 	}
 
+	// While this chunk of code works, it's best to encapsulate the sign-up functionality in a different class
+	private String takeFirstName(){
+		out.println("Please enter your first name:");
+		String fName = InputProcessor.takeValidInput("letters", in, out);
+		return fName;
+	}
+
+	private String takeLastName(){
+		out.println("Please enter your last name:");
+		String lName = InputProcessor.takeValidInput("letters", in, out);
+		return lName;
+	}
+
+	private String takeSsn(){
+		out.println("Please enter your social security number:");
+		String ssn = InputProcessor.takeValidInput("numbers", in, out);
+		return ssn;
+	}
+
+	private String takePob(){
+		out.println("Please enter your place of birth:");
+		String pob = InputProcessor.takeValidInput("letters", in, out);
+		return pob;
+	}
+
+	private String takeDob(){
+		out.println("Please enter your date of birth (DD/MM/YYYY):");
+		String dob = InputProcessor.takeValidInput("date", in, out);
+		return dob;
+	}
+
+	private String takeEmail(){
+		out.println("Please enter your email address:");
+		String email = InputProcessor.takeValidInput("email", in, out);
+		return email;
+	}
+
+	private String takePhoneNum(){
+		out.println("Please enter your phone number (must start with a 0 followed by 10 digits):");
+		String phoneNum = InputProcessor.takeValidInput("phonenumber", in, out);
+		return phoneNum;
+	}
+
+	private String takeAddress(){
+		out.println("Please enter your first address line:");
+		String firstAddress = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your second address line:");
+		String secondAddress = InputProcessor.takeValidInput("letters", in, out);
+
+		return String.format(firstAddress + "\n" + secondAddress);
+	}
+
+	// Creating a new Customer object
+	private Customer createCustomer(){
+		String fName = takeFirstName();
+		String lName = takeLastName();
+		String ssn = takeSsn();
+		String dob = takeDob();
+		String pob = takePob();
+		String email = takeEmail();
+		String phoneNum = takePhoneNum();
+		String address = takeAddress();
+
+		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, phoneNum, address);
+
+		return nc;
+	}
+
+	// Adding the customer object to bank.customers<String, Customer> HashMap
+	private void registerCustomer(Customer c){
+		this.bank.addCustomer(c);
+	}
+
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
@@ -70,6 +144,8 @@ public class NewBankClientHandler extends Thread {
 
 					// You can use this for account creation? (Register)
 					case "2":
+						registerCustomer(createCustomer());
+						out.println("User registered successfully.");
 						break;
 				}
 			}
