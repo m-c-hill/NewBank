@@ -13,5 +13,21 @@ public class BankLoan {
         this.isAccepted = false;
         this.isPaidBack = false;
     }
+
+    public Customer getCustomer() {
+        return this.customer;
+    }
+
+    public String getReason() {
+        return this.reason;
+    }
+
+    public boolean getIsAccepted(){
+        return this.isAccepted;
+    }
+
+    public boolean getIsPaidBack(){
+        return this.isPaidBack;
+    }
     
 }
