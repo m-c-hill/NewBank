@@ -16,6 +16,7 @@ public class InputProcessor{
     // Mapping each key to its value (regex)
     // Add the rest of the keys with their relevant regexes to this Map
     // The regexes could use some refinement for more precision
+    // Test
     private static final Map<String, String> InfoRegexMap = Map.of(
         "email", "^(.+)@(.+)$",
         "date", "^\\d{2}/\\d{2}/\\d{4}$",
