@@ -46,17 +46,23 @@ public class NewBank {
 	public void addAdminTestData(){
 		Admin bruce = new Admin("Bruce", "Wayne", "22446688", "20/07/1988", "USA", "bruce@gmail.com", "01234567891", "Seattle", 
 		new AdminRoles(true, true));
-		admins.put(bruce.getFirstName(), bruce);
-		
+		admins.put(bruce.getFirstName(), bruce);	
 	}
 	
 	public static NewBank getBank() {
 		return bank;
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) {
+	public synchronized CustomerID checkCustomerLogInDetails(String userName, String password) {
 		if(customers.containsKey(userName)) {
 			return new CustomerID(userName);
+		}
+		return null;
+	}
+
+	public synchronized String checkAdminLogInDetails(String userName, String password){
+		if (admins.containsKey(userName)) {
+			return userName;
 		}
 		return null;
 	}

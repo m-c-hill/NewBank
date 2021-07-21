@@ -114,12 +114,13 @@ public class NewBankClientHandler extends Thread {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
+				UserCredentials uc;
 				// A welcome screen offering one option to login and another to register
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						UserCredentials uc = takeCredentials(in, out);
-						CustomerID customer = bank.checkLogInDetails(uc.getUsername(), uc.getPassword());
+						uc = takeCredentials(in, out);
+						CustomerID customer = bank.checkCustomerLogInDetails(uc.getUsername(), uc.getPassword());
 						// if the user is authenticated then get requests from the user and process them
 						if (customer != null) {
 							out.println("Log In Successful");
@@ -152,7 +153,6 @@ public class NewBankClientHandler extends Thread {
 					case "3":
 						uc = takeCredentials(in, out);
 						
-
 				}
 			}
 
