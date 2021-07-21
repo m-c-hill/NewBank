@@ -15,7 +15,8 @@ public class NewBank {
 	
 	private NewBank() {
 		customers = new HashMap<>();
-		addTestData();
+		addCustomerTestData();
+		addAdminTestData();
 	}
 
 	// Exposing the functionality of adding a new customer to the HashMap
@@ -23,7 +24,7 @@ public class NewBank {
 		this.customers.put(c.getFirstName(), c);
 	}
 
-	private void addTestData() {
+	private void addCustomerTestData() {
 		Customer bhagy = new Customer();
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("Bhagy", bhagy);
@@ -39,6 +40,14 @@ public class NewBank {
 		//new test client with no account yet
 		Customer alex = new Customer();
 		customers.put("Alex", alex);
+	}
+
+	// Admin Test Data
+	public void addAdminTestData(){
+		Admin bruce = new Admin("Bruce", "Wayne", "22446688", "20/07/1988", "USA", "bruce@gmail.com", "01234567891", "Seattle", 
+		new AdminRoles(true, true));
+		admins.put(bruce.getFirstName(), bruce);
+		
 	}
 	
 	public static NewBank getBank() {
