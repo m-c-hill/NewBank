@@ -3,15 +3,24 @@ package server;
 public class BankLoan {
     private Customer customer;
     private String reason;
-    private boolean isAccepted;
-    private boolean isPaidBack;
 
-    public BankLoan(Customer customer, String reason){
+    private double amount;
+    private double payBackAmount;
+
+    private boolean accepted;
+    private boolean paidBack;
+
+    private final double rate = 2.56;
+
+    public BankLoan(Customer customer, String reason, double amount){
         this.customer = customer;
         this.reason = reason;
+        
+        this.amount = amount;
+        this.payBackAmount = this.amount * rate/100.00;
 
-        this.isAccepted = false;
-        this.isPaidBack = false;
+        this.accepted = false;
+        this.paidBack = false;
     }
 
     public Customer getCustomer() {
@@ -22,12 +31,20 @@ public class BankLoan {
         return this.reason;
     }
 
-    public boolean getIsAccepted(){
-        return this.isAccepted;
+    public double getAmount() {
+        return amount;
+    }
+    
+    public double getPayBackAmount() {
+        return payBackAmount;
     }
 
-    public boolean getIsPaidBack(){
-        return this.isPaidBack;
+    public boolean isAccepted(){
+        return this.accepted;
+    }
+
+    public boolean isPaidBack() {
+        return this.paidBack;
     }
     
 }
