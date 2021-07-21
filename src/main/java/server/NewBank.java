@@ -9,6 +9,8 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	// Admins HashMap
+	private HashMap<String, Admin> admins;
 	private ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
 	
 	private NewBank() {
