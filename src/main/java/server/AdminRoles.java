@@ -4,9 +4,9 @@ public class AdminRoles {
     private boolean allowedToViewLoanList;
     private boolean allowedToGrantLoan;
 
-    public AdminRoles(boolean canGrantLoan, boolean canViewLoans){
-        this.allowedToViewLoanList = canViewLoans;
-        this.allowedToGrantLoan = canGrantLoan;
+    public AdminRoles(boolean allowedToViewLoanList, boolean allowedToGrantLoan){
+        this.allowedToViewLoanList = allowedToViewLoanList;
+        this.allowedToGrantLoan = allowedToGrantLoan;
     }
 
     public boolean isAllowedToViewLoanList() {
