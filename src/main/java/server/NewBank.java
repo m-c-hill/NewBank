@@ -9,6 +9,7 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
 	
 	private NewBank() {
 		customers = new HashMap<>();
@@ -60,10 +61,16 @@ public class NewBank {
 			case "3" : return depositAmount(customer, in, out);
 			//"CREATE ACCOUNT" command
 			case "4" : return createAccount(customer, in, out);
+			// "RLOAN" command
+			case "5" : return requestLoan(customer, in, out);
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	private String requestLoan(CustomerID customer, BufferedReader in, PrintWriter out){
+		return "Success";
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -79,7 +86,7 @@ public class NewBank {
 	}
 
 	// Loan Request Feature
-	
+
 
 	// Withdrawal Feature
 	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
