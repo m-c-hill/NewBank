@@ -127,9 +127,10 @@ public class NewBankClientHandler extends Thread {
 								out.println("What do you want to do?\n1. Show My Accounts"
 										+ "\n2. Withdraw Amount\n3. Deposit Amount "
 										+ "\n4. Create a new account"
-										+ "\n5. Go Back to the Main Menu");
+										+ "\n5. Request a loan"
+										+ "\n6. Go Back to the Main Menu");
 								String request = in.readLine();
-								if (request.equals("5")) {
+								if (request.equals("6")) {
 									break;
 								}
 								System.out.println("Request from " + customer.getKey());

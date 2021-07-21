@@ -78,6 +78,9 @@ public class NewBank {
 		}
 	}
 
+	// Loan Request Feature
+	
+
 	// Withdrawal Feature
 	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
 		
