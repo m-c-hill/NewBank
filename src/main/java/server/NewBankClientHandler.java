@@ -113,23 +113,25 @@ public class NewBankClientHandler extends Thread {
 		try {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
+			UserCredentials uc;
 			while (true) {
-				// UserCredentials uc;
 				// A welcome screen offering one option to login and another to register
-				out.println("Please choose an option:\n1. Login as Customer\n2. Register\n3. Login as Admin");
+				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						UserCredentials uc = takeCredentials(in, out);
+						uc = takeCredentials(in, out);
 						CustomerID customer = bank.checkCustomerLogInDetails(uc.getUsername(), uc.getPassword());
 						// if the user is authenticated then get requests from the user and process them
 						if (customer != null) {
-							out.println("Log In Successful");
+							out.println("Login Successful.");
 							while (true) {
-								out.println("What do you want to do?\n1. Show My Accounts"
-										+ "\n2. Withdraw Amount\n3. Deposit Amount "
+								out.println("What do you want to do?"
+										+ "\n1. Show my accounts"
+										+ "\n2. Withdraw amount"
+										+ "\n3. Deposit amount "
 										+ "\n4. Create a new account"
 										+ "\n5. Request a loan"
-										+ "\n6. Go Back to the Main Menu");
+										+ "\n6. Go back to the main menu");
 								String request = in.readLine();
 								if (request.equals("6")) {
 									break;
@@ -137,10 +139,9 @@ public class NewBankClientHandler extends Thread {
 								System.out.println("Request from " + customer.getKey());
 								String responce = bank.processRequest(customer, request, in, out);
 								out.println(responce);
-								// out.println("What do you want to do?");
 							}
 						} else {
-							out.println("Log In Failed");
+							out.println("Login Failed");
 						}
 						break;
 
@@ -150,9 +151,26 @@ public class NewBankClientHandler extends Thread {
 						out.println("User registered successfully.");
 						break;
 					
-					// case "3":
-					// 	uc = takeCredentials(in, out);
-					// 	break;
+					case "3":
+						uc = takeCredentials(in, out);
+						String admin = bank.checkAdminLogInDetails(uc.getUsername(), uc.getPassword());
+
+						if (admin != null) {
+							out.println("Login successful.");
+							while(true){
+								out.println("What do you want to do:"
+										+ "\n1. Check loans list"
+										+ "\n2. Accept/Decline a loan request"
+										+ "\n3. Go back to the main menu");
+								String request = in.readLine();
+								if (request.equals("3")) {
+									break;
+								}
+							}
+						}
+						else{
+							out.println("Login failed.");
+						}
 				}
 			}
 
