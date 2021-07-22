@@ -71,7 +71,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
+	public synchronized String processCustomerRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
 				case "1":
@@ -93,6 +93,21 @@ public class NewBank {
 			}
 		}
 		return "FAIL";
+	}
+
+	public synchronized String processAdminRequest(String admin, String request, BufferedReader in, PrintWriter out){
+		
+		if (admins.containsKey(admin)) {
+			switch (request) {
+				case "1":
+					admins.get(admin).showLoansList(this.loansList, out);
+					break;
+			
+				default:
+					break;
+			}
+		}
+		return "Fail";
 	}
 
 	private String requestLoan(CustomerID customer, BufferedReader in, PrintWriter out) {
