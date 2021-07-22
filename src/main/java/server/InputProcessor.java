@@ -154,7 +154,7 @@ public class InputProcessor{
     // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
     private static boolean accountExists(String account, ArrayList<Account> accountsList){
         for (int i = 0; i < accountsList.size(); i++) {
-            if (account.equals(accountsList.get(i).getAccountName())) {
+            if (account.equals(accountsList.get(i).getAccountNumber())) {
                 return true;
             }
         }

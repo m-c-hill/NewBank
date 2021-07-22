@@ -76,4 +76,8 @@ public class Account {
 		// TODO: method to send a summary of transactions for a given period
 	}
 
+	public String getAccountNumber(){
+		return accountNumber;
+	}
+
 }

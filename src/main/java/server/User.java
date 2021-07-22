@@ -13,12 +13,6 @@ public abstract class User {
     private String phoneNumber;
     private Password password;
 
-    // This empty constructor will remain here to avoid getting a compilation error in Customer class
-    // Remove after deleting the original test data
-    public User(){
-
-    }
-
     // Constructor overload
     public User(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
                 String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){

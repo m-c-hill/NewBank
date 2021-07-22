@@ -11,11 +11,12 @@ public class Customer extends User{
 	public Customer(){
 		accounts = new ArrayList<>();
 	}
-	
-	// Constructor overload
-	public Customer(String fName, String lName, String ssn, String dob, String pob, String email, String phoneNum, String address) {
-		super(fName, lName, ssn, dob, pob, email, phoneNum, address);
-		accounts = new ArrayList<>();
+
+	public Customer(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
+					String dateOfBirth, String emailAddress, String phoneNumber, Address address,
+					Password password) {
+		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
+		this.accounts = new ArrayList<>();
 	}
 
 	public ArrayList<Account> getAccounts() {
@@ -23,11 +24,11 @@ public class Customer extends User{
 	}
 	
 	public String accountsToString() {
-		String s = "";
+		String accountList = "";
 		for(Account a : accounts) {
-			s += a.toString() + "\n";
+			accountList += a.toString() + "\n";
 		}
-		return s;
+		return accountList;
 	}
 
 	public void addAccount(Account account) {
