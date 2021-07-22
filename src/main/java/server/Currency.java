@@ -1,13 +1,13 @@
 package server;
 
 public class Currency {
-	private String currencyID;
+	private String currencyID; // ie. usd, eur, btc
 	private double usdExchangeRate;
 	private String dtUpdated;
 	private boolean crypto;
 
 	public Currency(String currencyID, double usdExchangeRate, String dtUpdated, boolean crypto) {
-		this.currencyID = currencyID; // ie. usd, eur, btc
+		this.currencyID = currencyID;
 		this.usdExchangeRate = usdExchangeRate;
 		this.dtUpdated = dtUpdated;
 		this.crypto = crypto;

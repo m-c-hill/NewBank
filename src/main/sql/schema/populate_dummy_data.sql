@@ -84,18 +84,18 @@ VALUES
 
 INSERT INTO newbank.balance(account_id, currency_id, amount, primary_balance)
 VALUES
-       ('08040302', 1, 5100, TRUE),
-       ('08040302', 2, 420, FALSE),
-       ('07776191', 1, 2500, TRUE),
-       ('39867532', 1, 600,TRUE),
-       ('39867532', 4, 2, FALSE);
+       ('08040302', 'gbp', 5100, TRUE),
+       ('08040302', 'eur', 420, FALSE),
+       ('07776191', 'usd', 2500, TRUE),
+       ('39867532', 'usd', 600,TRUE),
+       ('39867532', 'btc', 2, FALSE);
 
 INSERT INTO newbank.bank(name, address_id, sort_code)
 VALUES
        ('NewBank', 1, '010101'),
        ('Monzo', 2, '040004');
 
-INSERT INTO newbank.currency(name, usd_exchange_rate, dt_updated, crypto, description)
+INSERT INTO newbank.currency(currency_id, usd_exchange_rate, dt_updated, crypto, description)
 VALUES
        ('gbp', 1.38, '2021-07-17', FALSE, 'Pound sterling'),
        ('usd', 1, '2021-07-17', FALSE, 'United States dollar'),
@@ -110,7 +110,7 @@ VALUES
 
 INSERT INTO newbank.loans(customer_id, account_id, amount, currency_id, approval_status, transfer_status)
 VALUES
-       (1, '08040302', 10000, 1,'pending', 'pending');
+       (1, '08040302', 10000, 'gbp', 'pending', 'pending');
 
 INSERT INTO newbank.transaction_type(name)
 VALUES
@@ -121,7 +121,7 @@ VALUES
 
 INSERT INTO newbank.transfer(date, sender_account_id, recipient_account_id, amount, currency_id)
 VALUES
-       ('2021-07-15', '08040302', '07776191', 200, 1);
+       ('2021-07-15', '08040302', '07776191', 200, 'gbp');
 
 INSERT INTO newbank.user(prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number)
 VALUES

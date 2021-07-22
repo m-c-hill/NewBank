@@ -93,8 +93,7 @@ CREATE TABLE IF NOT EXISTS bank (
 -- Create currency table
 -- Description: currency information,
 CREATE TABLE IF NOT EXISTS currency (
-    currency_id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(255),
+    currency_id varchar(255) PRIMARY KEY,
     usd_exchange_rate double,
     dt_updated datetime,
     crypto boolean,
@@ -121,7 +120,7 @@ CREATE TABLE IF NOT EXISTS address (
 CREATE TABLE IF NOT EXISTS balance (
     balance_id int PRIMARY KEY AUTO_INCREMENT,
     account_id varchar(8) REFERENCES account(account_number),
-    currency_id int REFERENCES currency(currency_id),
+    currency_id varchar(255) REFERENCES currency(currency_id),
     amount double,
     primary_balance boolean
 );
@@ -143,7 +142,7 @@ CREATE TABLE IF NOT EXISTS transaction (
     date timestamp,
     payee varchar(255),
     amount double,
-    currency_id int REFERENCES currency(currency_id)
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create transfer table
@@ -154,7 +153,7 @@ CREATE TABLE IF NOT EXISTS transfer (
     sender_account_id varchar(8) REFERENCES account(account_number),
     recipient_account_id varchar(8) REFERENCES account(account_number),
     amount double,
-    currency_id int REFERENCES currency(currency_id)
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create loans table
@@ -164,7 +163,7 @@ CREATE TABLE IF NOT EXISTS loans (
     customer_id int REFERENCES customer(customer_id),
     account_id int REFERENCES account(account_number),
     amount double,
-    currency_id int REFERENCES currency(currency_id),
+    currency_id varchar(255) REFERENCES currency(currency_id),
     approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
     transfer_status ENUM('pending', 'received') DEFAULT 'pending'
 );
