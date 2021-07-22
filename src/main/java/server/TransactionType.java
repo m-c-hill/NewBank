@@ -1,9 +1,9 @@
 package server;
 
 public class TransactionType {
-	int transactionTypeID;
-	String name;
-	String description;
+	private int transactionTypeID;
+	private String name;
+	private String description;
 
 	// TODO: create transaction type class (ie. payment, withdrawal, deposit)
 }
