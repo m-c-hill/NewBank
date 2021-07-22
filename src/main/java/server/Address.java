@@ -10,15 +10,14 @@ public class Address {
 	private String postcode;
 	private String country;
 
-	public Address(int addressID,
-				   String addressNumber,
+	public Address(String addressNumber,
 				   String addressLine1,
 				   String addressLine2,
 				   String city,
 				   String region,
 				   String postcode,
 				   String country) {
-		this.addressID = addressID;
+		this.addressID = 1; // TODO: find a way to generate next primary key
 		this.addressNumber = addressNumber;
 		this.addressLine1 = addressLine1;
 		this.addressLine2 = addressLine2;

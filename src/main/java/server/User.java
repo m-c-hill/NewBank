@@ -14,12 +14,12 @@ public abstract class User {
     private Password password;
 
     // Constructor overload
-    public User(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
+    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
                 String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){
-        this.userID = userID;
+        this.userID = userID; //TODO: find a way to autoincrement the userID and generate a new ID based on latest primary key in database
         this.prefix = prefix;
-        this.firstName = fName;
-        this.lastName = lName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.nationalInsuranceNumber = nationalInsuranceNumber;
         this.dateOfBirth = dateOfBirth;
         this.emailAddress = emailAddress;

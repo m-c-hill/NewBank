@@ -1,5 +1,7 @@
 package server;
 
+import com.amazonaws.services.iotevents.model.Input;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,84 +19,110 @@ public class Registration {
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
 
-	private String prefix(){
-		out.println("Please enter your prefix:");
+	private String takePrefix(){
+		out.println("Please enter your prefix: ");
 		String prefix = InputProcessor.takeValidInput("letters", in, out);
 		return prefix;
 	}
 
 	private String takeFirstName(){
-		out.println("Please enter your first name:");
+		out.println("Please enter your first name: ");
 		String firstName = InputProcessor.takeValidInput("letters", in, out);
 		return firstName;
 	}
 
 	private String takeLastName(){
-		out.println("Please enter your last name:");
+		out.println("Please enter your last name: ");
 		String lastName = InputProcessor.takeValidInput("letters", in, out);
 		return lastName;
 	}
 
-	private String
-
 	private String takeNationalInsuranceNumber(){
-		out.println("Please enter your National Insurance Number:");
+		out.println("Please enter your National Insurance Number: ");
 		String nationalInsuranceNumber = InputProcessor.takeValidInput("numbers", in, out);
 		return nationalInsuranceNumber;
 	}
 
-	private String takePob(){
-		out.println("Please enter your place of birth:");
-		String pob = InputProcessor.takeValidInput("letters", in, out);
-		return pob;
+	private String takeDateOfBirth(){
+		out.println("Please enter your date of birth (DD/MM/YYYY): ");
+		String dateOfBirth = InputProcessor.takeValidInput("date", in, out);
+		return dateOfBirth;
 	}
 
-	private String takeDob(){
-		out.println("Please enter your date of birth (DD/MM/YYYY):");
-		String dob = InputProcessor.takeValidInput("date", in, out);
-		return dob;
+	private Address takeAddress(){
+
+		//TODO: tidy this up
+		String number = "";
+		String postcode = "";
+
+		out.println("Please enter your address number: ");
+		try {
+			number = in.readLine(); // TODO: both letters and numbers acceptable, update InputProcessor?
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+
+		out.println("Please enter your first address line: ");
+		String firstLine = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your second address line: ");
+		String secondLine = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your city: ");
+		String city = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your county/state: ");
+		String region = InputProcessor.takeValidInput("letters", in, out);
+
+		out.println("Please enter your postcode: ");
+		try {
+			postcode = in.readLine(); // TODO: input processor for postcodes / zip codes?
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+
+		out.println("Please enter your country: ");
+		String country = InputProcessor.takeValidInput("letters", in, out);
+
+		return new Address(number, firstLine, secondLine, city, region, postcode, country);
 	}
 
 	private String takeEmail(){
-		out.println("Please enter your email address:");
+		out.println("Please enter your email address: ");
 		String email = InputProcessor.takeValidInput("email", in, out);
 		return email;
 	}
 
 	private String takePhoneNum(){
-		out.println("Please enter your phone number (must start with a 0 followed by 10 digits):");
+		out.println("Please enter your phone number (must start with a 0 followed by 10 digits): ");
 		String phoneNum = InputProcessor.takeValidInput("phonenumber", in, out);
 		return phoneNum;
 	}
 
-	private Address takeAddress(){
-		out.println("Please enter your address number: ");
+	private String takeUserID(){
+		out.println("Please enter a user ID (to login): ");
+		String userID = //TODO: validate user id
+	}
+
+	private String takePassword(){
+		out.println("Please enter a valid user password:" );
 		String
-
-		out.println("Please enter your first address line:");
-		String firstAddress = InputProcessor.takeValidInput("letters", in, out);
-
-		out.println("Please enter your second address line:");
-		String secondAddress = InputProcessor.takeValidInput("letters", in, out);
-
-		return String.format(firstAddress + "\n" + secondAddress);
 	}
 
-	// Creating a new Customer object
-	private Customer createCustomer(){
-		String fName = takeFirstName();
-		String lName = takeLastName();
-		String ssn = takeSsn();
-		String dob = takeDob();
-		String pob = takePob();
+	public Customer registerCustomer(){
+
+		String prefix = takePrefix();
+		String firstName = takeFirstName();
+		String lastName = takeLastName();
+		String nationalInsuranceNumber = takeNationalInsuranceNumber();
+		String dateOfBirth = takeDateOfBirth();
+		Address address = takeAddress();
 		String email = takeEmail();
-		String phoneNum = takePhoneNum();
-		String address = takeAddress();
+		String phoneNumber = takePhoneNum();
 
-		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, phoneNum, address);
 
-		return nc;
+		return new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+				takeDateOfBirth(), takeAddress(), takeEmail(), takePhoneNum(), takeUserID(), takePassword());
 	}
-
 
 }
