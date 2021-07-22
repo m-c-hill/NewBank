@@ -1,6 +1,5 @@
 package server;
 
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -17,11 +16,11 @@ public class Admin extends User {
     // Showing the loans list
     public void showLoansList(ArrayList<BankLoan> loansList, PrintWriter out) {
         if (this.adminRoles.isAllowedToViewLoanList()) {
-            String tableFormat = "|%-15s|%-10s|%-6s|%-6s|%-9s|%-9s|%n";
-            out.format("+---------------+----------+------+------+---------+---------+%n");
-            out.format("| Customer Name |  Reason  |Amount| ATPB |Accepted?|PaidBack?|%n");
-            out.format("+---------------+----------+------+------+---------+---------+%n");
-            // out.println("Customer Name\tLoan Reason\tAmount\tAmount to Pay Back\tAccepted?\tPaid Back?");
+            String tableFormat = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%n";
+            out.format("+---------------+-----------------------------------+------+------+---------+---------+%n");
+            out.format("| Customer Name |              Reason               |Amount| ATPB |Accepted?|PaidBack?|%n");
+            out.format("+---------------+-----------------------------------+------+------+---------+---------+%n");
+            
             for (BankLoan bankLoan : loansList) {
                 out.format(tableFormat, 
                 bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(), 
@@ -31,7 +30,7 @@ public class Admin extends User {
                 Boolean.toString(bankLoan.isAccepted()),
                 Boolean.toString(bankLoan.isPaidBack()));
             }
-            out.format("+---------------+----------+------+------+---------+---------+%n");
+            out.format("+---------------+-----------------------------------+------+------+---------+---------+%n");
         } else {
             out.println("You're not authorized to access the loans list.");
         }
