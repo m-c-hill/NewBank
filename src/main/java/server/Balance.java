@@ -7,8 +7,8 @@ public class Balance {
 	double amount;
 	boolean primaryBalance;
 
-	public Balance(int balanceID, String accountNumber, Currency currency, double amount, boolean primaryBalance) {
-		this.balanceID = balanceID;
+	public Balance(String accountNumber, Currency currency, double amount, boolean primaryBalance) {
+		this.balanceID = 1; // TODO: find a way to autoincrement the balanceID based on the database
 		this.accountNumber = accountNumber;
 		this.currency = currency;
 		this.amount = amount;

@@ -15,6 +15,14 @@ public class Currency {
 		storeCurrency();
 	}
 
+	public Currency(){
+		// To be used as default currency until database is connected
+		this.currencyID = "gbp";
+		this.usdExchangeRate = 1.38;
+		this.dtUpdated = "2021-07-22";
+		this.crypto = false;
+	}
+
 	public double convertCurrency(int currencyID, double amount){
 		// Method to convert into another currency (check if exchange rate is up to date using below methods)
 		return 0.00;
