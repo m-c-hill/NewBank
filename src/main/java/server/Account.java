@@ -1,7 +1,11 @@
 package server;
 
 public class Account {
-	
+
+	private String accountNumber;
+
+	private Bank bank;
+
 	private String accountName;
 	private double openingBalance;
 
