@@ -177,7 +177,6 @@ public class NewBank {
 						 +  depositPrntAmount + " to " + accountNumber
 						 + "\nUpdated balance: " 
 						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
-				
 					}
 			}
 		}
