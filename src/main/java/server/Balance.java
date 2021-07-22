@@ -1,11 +1,11 @@
 package server;
 
 public class Balance {
-	int balanceID;
-	String accountNumber;
-	Currency currency;
-	double amount;
-	boolean primaryBalance;
+	private int balanceID;
+	private String accountNumber;
+	private Currency currency;
+	private double amount;
+	private boolean primaryBalance;
 
 	public Balance(String accountNumber, Currency currency, double amount, boolean primaryBalance) {
 		this.balanceID = 1; // TODO: find a way to autoincrement the balanceID based on the database
