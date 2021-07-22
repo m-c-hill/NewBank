@@ -1,20 +1,49 @@
 -- Run to reset all database dummy data
 
 DELETE FROM newbank.account;
+ALTER TABLE newbank.account AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.account_type;
+ALTER TABLE newbank.account_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.address;
+ALTER TABLE newbank.address AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin;
+ALTER TABLE newbank.admin AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin_role;
+ALTER TABLE newbank.admin_role AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin_role_type;
+ALTER TABLE newbank.admin_role_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.balance;
+ALTER TABLE newbank.balance AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.bank;
+ALTER TABLE newbank.bank AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.currency;
+ALTER TABLE newbank.currency AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.loans;
+ALTER TABLE newbank.loans AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.password;
+ALTER TABLE newbank.password AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transaction;
+ALTER TABLE newbank.transaction AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transaction_type;
+ALTER TABLE newbank.transaction_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transfer;
+ALTER TABLE newbank.transfer AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.user;
+ALTER TABLE newbank.user AUTO_INCREMENT = 1;
 
 INSERT INTO newbank.account(account_number, bank_id, account_type_id)
 VALUES
@@ -38,13 +67,14 @@ VALUES
 INSERT INTO newbank.admin(user_id)
 VALUES
        (3),
+       (5),
        (6);
 
 INSERT INTO newbank.admin_role(admin_id, admin_role_type_id, expiration_date)
 VALUES
-       (3, 1, '2022-01-01'),
-       (6, 2, '2021-12-01'),
-       (7, 3, '2022-05-01');
+       (1, 1, '2022-01-01'),
+       (2, 2, '2021-12-01'),
+       (3, 3, '2022-05-01');
 
 INSERT INTO newbank.admin_role_type(name, description, can_view_user_info, can_view_user_statement, can_open_account, can_close_account, can_grant_loan)
 VALUES

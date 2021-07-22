@@ -1,8 +1,8 @@
+-- Warning: only run this for a hard reset of the production database.
 DROP SCHEMA IF EXISTS newbank;
 CREATE SCHEMA IF NOT EXISTS newbank;
 
 USE newbank;
-SHOW tables;
 
 -- Create users table
 -- Description: user information, to be inherited by customer or admin
