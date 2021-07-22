@@ -25,6 +25,7 @@ public class InputProcessor{
         "phonenumber", "^0[\\d]{10}$" //must start with a 0 and be followed by 10 numbers (basic version) OR 1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4} for international formats (advanced)
         );
 
+    
     // Method to take and validate input
     public static String takeValidInput(String key, BufferedReader in, PrintWriter out) {
         String info = null;
@@ -149,7 +150,17 @@ public class InputProcessor{
         return requestedAmount;
     }
     
-    
+    public static String takeValidRegularInput(BufferedReader in, PrintWriter out) {
+        String info = null;
+        try {
+            info = in.readLine();
+
+        } catch (IOException e) {
+            out.println("Input error");
+        }
+
+        return info;
+    }
   
 
     // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
