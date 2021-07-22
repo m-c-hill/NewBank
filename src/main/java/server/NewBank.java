@@ -17,6 +17,8 @@ public class NewBank {
 	private NewBank() {
 		customers = new HashMap<>();
 		addCustomerTestData();
+		
+		admins = new HashMap<>();
 		addAdminTestData();
 	}
 
@@ -99,8 +101,10 @@ public class NewBank {
 		if (customerAccounts.isEmpty()) {
 			return "There is no account found under this customer.";
 		} else {
-			out.println("Enter the name of the account you'd like to add the loan to" + "(Choose from the list below):"
-					+ "\nPlease enter Exit to go back to the main menu" + showMyAccounts(customer));
+			out.println("Enter the name of the account you wish to add the loan to" 
+			+ " (Choose from the list below):"
+			+ "\nPlease enter Exit to go back to the main menu." 
+			+ "\n" + showMyAccounts(customer));
 			String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
 
 			if (accountName.equalsIgnoreCase("EXIT")) {
