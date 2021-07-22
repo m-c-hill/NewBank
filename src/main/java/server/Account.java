@@ -25,7 +25,7 @@ public class Account {
 		return (this.accountNumber + ": " + primaryBalance.getBalance() + primaryBalance.getCurrency().toString());
 	}
 
-	private Balance getPrimaryBalance(){
+	public Balance getPrimaryBalance(){
 		// Method to find the primary balance for the account
 		// Primary balance is the default balance through which transactions occur
 		for (Balance b: this.balance){

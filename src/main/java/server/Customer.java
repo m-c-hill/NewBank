@@ -9,6 +9,7 @@ public class Customer extends User{
 	// This constructor is overloaded, for now
 	// Remove the basic constructor once we're done with the original test data
 	public Customer(){
+		super();
 		accounts = new ArrayList<>();
 	}
 

@@ -1,7 +1,5 @@
 package server;
 
-import com.amazonaws.services.iotevents.model.Input;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,9 +12,9 @@ public class Registration {
 	private BufferedReader in;
 	private PrintWriter out;
 
-	public Registration(Socket s) throws IOException {
-		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		out = new PrintWriter(s.getOutputStream(), true);
+	public Registration(Socket socket) throws IOException {
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		out = new PrintWriter(socket.getOutputStream(), true);
 	}
 
 	private String takePrefix(){
@@ -99,30 +97,22 @@ public class Registration {
 		return phoneNum;
 	}
 
-	private String takeUserID(){
-		out.println("Please enter a user ID (to login): ");
-		String userID = //TODO: validate user id
-	}
-
-	private String takePassword(){
-		out.println("Please enter a valid user password:" );
-		String
+	private Password setUserCredentials(){
+		try {
+			out.println("Please enter a new login ID: ");
+			String loginID = in.readLine();  //TODO: validate user login in input processor
+			out.println("Please enter a password: ");
+			String password = in.readLine();  //TODO: validate user password in input processor
+			return new Password(loginID, password); // Encrypt password and store in database
+		} catch (IOException e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public Customer registerCustomer(){
-
-		String prefix = takePrefix();
-		String firstName = takeFirstName();
-		String lastName = takeLastName();
-		String nationalInsuranceNumber = takeNationalInsuranceNumber();
-		String dateOfBirth = takeDateOfBirth();
-		Address address = takeAddress();
-		String email = takeEmail();
-		String phoneNumber = takePhoneNum();
-
-
-		return new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-				takeDateOfBirth(), takeAddress(), takeEmail(), takePhoneNum(), takeUserID(), takePassword());
+		return new Customer(1, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
 	}
 
 }

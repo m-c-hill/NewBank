@@ -94,10 +94,10 @@ public class NewBank {
 			out.println(showMyAccounts(customer));
 					
 			// The provided account must exist within the accounts ArrayList
-			String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
+			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
 			//If the user enters Exit go back to main menu message appears
-			if(accountName.equals("Exit")){
+			if(accountNumber.equals("Exit")){
 				return "Exit request is taken, going back to the main menu.";	
 			}
 			
@@ -108,10 +108,10 @@ public class NewBank {
 				int accountPrntIndex = 0;
 				
 				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing withdrawal amount
 						out.println("Enter the amount you want to withdraw:");	
-						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getPrimaryBalance().getBalance(), in, out);
 						// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
 						customerAccounts.get(i).withdrawAmount(amount);	
 						
@@ -126,12 +126,10 @@ public class NewBank {
 				return String.format("Process succeeded. You've withdrawn "
 				 + withdrawPrntAmount 
 				 + "\nRemining balance: " 
-				 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+				 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
 			}
 				
 		}
-			
-		
 	}
 	// Make Deposit Feature
 	public String depositAmount(CustomerID customer, BufferedReader in, PrintWriter out){
@@ -148,10 +146,10 @@ public class NewBank {
 				// Display Customer-related accounts as visual aid for providing a choice	
 				out.println(showMyAccounts(customer));
 					
-				String accountName = InputProcessor.takeValidInput(customerAccounts, in, out);
+				String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
 				//If the user enters Exit go back to main menu message appears
-				if(accountName.equals("Exit")){
+				if(accountNumber.equals("Exit")){
 					return "Exit request is taken, going back to the main menu.";	
 				}
 				
@@ -161,10 +159,10 @@ public class NewBank {
 					int accountPrntIndex = 0;
 						
 					for (int i = 0; i < customerAccounts.size(); i++) {
-						if (customerAccounts.get(i).getAccountName().equals(accountName)) {
+						if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 							// Processing deposit amount
 							out.println("Enter the amount you want to deposit:");	
-							double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getOpeningBalance(), in, out);
+							double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getPrimaryBalance().getBalance(), in, out);
 							// Calling the given account makeDeposit()
 							customerAccounts.get(i).makeDeposit(amount);	
 							// Values to be printed
@@ -176,9 +174,9 @@ public class NewBank {
 						}	
 	
 						return String.format("Process succeeded. You've made a deposit of "
-						 +  depositPrntAmount + " to " + accountName 
+						 +  depositPrntAmount + " to " + accountNumber
 						 + "\nUpdated balance: " 
-						 + customerAccounts.get(accountPrntIndex).getOpeningBalance());
+						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
 				
 					}
 			}
@@ -192,23 +190,22 @@ public class NewBank {
 		out.println("Please enter a name for the account you want to create:" 
 				+ "\nPlease enter Exit to go back to the main menu.");
 				
-		String accountName = InputProcessor.createValidAccountName(customerAccounts, in, out);
+		String accountNumber = InputProcessor.createValidAccountName(customerAccounts, in, out);
 		
 		//If the user enters Exit go back to main menu message appears
-		if(accountName.equals("Exit")){
+		if(accountNumber.equals("Exit")){
 			return "Exit request is taken, going back to the main menu.";
 		}
 		
 		else {
 			double openingBalance = 0;
 					
-			customers.get(customer.getKey()).addAccount(new Account(accountName, openingBalance));
+			customers.get(customer.getKey()).addAccount(new Account(accountNumber, openingBalance));
 					
 			return String.format("Process succeeded. You've opened the new account: "
-								+ "\n" + accountName + " : " 
+								+ "\n" + accountNumber + " : "
 								+ Double.toString(openingBalance));
 					
 			}
 		}
-
 	}

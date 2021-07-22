@@ -28,6 +28,9 @@ public abstract class User {
         this.password = password;
     }
 
+    public User() {
+    }
+
     // We're exposing the first name because we want to use it as a key in the customers<String, Customer> HashMap
     public String getFirstName() {
         return firstName;

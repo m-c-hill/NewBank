@@ -11,8 +11,10 @@ public class NewBankClientHandler extends Thread {
 	private NewBank bank;
 	private BufferedReader in;
 	private PrintWriter out;
+	private Socket socket;
 
 	public NewBankClientHandler(Socket s) throws IOException {
+		socket = s;
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		out = new PrintWriter(s.getOutputStream(), true);
@@ -80,7 +82,8 @@ public class NewBankClientHandler extends Thread {
 
 					// You can use this for account creation? (Register)
 					case "2":
-						registerCustomer(createCustomer());
+						Registration registration = new Registration(this.socket);
+						registration.registerCustomer();
 						out.println("User registered successfully.");
 						break;
 				}
