@@ -13,6 +13,8 @@ public class NewBank {
 	private HashMap<String, Admin> admins;
 	// loansList ArrayList
 	private ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
+	// Interest rate
+	private static final double interestRate = 2.78;
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -133,7 +135,7 @@ public class NewBank {
 						
 						out.println("Please provide a justification for requesting a loan:");
 						String j = InputProcessor.takeValidRegularInput(in, out);
-						BankLoan bl = new BankLoan(customers.get(customer.getKey()), j, amount);
+						BankLoan bl = new BankLoan(customers.get(customer.getKey()), j, amount, interestRate);
 
 						this.loansList.add(bl);
 
