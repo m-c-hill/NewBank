@@ -137,7 +137,7 @@ public class NewBankClientHandler extends Thread {
 									break;
 								}
 								System.out.println("Request from " + customer.getKey());
-								String responce = bank.processRequest(customer, request, in, out);
+								String responce = bank.processCustomerRequest(customer, request, in, out);
 								out.println(responce);
 							}
 						} else {
@@ -162,10 +162,16 @@ public class NewBankClientHandler extends Thread {
 										+ "\n1. Check loans list"
 										+ "\n2. Accept/Decline a loan request"
 										+ "\n3. Go back to the main menu");
+								
 								String request = in.readLine();
 								if (request.equals("3")) {
 									break;
 								}
+
+								System.out.println("Request from " + admin);
+
+								String responce = bank.processAdminRequest(admin, request, in, out);
+								out.println(responce);
 							}
 						}
 						else{
