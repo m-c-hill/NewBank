@@ -20,6 +20,10 @@ public class Currency {
 		return 0.00;
 	}
 
+	public String toString(){
+		return this.currencyID;
+	}
+
 	private void getExchangeRate(String currencyID){
 		// Method to get the current exchange rate from the database
 	}
