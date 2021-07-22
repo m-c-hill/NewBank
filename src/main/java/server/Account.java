@@ -25,7 +25,7 @@ public class Account {
 	public void withdrawAmount(double amount){
 		this.openingBalance = this.openingBalance - amount;
 	}
-	//added make deposit
+
 	public void makeDeposit(double amount) {
 		double newBalance = this.openingBalance + amount;
 		this.openingBalance = newBalance; 

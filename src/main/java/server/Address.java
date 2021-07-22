@@ -26,6 +26,8 @@ public class Address {
 		this.region = region;
 		this.postcode = postcode;
 		this.country = country;
+
+		storeAddress();
 	}
 
 	public void displayAddress(){
@@ -36,5 +38,9 @@ public class Address {
 		else{
 			System.out.println("Address: " + addressNumber + " " + addressLine1 + "\n");
 		}
+	}
+
+	private void storeAddress(){
+		// Method to store newly created address in database
 	}
 }

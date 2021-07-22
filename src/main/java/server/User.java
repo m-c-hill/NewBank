@@ -38,6 +38,9 @@ public abstract class User {
     public String getFirstName() {
         return firstName;
     }
-    
+
+    private void storeUserDetails(){
+        // Method to store user details in the database
+    }
     
 }
