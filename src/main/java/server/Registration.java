@@ -38,6 +38,7 @@ public class Registration {
 	private String takeNationalInsuranceNumber(){
 		out.println("Please enter your National Insurance Number: ");
 		String nationalInsuranceNumber = InputProcessor.takeValidInput("numbers", in, out);
+		// TODO: update InputProcessor to include both letters AND numbers
 		return nationalInsuranceNumber;
 	}
 

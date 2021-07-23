@@ -38,12 +38,12 @@ public class Account {
 
 	public void withdrawAmount(double amount){
 		double currentBalance = getPrimaryBalance().getBalance();
-		updateBalance(currentBalance - amount);
+		updatePrimaryBalance(currentBalance - amount);
 	}
 
 	public void makeDeposit(double amount) {
 		double currentBalance = getPrimaryBalance().getBalance();
-		updateBalance(currentBalance - amount);
+		updatePrimaryBalance(currentBalance + amount);
 	}
 
 	public void executeTransaction(){
@@ -54,7 +54,7 @@ public class Account {
 		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 
-	private void updateBalance(double newBalance){
+	private void updatePrimaryBalance(double newBalance){
 		// Method to update the primary balance for an account
 		Balance primaryBalance = getPrimaryBalance();
 		primaryBalance.updateBalance(newBalance);
