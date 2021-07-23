@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS customer (
     customer_id int PRIMARY KEY AUTO_INCREMENT,
     user_id int REFERENCES user(user_id),
-    account_id varchar(8) REFERENCES account(account_number)
+    account_number varchar(8) REFERENCES account(account_number)
 );
 
 -- Create password table

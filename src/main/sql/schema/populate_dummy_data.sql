@@ -82,7 +82,7 @@ VALUES
        ('bank_manager', 'User can open/close accounts and view account info',TRUE, TRUE,TRUE,TRUE, FALSE),
        ('loan_manager', 'User can approve/reject loan requests', TRUE, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO newbank.balance(account_id, currency_id, amount, primary_balance)
+INSERT INTO newbank.balance(account_number, currency_id, amount, primary_balance)
 VALUES
        ('08040302', 'gbp', 5100, TRUE),
        ('08040302', 'eur', 420, FALSE),
@@ -102,13 +102,13 @@ VALUES
        ('euro', 1.18, '2021-07-17', FALSE, 'Euro'),
        ('btc', 31642.80, '2021-07-17', TRUE, 'Bitcoin');
 
-INSERT INTO newbank.customer(user_id, account_id)
+INSERT INTO newbank.customer(user_id, account_number)
 VALUES
        (1, 1),
        (2, 2),
        (4, 3);
 
-INSERT INTO newbank.loans(customer_id, account_id, amount, currency_id, approval_status, transfer_status)
+INSERT INTO newbank.loans(customer_id, account_number, amount, currency_id, approval_status, transfer_status)
 VALUES
        (1, '08040302', 10000, 'gbp', 'pending', 'pending');
 
@@ -119,7 +119,7 @@ VALUES
        ('transfer'),
        ('payment');
 
-INSERT INTO newbank.transfer(date, sender_account_id, recipient_account_id, amount, currency_id)
+INSERT INTO newbank.transfer(date, sender_account_number, recipient_account_number, amount, currency_id)
 VALUES
        ('2021-07-15', '08040302', '07776191', 200, 'gbp');
 
