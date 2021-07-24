@@ -1,8 +1,8 @@
+-- Warning: only run this for a hard reset of the production database.
 DROP SCHEMA IF EXISTS newbank;
 CREATE SCHEMA IF NOT EXISTS newbank;
 
 USE newbank;
-SHOW tables;
 
 -- Create users table
 -- Description: user information, to be inherited by customer or admin
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS customer (
     customer_id int PRIMARY KEY AUTO_INCREMENT,
     user_id int REFERENCES user(user_id),
-    account_id varchar(8) REFERENCES account(account_number)
+    account_number varchar(8) REFERENCES account(account_number)
 );
 
 -- Create password table
@@ -93,8 +93,7 @@ CREATE TABLE IF NOT EXISTS bank (
 -- Create currency table
 -- Description: currency information,
 CREATE TABLE IF NOT EXISTS currency (
-    currency_id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(255),
+    currency_id varchar(255) PRIMARY KEY,
     usd_exchange_rate double,
     dt_updated datetime,
     crypto boolean,
@@ -120,8 +119,8 @@ CREATE TABLE IF NOT EXISTS address (
 -- by the primary_balance boolean), unless otherwise specified.
 CREATE TABLE IF NOT EXISTS balance (
     balance_id int PRIMARY KEY AUTO_INCREMENT,
-    account_id varchar(8) REFERENCES account(account_number),
-    currency_id int REFERENCES currency(currency_id),
+    account_number varchar(8) REFERENCES account(account_number),
+    currency_id varchar(255) REFERENCES currency(currency_id),
     amount double,
     primary_balance boolean
 );
@@ -138,12 +137,12 @@ CREATE TABLE IF NOT EXISTS transaction_type (
 -- Description: complete log of all transactions across all accounts
 CREATE TABLE IF NOT EXISTS transaction (
     transaction_id int PRIMARY KEY AUTO_INCREMENT,
-    account_id varchar(8) REFERENCES account(account_number),
+    account_number varchar(8) REFERENCES account(account_number),
     transaction_type_id int REFERENCES transaction_type(transaction_type_id),
     date timestamp,
     payee varchar(255),
     amount double,
-    currency_id int REFERENCES currency(currency_id)
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create transfer table
@@ -151,10 +150,10 @@ CREATE TABLE IF NOT EXISTS transaction (
 CREATE TABLE IF NOT EXISTS transfer (
     transfer_id int PRIMARY KEY AUTO_INCREMENT,
     date timestamp,
-    sender_account_id varchar(8) REFERENCES account(account_number),
-    recipient_account_id varchar(8) REFERENCES account(account_number),
+    sender_account_number varchar(8) REFERENCES account(account_number),
+    recipient_account_number varchar(8) REFERENCES account(account_number),
     amount double,
-    currency_id int REFERENCES currency(currency_id)
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create loans table
@@ -162,9 +161,9 @@ CREATE TABLE IF NOT EXISTS transfer (
 CREATE TABLE IF NOT EXISTS loans (
     loan_id int PRIMARY KEY AUTO_INCREMENT,
     customer_id int REFERENCES customer(customer_id),
-    account_id int REFERENCES account(account_number),
+    account_number int REFERENCES account(account_number),
     amount double,
-    currency_id int REFERENCES currency(currency_id),
+    currency_id varchar(255) REFERENCES currency(currency_id),
     approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
     transfer_status ENUM('pending', 'received') DEFAULT 'pending'
 );

@@ -1,20 +1,49 @@
 -- Run to reset all database dummy data
 
 DELETE FROM newbank.account;
+ALTER TABLE newbank.account AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.account_type;
+ALTER TABLE newbank.account_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.address;
+ALTER TABLE newbank.address AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin;
+ALTER TABLE newbank.admin AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin_role;
+ALTER TABLE newbank.admin_role AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.admin_role_type;
+ALTER TABLE newbank.admin_role_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.balance;
+ALTER TABLE newbank.balance AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.bank;
+ALTER TABLE newbank.bank AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.currency;
+ALTER TABLE newbank.currency AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.loans;
+ALTER TABLE newbank.loans AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.password;
+ALTER TABLE newbank.password AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transaction;
+ALTER TABLE newbank.transaction AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transaction_type;
+ALTER TABLE newbank.transaction_type AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.transfer;
+ALTER TABLE newbank.transfer AUTO_INCREMENT = 1;
+
 DELETE FROM newbank.user;
+ALTER TABLE newbank.user AUTO_INCREMENT = 1;
 
 INSERT INTO newbank.account(account_number, bank_id, account_type_id)
 VALUES
@@ -38,13 +67,14 @@ VALUES
 INSERT INTO newbank.admin(user_id)
 VALUES
        (3),
+       (5),
        (6);
 
 INSERT INTO newbank.admin_role(admin_id, admin_role_type_id, expiration_date)
 VALUES
-       (3, 1, '2022-01-01'),
-       (6, 2, '2021-12-01'),
-       (7, 3, '2022-05-01');
+       (1, 1, '2022-01-01'),
+       (2, 2, '2021-12-01'),
+       (3, 3, '2022-05-01');
 
 INSERT INTO newbank.admin_role_type(name, description, can_view_user_info, can_view_user_statement, can_open_account, can_close_account, can_grant_loan)
 VALUES
@@ -52,35 +82,35 @@ VALUES
        ('bank_manager', 'User can open/close accounts and view account info',TRUE, TRUE,TRUE,TRUE, FALSE),
        ('loan_manager', 'User can approve/reject loan requests', TRUE, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO newbank.balance(account_id, currency_id, amount, primary_balance)
+INSERT INTO newbank.balance(account_number, currency_id, amount, primary_balance)
 VALUES
-       ('08040302', 1, 5100, TRUE),
-       ('08040302', 2, 420, FALSE),
-       ('07776191', 1, 2500, TRUE),
-       ('39867532', 1, 600,TRUE),
-       ('39867532', 4, 2, FALSE);
+       ('08040302', 'gbp', 5100, TRUE),
+       ('08040302', 'eur', 420, FALSE),
+       ('07776191', 'usd', 2500, TRUE),
+       ('39867532', 'usd', 600,TRUE),
+       ('39867532', 'btc', 2, FALSE);
 
 INSERT INTO newbank.bank(name, address_id, sort_code)
 VALUES
        ('NewBank', 1, '010101'),
        ('Monzo', 2, '040004');
 
-INSERT INTO newbank.currency(name, usd_exchange_rate, dt_updated, crypto, description)
+INSERT INTO newbank.currency(currency_id, usd_exchange_rate, dt_updated, crypto, description)
 VALUES
        ('gbp', 1.38, '2021-07-17', FALSE, 'Pound sterling'),
        ('usd', 1, '2021-07-17', FALSE, 'United States dollar'),
        ('euro', 1.18, '2021-07-17', FALSE, 'Euro'),
        ('btc', 31642.80, '2021-07-17', TRUE, 'Bitcoin');
 
-INSERT INTO newbank.customer(user_id, account_id)
+INSERT INTO newbank.customer(user_id, account_number)
 VALUES
        (1, 1),
        (2, 2),
        (4, 3);
 
-INSERT INTO newbank.loans(customer_id, account_id, amount, currency_id, approval_status, transfer_status)
+INSERT INTO newbank.loans(customer_id, account_number, amount, currency_id, approval_status, transfer_status)
 VALUES
-       (1, '08040302', 10000, 1,'pending', 'pending');
+       (1, '08040302', 10000, 'gbp', 'pending', 'pending');
 
 INSERT INTO newbank.transaction_type(name)
 VALUES
@@ -89,9 +119,9 @@ VALUES
        ('transfer'),
        ('payment');
 
-INSERT INTO newbank.transfer(date, sender_account_id, recipient_account_id, amount, currency_id)
+INSERT INTO newbank.transfer(date, sender_account_number, recipient_account_number, amount, currency_id)
 VALUES
-       ('2021-07-15', '08040302', '07776191', 200, 1);
+       ('2021-07-15', '08040302', '07776191', 200, 'gbp');
 
 INSERT INTO newbank.user(prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number)
 VALUES
