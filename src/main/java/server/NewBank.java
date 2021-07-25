@@ -183,8 +183,6 @@ public class NewBank {
 
 	// Creating New Account Feature
 	public String createAccount(CustomerID customer, BufferedReader in, PrintWriter out){
-
-		// Check database for existing customer accounts
 		
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 				

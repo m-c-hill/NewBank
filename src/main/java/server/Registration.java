@@ -113,7 +113,6 @@ public class Registration {
 
 	public boolean registerCustomer(){
 
-
 		Customer newCustomer = new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
 				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
 
@@ -123,11 +122,8 @@ public class Registration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return true;
 	}
-
-
 
 }
 

@@ -1,7 +1,5 @@
 package server;
 
-import java.util.Date;
-
 public abstract class User {
 
     private String prefix;
@@ -101,10 +99,6 @@ public abstract class User {
 
     public void setPassword(Password password) {
         this.password = password;
-    }
-
-    private void storeUserDetails(){
-        // Method to store user details in the database
     }
     
 }
