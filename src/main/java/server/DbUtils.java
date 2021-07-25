@@ -31,6 +31,10 @@ public class DbUtils {
         int userId = 0;
         int customerId = 0;
 
+        // Adding a new user will require the address details to be stored in a separate table and referenced in
+        // the user table with an addressId
+        int addressId = storeUserAddress(customer);
+
         try {
             String createUserScript = "INSERT INTO user (prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number, login_id)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -38,7 +42,7 @@ public class DbUtils {
             preparedStatement.setString(1,customer.getPrefix());
             preparedStatement.setString(2, customer.getFirstName());
             preparedStatement.setString(3, customer.getLastName());
-            preparedStatement.setInt(4, 123);
+            preparedStatement.setInt(4, addressId);
             preparedStatement.setString(5, customer.getDateOfBirth());
             preparedStatement.setString(6, customer.getEmailAddress());
             preparedStatement.setString(7, customer.getPhoneNumber());
@@ -75,5 +79,38 @@ public class DbUtils {
         }
 
         out.println("New user created \nUser Id: " + userId + "\nCustomer Id: " + customerId);
+    }
+
+    /**
+     * Method to store the user address contained within the customer object.
+     * @param customer the customer object containing the address.
+     * @return the addressId to be referenced in the user table row.
+     */
+    private int storeUserAddress(Customer customer) {
+        int addressId = 0;
+
+        try {
+            Address userAddress = customer.getAddress();
+            String createUserAddress = "INSERT INTO address (address_num, address_line_1, address_line_2, city, region, postcode, country)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+            PreparedStatement preparedStatement = con.prepareStatement(createUserAddress, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, userAddress.getAddressNumber());
+            preparedStatement.setString(2, userAddress.getAddressLine1());
+            preparedStatement.setString(3, userAddress.getAddressLine2());
+            preparedStatement.setString(4, userAddress.getCity());
+            preparedStatement.setString(5, userAddress.getRegion());
+            preparedStatement.setString(6, userAddress.getPostcode());
+            preparedStatement.setString(7, userAddress.getCountry());
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()) {
+                addressId = rs.getInt(1);
+            }
+        } catch (SQLException exception) {
+            out.println(exception.toString());
+        }
+
+        return addressId;
     }
 }
