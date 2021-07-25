@@ -81,6 +81,31 @@ public class InputProcessor{
         return account;
     }
 
+    // Method to take the account name with sufficient funds to pay back the loan
+    public static String takeValidInput(ArrayList<Account> accountsList, double amountToPayBack, BufferedReader in, PrintWriter out){
+        String accountName = null;
+        try {
+            while(true){
+                accountName = in.readLine();
+                if (accountExists(accountName, accountsList)) {
+                    if (hasSufficientFunds(accountName, accountsList, amountToPayBack)) {
+                        break;
+                    }
+                    else{
+                        out.println("Insufficient funds. Choose a different account or make a new deposit:");
+                        continue;
+                    }
+                }
+                else{
+                    out.println("Account name does not exist. Try again:");
+                }
+            }
+        } catch (Exception e) {
+            out.println("Input error.");
+        }
+        return accountName;
+    }
+
     // Method to take and validate the requested amount to withdraw
     public static double takeValidDoubleInput(double balance, BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
@@ -209,6 +234,18 @@ public class InputProcessor{
         for (int i = 0; i < accountsList.size(); i++) {
             if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper method that iterates through the Customer accounts ArrayList, find the selected account and checks if the funds are sufficient
+    private static boolean hasSufficientFunds(String account, ArrayList<Account> accountsList, double payBackAmount){
+        for (int i = 0; i < accountsList.size(); i++) {
+            if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
+                if (accountsList.get(i).getPrimaryBalance().getBalance() >= payBackAmount) {
+                    return true;
+                }
             }
         }
         return false;
