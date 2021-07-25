@@ -12,7 +12,7 @@ public class NewBank {
 	// Admins HashMap
 	private HashMap<String, Admin> admins;
 	// loansList ArrayList
-	private ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
+	private ArrayList<BankLoan> loansList;
 	// Interest rate
 	private static final double interestRate = 2.78;
 
@@ -22,6 +22,8 @@ public class NewBank {
 		
 		admins = new HashMap<>();
 		addAdminTestData();
+
+		loansList = new ArrayList<>();
 	}
 
 	// Exposing the functionality of adding a new customer to the HashMap
@@ -146,9 +148,12 @@ public class NewBank {
 				// "RLOAN" command
 				case "5":
 					return requestLoan(customer, in, out);
-				// "SHOWMYLOANSTATUS"
+				// "SHOWMYLOANSTATUS" command
 				case "6":
 					return showMyLoanStatus(customer, in, out);
+				// "PAYBACKLOAN" command
+				case "7":
+					return payBackLoan(customer, in, out);
 				default:
 					return "FAIL";
 			}
@@ -178,7 +183,7 @@ public class NewBank {
 			return String.format("There is no account found under this customer.");
 		} else {
 
-			return (customers.get(customer.getKey())).accountsToString();
+			return OutputProcessor.createsAccountsTable(customerAccounts);
 		}
 	}
 
@@ -313,64 +318,87 @@ public class NewBank {
 
 	// Loan Request Feature
 	private String requestLoan(CustomerID customer, BufferedReader in, PrintWriter out) {
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		if (customers.get(customer.getKey()).isAllowedToRequestLoan()) {
+			ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 
-		if (customerAccounts.isEmpty()) {
-			return "There is no account found for this customer.";
-		} else {
-			out.println("Please, enter the name of the account you wish to add the loan to" 
-			+ " (Choose from the list below):"
-			+ "\nPlease enter Exit to go back to the main menu." 
-			+ "\n" + showMyAccounts(customer));
-			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
-
-			if (accountNumber.equalsIgnoreCase("EXIT")) {
-				return "Going back to the main menu";
+			if (customerAccounts.isEmpty()) {
+				return "There is no account found for this customer.";
 			} else {
-				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
-						Account customerAccount = customerAccounts.get(i);
+				out.println("Please, enter the name of the account you wish to add the loan to"
+						+ " (choose from the list below):" + "\nPlease enter Exit to go back to the main menu:" + "\n"
+						+ showMyAccounts(customer));
+				String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-						out.println("Enter the amount you want to request:");
-						double amount = InputProcessor.takeValidDoubleInput(customerAccount.getPrimaryBalance().getBalance(), in, out);
-						
-						out.println("Please provide a justification for requesting a loan:");
-						String jStatement = InputProcessor.takeValidRegularInput(in, out);
-						
-						BankLoan bankLoan = new BankLoan(customers.get(customer.getKey()), customerAccount, jStatement, amount, interestRate);
-						this.loansList.add(bankLoan);
+				if (accountNumber.equalsIgnoreCase("EXIT")) {
+					return "Going back to the main menu";
+				} else {
+					for (int i = 0; i < customerAccounts.size(); i++) {
+						if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
+							Account customerAccount = customerAccounts.get(i);
 
-						return String.format("Your loan request has been submitted." 
-						+ "\nPlease remember to check for updates on the loan status from the menu");
+							out.println("Enter the amount you want to request:");
+							double amount = InputProcessor.takeValidDoubleInput(customerAccount.getPrimaryBalance().getBalance(), in, out);
+
+							out.println("Please provide a justification for requesting a loan:");
+							String jStatement = InputProcessor.takeValidRegularInput(in, out);
+
+							BankLoan bankLoan = new BankLoan(customers.get(customer.getKey()), customerAccount, jStatement, amount, interestRate);
+							this.loansList.add(bankLoan);
+
+							customers.get(customer.getKey()).setAllowedToRequestLoan(false);
+
+							return String.format("Your loan request has been submitted."
+									+ "\nPlease remember to check for updates on the loan status from the menu");
+						}
 					}
+					return "Interrupted.";
 				}
+
 			}
-
 		}
-
-		return "Success";
+		else{
+			return "You are not eligible to request a new loan until you complete the payment for the first loan.";
+		}
 	}
 
 	// Method to check my loan status
-	private String showMyLoanStatus(CustomerID customer, BufferedReader in, PrintWriter out){
+	private String showMyLoanStatus(CustomerID customer, BufferedReader in, PrintWriter out) {
 		for (BankLoan bankLoan : loansList) {
 			if (bankLoan.getCustomer().getFirstName().equals(customer.getKey())) {
 				if (!bankLoan.isChecked()) {
-					out.println("Your loan request has not been checked yet.");
+					return "Your loan request has not been checked yet.";
+				} else if (bankLoan.isChecked() && bankLoan.isAccepted()) {
+					return String.format("Your loan request has been accepted." + "\nThe requested amount has been added to your "
+								+ bankLoan.getAccount().getAccountNumber() + " account.");
+				} else if (bankLoan.isChecked() && !bankLoan.isAccepted()) {
+					return "Your loan request has been rejected. You may request a new loan.";
 				}
-				else if (bankLoan.isChecked() && bankLoan.isAccepted()) {
-					out.println("Your loan request has been accepted."
-					+ "\nThe requested amount has been added to your " + bankLoan.getAccount().getAccountNumber() + " account.");
-				}
-				else if(bankLoan.isChecked() && !bankLoan.isAccepted()){
-					out.println("Your loan request has been rejected. You may request a new loan.");
-				}
-			}
-			else{
-				out.println("You have no submitted any loan requests.");
 			}
 		}
-		return "Process completed.";
+
+		return "You have not submitted any loan requests.";
+	}
+
+	// Method to pay back loan
+	private String payBackLoan(CustomerID customer, BufferedReader in, PrintWriter out){
+		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		
+		for (BankLoan bankLoan : loansList) {
+			if(bankLoan.getCustomer().getFirstName().equals(customer.getKey()) && bankLoan.isAccepted()){				
+				out.println("Which account would you like to use in order to pay back the loan?" + "\n" + showMyAccounts(customer));
+				String accountName = InputProcessor.takeValidInput(customerAccounts, bankLoan.getPayBackAmount(), in, out);
+
+				for (int i = 0; i < customerAccounts.size(); i++) {
+					if (customerAccounts.get(i).getAccountNumber().equalsIgnoreCase(accountName)) {
+						customerAccounts.get(i).payBackLoan(bankLoan.getPayBackAmount());
+						customers.get(customer.getKey()).setAllowedToRequestLoan(true);
+						bankLoan.setPaidBack(true);
+						return "Loan was successfully paid back.";
+					}
+				}
+			}
+		}
+		return "You have not submitted any loan requests.";
 	}
 
 }
