@@ -49,6 +49,11 @@ public class Account {
 		updatePrimaryBalance(currentBalance + amount);
 	}
 
+	public void payBackLoan(double amount){
+		double currentBalance = getPrimaryBalance().getBalance();
+		updatePrimaryBalance(currentBalance - amount);
+	}
+
 	public void executeTransaction(){
 		// TODO: create transactions and log them in the database
 	}
