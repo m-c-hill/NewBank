@@ -11,8 +11,10 @@ public class NewBankClientHandler extends Thread {
 	private NewBank bank;
 	private BufferedReader in;
 	private PrintWriter out;
+	private Socket socket;
 
 	public NewBankClientHandler(Socket s) throws IOException {
+		socket = s;
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		out = new PrintWriter(s.getOutputStream(), true);
@@ -34,74 +36,10 @@ public class NewBankClientHandler extends Thread {
 		return uc;
 	}
 
+	// TODO: move customer creation to the customer class or a new registration class
+
 	// While this chunk of code works, it's best to encapsulate the sign-up functionality in a different class
-	private String takeFirstName(){
-		out.println("Please enter your first name:");
-		String fName = InputProcessor.takeValidInput("letters", in, out);
-		return fName;
-	}
 
-	private String takeLastName(){
-		out.println("Please enter your last name:");
-		String lName = InputProcessor.takeValidInput("letters", in, out);
-		return lName;
-	}
-
-	private String takeSsn(){
-		out.println("Please enter your social security number:");
-		String ssn = InputProcessor.takeValidInput("numbers", in, out);
-		return ssn;
-	}
-
-	private String takePob(){
-		out.println("Please enter your place of birth:");
-		String pob = InputProcessor.takeValidInput("letters", in, out);
-		return pob;
-	}
-
-	private String takeDob(){
-		out.println("Please enter your date of birth (DD/MM/YYYY):");
-		String dob = InputProcessor.takeValidInput("date", in, out);
-		return dob;
-	}
-
-	private String takeEmail(){
-		out.println("Please enter your email address:");
-		String email = InputProcessor.takeValidInput("email", in, out);
-		return email;
-	}
-
-	private String takePhoneNum(){
-		out.println("Please enter your phone number (must start with a 0 followed by 10 digits):");
-		String phoneNum = InputProcessor.takeValidInput("phonenumber", in, out);
-		return phoneNum;
-	}
-
-	private String takeAddress(){
-		out.println("Please enter your first address line:");
-		String firstAddress = InputProcessor.takeValidInput("letters", in, out);
-
-		out.println("Please enter your second address line:");
-		String secondAddress = InputProcessor.takeValidInput("letters", in, out);
-
-		return String.format(firstAddress + "\n" + secondAddress);
-	}
-
-	// Creating a new Customer object
-	private Customer createCustomer(){
-		String fName = takeFirstName();
-		String lName = takeLastName();
-		String ssn = takeSsn();
-		String dob = takeDob();
-		String pob = takePob();
-		String email = takeEmail();
-		String phoneNum = takePhoneNum();
-		String address = takeAddress();
-
-		Customer nc = new Customer(fName, lName, ssn, dob, pob, email, phoneNum, address);
-
-		return nc;
-	}
 
 	// Adding the customer object to bank.customers<String, Customer> HashMap
 	private void registerCustomer(Customer c){
@@ -131,9 +69,11 @@ public class NewBankClientHandler extends Thread {
 										+ "\n3. Deposit amount "
 										+ "\n4. Create a new account"
 										+ "\n5. Request a loan"
-										+ "\n6. Go back to the main menu");
+										+ "\n6. View my loan status"
+										+ "\n7. Pay back my loan"
+										+ "\n8. Go back to the main menu");
 								String request = in.readLine();
-								if (request.equals("6")) {
+								if (request.equals("8")) {
 									break;
 								}
 								System.out.println("Request from " + customer.getKey());
@@ -147,7 +87,8 @@ public class NewBankClientHandler extends Thread {
 
 					// You can use this for account creation? (Register)
 					case "2":
-						registerCustomer(createCustomer());
+						Registration registration = new Registration(this.socket);
+						registration.registerCustomer();
 						out.println("User registered successfully.");
 						break;
 					
