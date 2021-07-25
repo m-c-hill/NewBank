@@ -114,21 +114,12 @@ public class Registration {
 	public boolean registerCustomer(){
 
 
-//		Customer newCustomer = new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-//				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
-
-		// the below are used for testing purposes - will delete...
-
-		String loginID = "testLoginId";
-		String plainTextPassword = "password";
-		Address testAddress = new Address("9", "Samuel Way", "", "Bradford", "West Yoirkshire", "BD18 2NY", "England");
-		Password testPassword = new Password(loginID, plainTextPassword);
-		Customer testCustomer = new Customer("Mr", "Ben", "Naylor", "JP234312S", "19891016", "ben.naylor89@gmail.com", "03726337432", testAddress, testPassword);
+		Customer newCustomer = new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
 
 		try {
 			DbUtils utils = new DbUtils(out);
-			out.println("registerCustomer() called");
-			utils.registerNewCustomer(testCustomer);
+			utils.registerNewCustomer(newCustomer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

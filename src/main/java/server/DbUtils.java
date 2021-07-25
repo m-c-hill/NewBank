@@ -31,8 +31,6 @@ public class DbUtils {
      */
     public void registerNewCustomer(Customer customer) {
 
-        // Adding a new user will require the address details to be stored in a separate table and referenced in
-        // the user table with an addressId
         int addressId = storeUserAddress(customer);
         int userId = createNewUser(customer, addressId);
         int customerId = createNewCustomer(userId);
@@ -113,6 +111,7 @@ public class DbUtils {
      */
     private int createNewUser(Customer customer, int addressId) {
         int userId = 0;
+
         try {
 
             String createUserScript = "INSERT INTO user (prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number, login_id)" +
