@@ -9,7 +9,7 @@ public class Account {
 	private final Bank bank = new Bank(1, "NewBank", "1 Bank Street", "010001");
 	private ArrayList<Balance> balance = new ArrayList<Balance>();
 	private String statementSchedule = "monthly"; // User may change frequency of statements to weekly, monthly
-
+	
 	public Account(String accountNumber, double openingBalance) {
 		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
 
