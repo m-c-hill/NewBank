@@ -28,6 +28,21 @@ public abstract class User {
         this.password = password;
     }
 
+    // Constructor overload - Without the password
+    // Remove after testing
+    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
+                String dateOfBirth, String emailAddress, String phoneNumber, Address address){
+        this.userID = userID; //TODO: find a way to autoincrement the userID and generate a new ID based on latest primary key in database
+        this.prefix = prefix;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nationalInsuranceNumber = nationalInsuranceNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
     public User() {
     }
 
