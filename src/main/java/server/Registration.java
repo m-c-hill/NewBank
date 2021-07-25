@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.sql.SQLException;
-import java.util.Date;
 
 public class Registration {
 	// Customer registration
@@ -130,7 +128,7 @@ public class Registration {
 		try {
 			DbUtils utils = new DbUtils(out);
 			out.println("registerCustomer() called");
-			utils.createNewCustomer(testCustomer);
+			utils.registerNewCustomer(testCustomer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
