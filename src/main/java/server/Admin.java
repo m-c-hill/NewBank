@@ -53,7 +53,7 @@ public class Admin extends User{
             // Display only the loans that are pending
             ArrayList<BankLoan> pendingLoansList = this.createPendingLoansList(loansList);
             if (!pendingLoansList.isEmpty()) {
-                TableCreator.createLoansTable(pendingLoansList, out);
+                out.println(OutputProcessor.createLoansTable(pendingLoansList));
 
                 // Verifying that the name (Customer firstName) exists in the list before accepting/rejecting
                 out.println("Enter the name of the customer you wish to handle a request for:");
@@ -103,6 +103,7 @@ public class Admin extends User{
     private void rejectLoanRequest(BankLoan bankLoan){
         // You only need to change the checked status to true while leaving every other boolean to its default value (false)
         bankLoan.setChecked(true);
+        bankLoan.getCustomer().setAllowedToRequestLoan(true);
     }
 
     // Utility
@@ -134,7 +135,7 @@ public class Admin extends User{
     // This contains all the loan requests: accepted, rejected, paid back, and non-paid back
     public String showLoansList(ArrayList<BankLoan> loansList, PrintWriter out) {
         if (this.role.isAllowedToViewLoanRequests()) {
-            TableCreator.createLoansTable(loansList, out);
+            out.println(OutputProcessor.createLoansTable(loansList));
         } else {
             out.println("You're not authorized to access the loans list.");
         }
