@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.Date;
 
 public class Registration {
 	// Customer registration
@@ -111,9 +113,33 @@ public class Registration {
 		}
 	}
 
-	public Customer registerCustomer(){
-		return new Customer(1, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+	public boolean registerCustomer(){
+
+
+		Customer newCustomer = new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
 				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
+
+		// the below are used for testing purposes - will delete...
+
+//		String loginID = "testLoginId";
+//		String plainTextPassword = "password";
+//		Address testAddress = new Address("9", "Samuel Way", "", "Bradford", "West Yoirkshire", "BD18 2NY", "England");
+//		Password testPassword = new Password(loginID, plainTextPassword);
+//		Customer testCustomer = new Customer("Mr", "Ben", "Naylor", "JP234312S", "19891016", "ben.naylor89@gmail.com", "03726337432", testAddress, testPassword);
+
+		try {
+			DbUtils utils = new DbUtils(out);
+			out.println("registerCustomer() called");
+			utils.createNewCustomer(newCustomer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 
+
+
 }
+
+

@@ -1,6 +1,7 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Customer extends User{
 	
@@ -13,10 +14,10 @@ public class Customer extends User{
 		accounts = new ArrayList<>();
 	}
 
-	public Customer(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
+	public Customer(String prefix, String fName, String lName, String nationalInsuranceNumber,
 					String dateOfBirth, String emailAddress, String phoneNumber, Address address,
 					Password password) {
-		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
+		super(prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
 		this.accounts = new ArrayList<>();
 	}
 

@@ -62,8 +62,10 @@ public class NewBankClientHandler extends Thread {
 						if (customer != null) {
 							out.println("Log In Successful");
 							while (true) {
-								out.println("What do you want to do?\n1. Show My Accounts"
-										+ "\n2. Withdraw Amount\n3. Deposit Amount "
+								out.println("What do you want to do?"
+										+ "\n1. Show My Accounts"
+										+ "\n2. Withdraw Amount"
+										+ "\n3. Deposit Amount "
 										+ "\n4. Create a new account"
 										+ "\n5. Go Back to the Main Menu");
 								String request = in.readLine();
@@ -71,8 +73,8 @@ public class NewBankClientHandler extends Thread {
 									break;
 								}
 								System.out.println("Request from " + customer.getKey());
-								String responce = bank.processRequest(customer, request, in, out);
-								out.println(responce);
+								String response = bank.processRequest(customer, request, in, out);
+								out.println(response);
 								// out.println("What do you want to do?");
 							}
 						} else {
@@ -84,7 +86,6 @@ public class NewBankClientHandler extends Thread {
 					case "2":
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
-						out.println("User registered successfully.");
 						break;
 				}
 			}

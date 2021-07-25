@@ -6,10 +6,10 @@ public class Admin extends User{
 	int adminID;
 	AdminRole role;
 
-	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
+	public Admin(String prefix, String fName, String lName, String nationalInsuranceNumber,
 				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
 				 Password password, int adminID, AdminRole role) {
-		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
+		super(prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
 		this.adminID = adminID;
 		this.role = role;
 	}
