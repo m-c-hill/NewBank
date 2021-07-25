@@ -20,6 +20,14 @@ public class Customer extends User{
 		this.accounts = new ArrayList<>();
 	}
 
+	// Constructor overload - Without the password
+	// Remove after testing
+	public Customer(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
+					String dateOfBirth, String emailAddress, String phoneNumber, Address address) {
+		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
+		this.accounts = new ArrayList<>();
+	}
+
 	public ArrayList<Account> getAccounts() {
 		return accounts;
 	}
