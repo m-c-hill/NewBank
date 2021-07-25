@@ -132,6 +132,47 @@ public class InputProcessor{
 
         return account;
      }
+
+     // Method to take a valid name for the Customer
+     public static String takeValidCustomerNameInput(ArrayList<BankLoan> loansList, BufferedReader in, PrintWriter out){
+         String customerName = null;
+         try {
+             w:while(true){
+                 customerName = in.readLine();
+                 // Go through the loans' list and check if the the customer exists
+                 for (BankLoan bankLoan : loansList) {
+                     if (bankLoan.getCustomer().getFirstName().equalsIgnoreCase(customerName)) {
+                         break w;
+                     }
+                     else{
+                         out.println("There are no loan requests belonging to this customer. Try again:");
+                     }
+                 }
+             }
+         } catch (Exception e) {
+             out.println("Input error.");
+         }
+         return customerName;
+     }
+
+     // Method to take a valid decision for the loan
+     public static String takeValidLoanDecisionInput(BufferedReader in, PrintWriter out){
+         String decision = null;
+         try {
+             while (true) {
+                 decision = in.readLine();
+                 if (decision.equalsIgnoreCase("ACCEPT") || decision.equalsIgnoreCase("REJECT")) {
+                     break;
+                 }
+                 else{
+                     out.println("Unknown command. Try again:");
+                 }
+             }
+         } catch (Exception e) {
+             out.println("Input error.");
+         }
+         return decision;
+     }
  // Method to take and validate the requested amount to deposit
     public static double takeValidDepositInput(double balance, BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
@@ -166,7 +207,7 @@ public class InputProcessor{
     // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
     private static boolean accountExists(String account, ArrayList<Account> accountsList){
         for (int i = 0; i < accountsList.size(); i++) {
-            if (account.equals(accountsList.get(i).getAccountName())) {
+            if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
                 return true;
             }
         }
