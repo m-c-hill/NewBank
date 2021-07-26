@@ -128,6 +128,28 @@ public class InputProcessor{
 
         return requestedAmount;
     }
+
+    public static double takeValidLoanAmountInput(double loanLimit, BufferedReader in, PrintWriter out){
+        double requestedAmount = 0;
+
+        while (true) {
+            try {
+                String strRequestedAmount = in.readLine();
+                requestedAmount = Double.parseDouble(strRequestedAmount);
+
+                if (requestedAmount <= loanLimit) {
+                    break;
+                }
+                else{
+                    out.println("The requested amount should be less than or equal to the set loan limit. Try again:");
+                }
+            } catch (Exception e) {
+                out.println("Can't process non-numerical characters. Try again:");
+            }
+        }
+
+        return requestedAmount;
+    }
     
  // Method to take and validate a new account name when creating a new Account
     public static String createValidAccountName(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){

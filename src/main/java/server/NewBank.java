@@ -15,6 +15,8 @@ public class NewBank {
 	private ArrayList<BankLoan> loansList;
 	// Interest rate
 	private static final double interestRate = 2.78;
+	// Loan credit limit
+	private static final double loanLimit = 2500;
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -246,11 +248,11 @@ public class NewBank {
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 		if (customerAccounts.isEmpty()) {
 			
-			return String.format("There is no account found under this customer.");
+			return String.format("There is no account found under this customer name.");
 		}
 		else {
 			out.println("Please enter the name of the account you want to make a deposit to" 
-					+ "(choose from the list below):" + "\nPlease enter Exit to go back to the main menu.");
+					+ "(choose from the list below):" + "\nPlease type EXIT to go back to the main menu.");
 			
 			// Display Customer-related accounts as visual aid for providing a choice	
 			out.println(showMyAccounts(customer));
@@ -258,7 +260,7 @@ public class NewBank {
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
 			//If the user enters Exit go back to main menu message appears
-			if(accountNumber.equals("Exit")){
+			if(accountNumber.equals("EXIT")){
 				return "Exit request is taken, going back to the main menu.";	
 			}
 			
@@ -325,7 +327,7 @@ public class NewBank {
 				return "There is no account found for this customer.";
 			} else {
 				out.println("Please, enter the name of the account you wish to add the loan to"
-						+ " (choose from the list below):" + "\nPlease enter Exit to go back to the main menu:" + "\n"
+						+ " (choose from the list below):" + "\nPlease type EXIT to go back to the main menu:" + "\n"
 						+ showMyAccounts(customer));
 				String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
@@ -337,7 +339,7 @@ public class NewBank {
 							Account customerAccount = customerAccounts.get(i);
 
 							out.println("Enter the amount you want to request:");
-							double amount = InputProcessor.takeValidDoubleInput(customerAccount.getPrimaryBalance().getBalance(), in, out);
+							double amount = InputProcessor.takeValidLoanAmountInput(loanLimit, in, out);
 
 							out.println("Please provide a justification for requesting a loan:");
 							String jStatement = InputProcessor.takeValidRegularInput(in, out);
