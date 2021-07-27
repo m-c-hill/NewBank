@@ -91,7 +91,7 @@ public class NewBank {
 				500,
 				new AdminRole(
 					"Manager", 
-					"Has all the administartive privileges.", 
+					"Has all the administrative privileges.", 
 					true, true, true, true, true, true)
 					);
 		admins.put(michael.getFirstName(), michael);
@@ -168,7 +168,7 @@ public class NewBank {
 		if (admins.containsKey(admin)) {
 			switch (request) {
 				case "1":
-					return admins.get(admin).showLoansList(this.loansList, out);
+					return admins.get(admin).showLoansList(loansList, out);
 				case "2":
 					return admins.get(admin).handleLoanRequest(loansList, customers, in, out);
 				default:

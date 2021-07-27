@@ -40,6 +40,8 @@ public class Admin extends User{
 				return role.canCloseAccount();
 			case "grantLoan":
 				return role.isAllowedToHandleLoanRequests();
+            case "viewLoans":
+                return role.isAllowedToViewLoanRequests();
 			default:
 				System.out.println("Warning: you do not have permission to perform the following action: " + taskName);
 				return false;
@@ -49,18 +51,18 @@ public class Admin extends User{
     // Accepting or rejecting a loan request
     public String handleLoanRequest(ArrayList<BankLoan> loansList, HashMap<String, Customer> customers,
             BufferedReader in, PrintWriter out) {
-        if (this.role.isAllowedToHandleLoanRequests()) {
+        if (this.checkPermission("grantLoan")) {
             // Display only the loans that are pending
             ArrayList<BankLoan> pendingLoansList = this.createPendingLoansList(loansList);
             if (!pendingLoansList.isEmpty()) {
                 out.println(OutputProcessor.createLoansTable(pendingLoansList));
 
                 // Verifying that the name (Customer firstName) exists in the list before accepting/rejecting
-                out.println("Enter the name of the customer you wish to handle a request for:");
+                out.println("Enter the first name of the customer you wish to handle a request for:");
                 String customerName = InputProcessor.takeValidCustomerNameInput(pendingLoansList, in, out);
 
                 // Automatically select/extract relevant bank loan
-                BankLoan bankLoan = selectLoanRequest(customerName, loansList);
+                BankLoan bankLoan = selectLoanRequest(customerName, pendingLoansList);
 
                 // Choose whether to accept or reject
                 out.println(
@@ -70,15 +72,14 @@ public class Admin extends User{
                 // Handle either decision
                 if (decision.equalsIgnoreCase("ACCEPT")) {
                     this.acceptLoanRequest(bankLoan);
-                    out.println("Process completed successfully.");
+                    out.println("Process completed successfully. Loan request was accepted.");
                 } else {
                     this.rejectLoanRequest(bankLoan);
-                    out.println("Process completed successfully.");
+                    out.println("Process completed successfully. Loan request was rejected.");
                 }
             } else {
                 out.println("There are no pending requests at the moment.");
             }
-
         } else {
             return "You're not authorized to perform this action";
         }
@@ -134,7 +135,7 @@ public class Admin extends User{
     // Showing the loans list
     // This contains all the loan requests: accepted, rejected, paid back, and non-paid back
     public String showLoansList(ArrayList<BankLoan> loansList, PrintWriter out) {
-        if (this.role.isAllowedToViewLoanRequests()) {
+        if (this.checkPermission("viewLoans")) {
             out.println(OutputProcessor.createLoansTable(loansList));
         } else {
             out.println("You're not authorized to access the loans list.");

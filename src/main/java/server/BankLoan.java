@@ -2,7 +2,7 @@ package server;
 
 public class BankLoan {
     private Customer customer;
-    private Account account;
+    private Account recipientAccount;
 
     private String reason;
 
@@ -15,7 +15,7 @@ public class BankLoan {
 
     public BankLoan(Customer customer, Account account, String reason, double amount, double interestRate){
         this.customer = customer;
-        this.account = account;
+        this.recipientAccount = account;
         this.reason = reason;
         
         this.amount = amount;
@@ -31,7 +31,7 @@ public class BankLoan {
     }
 
     public Account getAccount() {
-        return account;
+        return recipientAccount;
     }
 
     public String getReason() {

@@ -1,13 +1,12 @@
 package server;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class OutputProcessor {
 
     // Loan table format with spacing for every column
-    private static final String loanTableContentFormat = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%-9s|%n";
-    private static final String loanTableHeader = String.format(
+    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%-9s|%n";
+    private static final String LOAN_TABLE_HEADER = String.format(
         "+---------------+-----------------------------------+------+------+---------+---------+---------+%n" +
         "| Customer Name |              Reason               |Amount| ATPB |Checked? |Accepted?|PaidBack?|%n" +
         "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
@@ -26,10 +25,10 @@ public class OutputProcessor {
     
     // Loans table creator method for admins
     public static String createLoansTable(ArrayList<BankLoan> loansList) {
-        String loansTable = loanTableHeader;
+        String loansTable = LOAN_TABLE_HEADER;
 
         for (BankLoan bankLoan : loansList) {
-            loansTable = loansTable + String.format(loanTableContentFormat,
+            loansTable = loansTable + String.format(LOAN_TABLE_CONTENT_FORMAT,
                     bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(),
                     bankLoan.getReason(), Double.toString(bankLoan.getAmount()),
                     Double.toString(bankLoan.getPayBackAmount()), Boolean.toString(bankLoan.isChecked()),
