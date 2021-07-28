@@ -2,6 +2,7 @@ package server;
 
 public abstract class User {
 
+    private int userID;
     private String prefix;
     private String firstName;
     private String lastName;
@@ -13,8 +14,9 @@ public abstract class User {
     private Password password;
 
     // Constructor overload
-    public User(String prefix, String firstName, String lastName, String nationalInsuranceNumber,
+    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
                 String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){
+        this.userID = userID;
         this.prefix = prefix;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,7 +28,30 @@ public abstract class User {
         this.password = password;
     }
 
+    // Constructor overload - Without the password
+    // Remove after testing
+    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
+                String dateOfBirth, String emailAddress, String phoneNumber, Address address){
+        this.userID = userID;
+        this.prefix = prefix;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nationalInsuranceNumber = nationalInsuranceNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
     public User() {
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getPrefix() {
@@ -99,6 +124,7 @@ public abstract class User {
 
     public void setPassword(Password password) {
         this.password = password;
+
     }
     
 }

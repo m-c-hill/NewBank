@@ -24,6 +24,10 @@ public class Balance {
 		return this.currency.toString();
 	}
 
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
 	public void updateBalance(double newBalance){
 		this.amount = newBalance;
 		// TODO: update the corresponding balance in the database

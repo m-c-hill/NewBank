@@ -52,7 +52,6 @@ public class Registration {
 
 		//TODO: tidy this up
 		String number = "";
-		String postcode = "";
 
 		out.println("Please enter your address number: ");
 		try {
@@ -74,11 +73,7 @@ public class Registration {
 		String region = InputProcessor.takeValidInput("letters", in, out);
 
 		out.println("Please enter your postcode: ");
-		try {
-			postcode = in.readLine(); // TODO: input processor for postcodes / zip codes?
-		} catch(IOException e){
-			e.printStackTrace();
-		}
+		String postcode = InputProcessor.takeValidInput("postcode", in, out);
 
 		out.println("Please enter your country: ");
 		String country = InputProcessor.takeValidInput("letters", in, out);
@@ -113,7 +108,7 @@ public class Registration {
 
 	public boolean registerCustomer(){
 
-		Customer newCustomer = new Customer(takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
 				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
 
 		try {
