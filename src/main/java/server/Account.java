@@ -1,16 +1,15 @@
 package server;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 
 public class Account {
 
 	private String accountNumber;
+	private String accountName;
 	private final Bank bank = new Bank(1, "NewBank", "1 Bank Street", "010001");
 	private ArrayList<Balance> balance = new ArrayList<Balance>();
 	private String statementSchedule = "monthly"; // User may change frequency of statements to weekly, monthly
-
+	
 	public Account(String accountNumber, double openingBalance) {
 		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
 
@@ -23,6 +22,10 @@ public class Account {
 	public String toString() {
 		Balance primaryBalance = getPrimaryBalance();
 		return (this.accountNumber + ": " + primaryBalance.getBalance() + primaryBalance.getCurrency().toString());
+	}
+
+	public String getAccountName() {
+		return accountName;
 	}
 
 	public Balance getPrimaryBalance(){
@@ -44,6 +47,11 @@ public class Account {
 	public void makeDeposit(double amount) {
 		double currentBalance = getPrimaryBalance().getBalance();
 		updatePrimaryBalance(currentBalance + amount);
+	}
+
+	public void payBackLoan(double amount){
+		double currentBalance = getPrimaryBalance().getBalance();
+		updatePrimaryBalance(currentBalance - amount);
 	}
 
 	public void executeTransaction(){
