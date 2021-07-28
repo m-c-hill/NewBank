@@ -1,4 +1,8 @@
 package server.user;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 /*
 
 NOTE: Class is currently in pseudocode state - will fill this out by Monday 26th July (Matt)
@@ -52,8 +56,14 @@ public class Password {
 		// Method to store salt in database
 	}
 
-	private String generateSalt(){
-		return "";
+	/** Generates a random salt using the pseudo random number generator algorithm "SHA1PRNG"
+	 * @return salt
+	 */
+	private static byte[] generateSalt() throws NoSuchAlgorithmException {
+		final SecureRandom RANDOM = SecureRandom.getInstance("SHA1PRNG");
+		byte[] salt = new byte[20];
+		RANDOM.nextBytes(salt);
+		return salt;
 	}
 
 	private String encryptPassword(String plainTextPassword, String salt){
