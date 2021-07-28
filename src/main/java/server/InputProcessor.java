@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 public class InputProcessor{
     // Mapping each key to its value (regex)
     private static final Map<String, String> InfoRegexMap = Map.of(
-        "letters", "^[A-Za-z]+$",
-        "numbers", "^[0-9]+$",
+        "letters", "^[A-Za-z ]+$",
+        "numbers", "^[0-9 ]+$",
         "letters and numbers", "^[A-Za-z0-9 ]+$",
         "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
         "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
-        "valid phone numbers", "^0[\\d]{7,12}[\\d]$",
+        "valid phone numbers", "^0[\\d]{7,12}$",
         "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$"
         );
 
