@@ -1,4 +1,6 @@
-package server;
+package server.account;
+
+import server.bank.Bank;
 
 import java.util.ArrayList;
 

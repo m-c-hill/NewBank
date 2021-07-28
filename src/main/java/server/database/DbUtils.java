@@ -1,4 +1,8 @@
-package server;
+package server.database;
+
+import server.transaction.StatementSchedule;
+import server.bank.Address;
+import server.user.Customer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static server.Connection.getDBConnection;
+import static server.database.Connection.getDBConnection;
 
 public class DbUtils {
 

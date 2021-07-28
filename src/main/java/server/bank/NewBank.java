@@ -1,4 +1,12 @@
-package server;
+package server.bank;
+
+import server.CustomerID;
+import server.account.Account;
+import server.support.InputProcessor;
+import server.support.OutputProcessor;
+import server.user.Admin;
+import server.user.AdminRole;
+import server.user.Customer;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;

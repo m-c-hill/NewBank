@@ -1,4 +1,10 @@
-package server;
+package server.bank;
+
+import server.CustomerID;
+import server.UserCredentials;
+import server.bank.NewBank;
+import server.user.Customer;
+import server.user.Registration;
 
 import java.io.BufferedReader;
 import java.io.IOException;

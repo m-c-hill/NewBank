@@ -1,4 +1,4 @@
-package server;
+package server.bank;
 
 public class Address {
 	private int addressID;

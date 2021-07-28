@@ -1,4 +1,8 @@
-package server;
+package server.user;
+
+import server.bank.Address;
+import server.database.DbUtils;
+import server.support.InputProcessor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

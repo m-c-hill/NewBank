@@ -1,4 +1,4 @@
-package server;
+package server.user;
 /*
 
 NOTE: Class is currently in pseudocode state - will fill this out by Monday 26th July (Matt)

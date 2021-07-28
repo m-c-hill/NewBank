@@ -1,4 +1,6 @@
-package server;
+package server.user;
+
+import server.bank.Address;
 
 public abstract class User {
 

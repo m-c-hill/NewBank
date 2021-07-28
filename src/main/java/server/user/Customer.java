@@ -1,8 +1,11 @@
-package server;
+package server.user;
+
+import server.account.Account;
+import server.bank.Address;
 
 import java.util.ArrayList;
 
-public class Customer extends User{
+public class Customer extends User {
 	
 	private ArrayList<Account> accounts;
 	private boolean allowedToRequestLoan;

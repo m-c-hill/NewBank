@@ -1,4 +1,7 @@
-package server;
+package server.transaction;
+
+import server.account.Account;
+import server.account.Currency;
 
 import java.sql.Timestamp;
 
