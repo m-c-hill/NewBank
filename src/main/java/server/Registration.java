@@ -77,7 +77,7 @@ public class Registration {
 	}
 
 	private String takePhoneNum(){
-		out.println("Please enter your phone number: ");
+		out.println("Please enter your phone number (no spaces): ");
 		String phoneNum = InputProcessor.takeValidInput("valid phone numbers", in, out);
 		return phoneNum;
 	}
