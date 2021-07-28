@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS password (
 -- Create account table
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
-    account_number varchar(8) PRIMARY KEY,
+    account_number int(8) PRIMARY KEY AUTO_INCREMENT,
     bank_id int REFERENCES bank(bank_id),
     account_type_id int REFERENCES account_type(account_type_id),
     statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly'

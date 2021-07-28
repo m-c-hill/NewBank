@@ -76,7 +76,7 @@ public class Admin extends User{
                 } else {
                     this.rejectLoanRequest(bankLoan);
                     out.println("Process completed successfully. Loan request was rejected.");
-                }
+                } //TODO This should also handle user input is not ACCEPT or REJECT
             } else {
                 out.println("There are no pending requests at the moment.");
             }

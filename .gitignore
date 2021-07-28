@@ -27,6 +27,9 @@ hs_err_pid*
 *.iml
 *.iws
 
+# VSCode
+.vscode
+
 # Eclipse
 .classpath
 .project

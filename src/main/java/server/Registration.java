@@ -106,9 +106,20 @@ public class Registration {
 		}
 	}
 
-	public Customer registerCustomer(){
-		return new Customer(1, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+	public boolean registerCustomer(){
+
+		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
 				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
+
+		try {
+			DbUtils utils = new DbUtils(out);
+			utils.registerNewCustomer(newCustomer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 }
+
+

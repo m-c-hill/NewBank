@@ -77,8 +77,8 @@ public class NewBankClientHandler extends Thread {
 									break;
 								}
 								System.out.println("Request from " + customer.getKey());
-								String responce = bank.processCustomerRequest(customer, request, in, out);
-								out.println(responce);
+								String response = bank.processCustomerRequest(customer, request, in, out);
+								out.println(response);
 							}
 						} else {
 							out.println("Login Failed");
@@ -89,7 +89,6 @@ public class NewBankClientHandler extends Thread {
 					case "2":
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
-						out.println("User registered successfully.");
 						break;
 					
 					case "3":
@@ -111,8 +110,8 @@ public class NewBankClientHandler extends Thread {
 
 								System.out.println("Request from " + admin);
 
-								String responce = bank.processAdminRequest(admin, request, in, out);
-								out.println(responce);
+								String response = bank.processAdminRequest(admin, request, in, out);
+								out.println(response);
 							}
 						}
 						else{

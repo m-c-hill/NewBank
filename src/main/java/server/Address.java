@@ -24,6 +24,70 @@ public class Address {
 		storeAddress();
 	}
 
+	public int getAddressID() {
+		return addressID;
+	}
+
+	public void setAddressID(int addressID) {
+		this.addressID = addressID;
+	}
+
+	public String getAddressNumber() {
+		return addressNumber;
+	}
+
+	public void setAddressNumber(String addressNumber) {
+		this.addressNumber = addressNumber;
+	}
+
+	public String getAddressLine1() {
+		return addressLine1;
+	}
+
+	public void setAddressLine1(String addressLine1) {
+		this.addressLine1 = addressLine1;
+	}
+
+	public String getAddressLine2() {
+		return addressLine2;
+	}
+
+	public void setAddressLine2(String addressLine2) {
+		this.addressLine2 = addressLine2;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public void displayAddress(){
 		if(addressLine2 != null){
 			System.out.println("Address: " + addressNumber + " " + addressLine1 + "\n" + addressLine2 + "\n" +

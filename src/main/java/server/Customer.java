@@ -19,7 +19,7 @@ public class Customer extends User{
 					String dateOfBirth, String emailAddress, String phoneNumber, Address address,
 					Password password) {
 						
-		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);	
+		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
 		this.accounts = new ArrayList<>();
 		this.allowedToRequestLoan = true;
 	}
