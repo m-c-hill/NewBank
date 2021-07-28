@@ -22,7 +22,8 @@ public class InputProcessor{
         "letters", "^[A-Za-z]+$",
         "numbers", "^[0-9]+$",
         "phonenumber", "1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}",
-        "postcode", "^[a-zA-Z0-9 ]*$"
+        "postcode", "^[a-zA-Z0-9 ]*$",
+        "nationalinsurance", "^[A-Za-z0-9 ]+$"
         );
 
     // Method to take and validate input
