@@ -22,7 +22,7 @@ public class InputProcessor{
         "letters", "^[A-Za-z]+$",
         "numbers", "^[0-9]+$",
         "phonenumber", "^0[\\d]{10}$", //must start with a 0 and be followed by 10 numbers (basic version) OR 1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4} for international formats (advanced)
-        "postcode", "^[a-zA-Z0-9]*$"
+        "postcode", "^[a-zA-Z0-9 ]*$"
         );
 
     // Method to take and validate input
