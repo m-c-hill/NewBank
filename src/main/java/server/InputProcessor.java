@@ -11,19 +11,17 @@ import java.util.regex.Pattern;
 // This is a utility class to help with taking and validating user input.
 // 
 // You can call InputProcessor(String key) to take and validate an input value that matches the provided the key and then assigning the return value to a variable
-// For example, InputProcessor("date") will look through the map to get the regex defining the date format  
+// For example, InputProcessor("valid dates") will look through the map to get the regex defining the date format  
 public class InputProcessor{
     // Mapping each key to its value (regex)
-    // Add the rest of the keys with their relevant regexes to this Map
-    // The regexes could use some refinement for more precision
     private static final Map<String, String> InfoRegexMap = Map.of(
-        "email", "^(.+)@(.+)$",
-        "date", "^\\d{2}/\\d{2}/\\d{4}$",
         "letters", "^[A-Za-z]+$",
         "numbers", "^[0-9]+$",
-        "phonenumber", "1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}",
-        "postcode", "^[a-zA-Z0-9 ]*$",
-        "nationalinsurance", "^[A-Za-z0-9 ]+$"
+        "letters and numbers", "^[A-Za-z0-9 ]+$",
+        "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
+        "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
+        "valid phone numbers", "^0[\\d]{7,12}[\\d]$",
+        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$"
         );
 
     // Method to take and validate input
@@ -38,7 +36,7 @@ public class InputProcessor{
                     break;
                 } else {
                     // Display a message if the input is invalid. Loop again to take a new input
-                    out.println("Please enter a valid " + key + "(s). \nTry again:");
+                    out.println("Invalid entry. This field accepts " + key + " only. \nTry again:");
                     continue;
                 }
             }
