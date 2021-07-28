@@ -14,9 +14,9 @@ public class NewBank {
 	// loansList ArrayList
 	private ArrayList<BankLoan> loansList;
 	// Interest rate
-	private static final double interestRate = 2.78;
+	private static final double INTEREST_RATE = 2.78;
 	// Loan credit limit
-	private static final double loanLimit = 2500;
+	private static final double LOAN_LIMIT = 2500;
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -339,12 +339,12 @@ public class NewBank {
 							Account customerAccount = customerAccounts.get(i);
 
 							out.println("Enter the amount you want to request:");
-							double amount = InputProcessor.takeValidLoanAmountInput(loanLimit, in, out);
+							double amount = InputProcessor.takeValidLoanAmountInput(LOAN_LIMIT, in, out);
 
 							out.println("Please provide a justification for requesting a loan:");
 							String jStatement = InputProcessor.takeValidRegularInput(in, out);
 
-							BankLoan bankLoan = new BankLoan(customers.get(customer.getKey()), customerAccount, jStatement, amount, interestRate);
+							BankLoan bankLoan = new BankLoan(customers.get(customer.getKey()), customerAccount, jStatement, amount, INTEREST_RATE);
 							this.loansList.add(bankLoan);
 
 							customers.get(customer.getKey()).setAllowedToRequestLoan(false);
