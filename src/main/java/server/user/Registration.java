@@ -23,7 +23,7 @@ public class Registration {
 
 	private final BufferedReader in;
 	private final PrintWriter out;
-	private static java.sql.Connection con = getDBConnection();
+	private final static java.sql.Connection con = getDBConnection();
 
 	public Registration(Socket socket) throws IOException {
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

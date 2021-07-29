@@ -12,6 +12,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static server.database.Connection.getDBConnection;
 
 public class NewBankClientHandler extends Thread {
 
@@ -20,6 +25,8 @@ public class NewBankClientHandler extends Thread {
 	private PrintWriter out;
 	private Socket socket;
 
+	private final static java.sql.Connection con = getDBConnection();
+
 	public NewBankClientHandler(Socket s) throws IOException {
 		socket = s;
 		bank = NewBank.getBank();
@@ -27,13 +34,18 @@ public class NewBankClientHandler extends Thread {
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
 
-	// Method that prompts the user to enter their username and password
-	// Returns a UserCredential object
-
-	private boolean login() {
+	/**
+	 * Method to authenticate login details entered by the user and return account type
+	 *
+	 * @return Boolean array [login_authenticated, isCustomer, isAdmin]
+	 */
+	private boolean[] login() {
 
 		String login = "";
 		String password = "";
+
+		boolean isCustomer = false;
+		boolean isAdmin = false;
 
 		boolean validLogin = false;
 		boolean grantAccess = false;
@@ -52,14 +64,18 @@ public class NewBankClientHandler extends Thread {
 			password = in.readLine();
 			Password credentials = new Password(login, password);
 			grantAccess = credentials.authenticate(password);
+
+			isCustomer = isCustomer(login);
+			isAdmin = isAdmin(login);
+
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 		}
-		return grantAccess;
+		return new boolean[]{grantAccess, isCustomer, isAdmin};
 	}
 
 	// Adding the customer object to bank.customers<String, Customer> HashMap
-	private void registerCustomer(Customer c){
+	private void registerCustomer(Customer c) {
 		this.bank.addCustomer(c);
 	}
 
@@ -73,39 +89,19 @@ public class NewBankClientHandler extends Thread {
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						customerLogin();
+						if (login() && isCustomer()) {
+							customerMenu();
+						}
 
 					case "2":
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
-					
 					case "3":
-						uc = takeCredentials(in, out);
-						String admin = bank.checkAdminLogInDetails(uc.getUsername(), uc.getPassword());
-
-						if (admin != null) {
-							out.println("Login successful.");
-							while(true){
-								out.println("What do you want to do:"
-										+ "\n1. Check loans list"
-										+ "\n2. Accept/Decline a loan request"
-										+ "\n3. Go back to the main menu");
-								
-								String request = in.readLine();
-								if (request.equals("3")) {
-									break;
-								}
-
-								System.out.println("Request from " + admin);
-
-								String response = bank.processAdminRequest(admin, request, in, out);
-								out.println(response);
-							}
+						if (login() && isAdmin()) {
+							adminMenu();
 						}
-						else{
-							out.println("Login failed.");
-						}
+						;
 				}
 			}
 
@@ -122,8 +118,7 @@ public class NewBankClientHandler extends Thread {
 		}
 	}
 
-	private boolean customerMenu(){
-		uc = takeCredentials(in, out);
+	private boolean customerMenu() {
 		CustomerID customer = bank.checkCustomerLogInDetails(uc.getUsername(), uc.getPassword());
 		// if the user is authenticated then get requests from the user and process them
 		if (customer != null) {
@@ -152,6 +147,88 @@ public class NewBankClientHandler extends Thread {
 		break;
 	}
 
-	private boolean adminMenu(){};
+	private boolean adminMenu() {
+		String admin = bank.checkAdminLogInDetails(uc.getUsername(), uc.getPassword());
 
+		if (admin != null) {
+			out.println("Login successful.");
+			while (true) {
+				out.println("What do you want to do:"
+						+ "\n1. Check loans list"
+						+ "\n2. Accept/Decline a loan request"
+						+ "\n3. Go back to the main menu");
+
+				String request = in.readLine();
+				if (request.equals("3")) {
+					break;
+				}
+
+				System.out.println("Request from " + admin);
+
+				String response = bank.processAdminRequest(admin, request, in, out);
+				out.println(response);
+			}
+		} else {
+			out.println("Login failed.");
+		}
+	}
+
+	/**
+	 * Method to determine if a user is a customer
+	 * @param login User's login ID
+	 * @return True if user is a customer
+	 */
+	private boolean isCustomer(String login) throws SQLException {
+		int userId = Password.getExistingUserId(login);
+		String query = "SELECT 1 FROM customer WHERE user_id = ?";
+		try {
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.isBeforeFirst() ){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * Method to determine if a user is an admin
+	 * @param login User's login ID
+	 * @return True if user is a customer
+	 */
+	private boolean isAdmin(String login){
+		int userId = Password.getExistingUserId(login);
+		String query = "SELECT 1 FROM admin WHERE user_id = ?";
+		try {
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.isBeforeFirst() ){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

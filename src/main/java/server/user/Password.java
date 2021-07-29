@@ -194,11 +194,11 @@ public class Password {
 	 * Method to return the existing user ID from login
 	 * @return User ID
 	 */
-	private int getExistingUserId(String login){
+	public static int getExistingUserId(String login){
 		int userId = 0;
 		String query = "SELECT * FROM password WHERE login = ?";
 		try {
-			PreparedStatement preparedStatement = con.prepareStatement(query);
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
 			preparedStatement.setString(1, login);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
