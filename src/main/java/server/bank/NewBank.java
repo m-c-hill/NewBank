@@ -1,6 +1,5 @@
 package server.bank;
 
-import server.CustomerID;
 import server.account.Account;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;

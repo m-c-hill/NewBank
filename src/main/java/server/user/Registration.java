@@ -1,6 +1,7 @@
 package server.user;
 
 import server.bank.Address;
+import server.database.Connection;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 
@@ -11,12 +12,18 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static server.database.Connection.getDBConnection;
 
 public class Registration {
 	// Customer registration
 
-	private BufferedReader in;
-	private PrintWriter out;
+	private final BufferedReader in;
+	private final PrintWriter out;
+	private static java.sql.Connection con = getDBConnection();
 
 	public Registration(Socket socket) throws IOException {
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -25,33 +32,28 @@ public class Registration {
 
 	private String takePrefix(){
 		out.println("Please enter your prefix: ");
-		String prefix = InputProcessor.takeValidInput("letters", in, out);
-		return prefix;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeFirstName(){
 		out.println("Please enter your first name: ");
-		String firstName = InputProcessor.takeValidInput("letters", in, out);
-		return firstName;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeLastName(){
 		out.println("Please enter your last name: ");
-		String lastName = InputProcessor.takeValidInput("letters", in, out);
-		return lastName;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeNationalInsuranceNumber(){
 		out.println("Please enter your National Insurance Number: ");
-		String nationalInsuranceNumber = InputProcessor.takeValidInput("numbers", in, out);
 		// TODO: update InputProcessor to include both letters AND numbers
-		return nationalInsuranceNumber;
+		return InputProcessor.takeValidInput("numbers", in, out);
 	}
 
 	private String takeDateOfBirth(){
 		out.println("Please enter your date of birth (DD/MM/YYYY): ");
-		String dateOfBirth = InputProcessor.takeValidInput("date", in, out);
-		return dateOfBirth;
+		return InputProcessor.takeValidInput("date", in, out);
 	}
 
 	private Address takeAddress(){
@@ -89,34 +91,57 @@ public class Registration {
 
 	private String takeEmail(){
 		out.println("Please enter your email address: ");
-		String email = InputProcessor.takeValidInput("email", in, out);
-		return email;
+		return InputProcessor.takeValidInput("email", in, out);
 	}
 
 	private String takePhoneNum(){
 		out.println("Please enter your phone number (must start with a 0 followed by 10 digits): ");
-		String phoneNum = InputProcessor.takeValidInput("phonenumber", in, out);
-		return phoneNum;
+		return InputProcessor.takeValidInput("phonenumber", in, out);
 	}
 
-	private Password setUserCredentials(){
+	/**
+	 * Method to take a new login ID and password from the user.
+	 * Password is encrypted and stored using a basic salt and hash method.
+	 */
+	private void setUserCredentials() {
+
+		int newUserId = getNewUserId();
+		String loginId = "";
+		String plainTextPassword = "";
+
+		boolean loginValid = false;
 		try {
-			out.println("Please enter a new login ID: ");
-			String loginID = in.readLine();  //TODO: validate user login in input processor
+			while(!loginValid) {
+				out.println("Please enter a new login ID: ");
+				loginId = in.readLine();  //TODO: validate user login in input processor (ie. no spaces, invalid characters)
+				if (checkLoginExists(loginId)) {
+					out.println("This login has already been taken, please try again.");
+				}
+				else {
+					loginValid = true;
+				}
+			}
 			out.println("Please enter a password: ");
-			String password = in.readLine();  //TODO: validate user password in input processor
-			int userID = 200; //TODO: Change this ASAP
-			return new Password(userID, loginID, password); // Encrypt password and store in database
+			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			Password password = new Password(newUserId, loginId, plainTextPassword);
+			out.println("Password successfully encrypted and stored.");
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){
 			e.printStackTrace();
-			return null;
 		}
 	}
 
+
+	/**
+	 * Method to register a new customer
+	 * @return
+	 */
 	public boolean registerCustomer(){
 
 		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
+				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
+
+		// Set and store user's login/hash separately
+		setUserCredentials();
 
 		try {
 			DbUtils utils = new DbUtils(out);
@@ -124,7 +149,47 @@ public class Registration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return true;
+	}
+
+	/**
+	 * Method to return the next user ID to be stored in the database
+	 * @return User ID
+	 */
+	private int getNewUserId(){
+		int userId = -1;
+		String query = "SELECT MAX(user_id) FROM user";
+
+		try {
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				userId = rs.getInt("user_id") + 1;
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		return userId;
+	}
+
+	/**
+	 * Method to check if user has entered a unique ID (check in database)
+	 * @return True if user login is
+	 */
+	public boolean checkLoginExists(String login){
+		String query = "SELECT 1 FROM password WHERE login = ?";
+		try{
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, login);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

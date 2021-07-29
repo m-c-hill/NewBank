@@ -13,25 +13,7 @@ public abstract class User {
     private Address address;
     private String emailAddress;
     private String phoneNumber;
-    private Password password;
 
-    // Constructor overload
-    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
-                String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){
-        this.userID = userID;
-        this.prefix = prefix;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nationalInsuranceNumber = nationalInsuranceNumber;
-        this.dateOfBirth = dateOfBirth;
-        this.emailAddress = emailAddress;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.password = password;
-    }
-
-    // Constructor overload - Without the password
-    // Remove after testing
     public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
                 String dateOfBirth, String emailAddress, String phoneNumber, Address address){
         this.userID = userID;
@@ -45,10 +27,10 @@ public abstract class User {
         this.address = address;
     }
 
-    public User() {
-    }
+	public User() {
+	}
 
-    public int getUserID() {
+	public int getUserID() {
         return userID;
     }
 
@@ -120,13 +102,4 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Password getPassword() {
-        return password;
-    }
-
-    public void setPassword(Password password) {
-        this.password = password;
-
-    }
-    
 }

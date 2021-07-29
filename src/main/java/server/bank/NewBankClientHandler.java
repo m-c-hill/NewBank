@@ -1,8 +1,5 @@
 package server.bank;
 
-import server.CustomerID;
-import server.UserCredentials;
-import server.bank.NewBank;
 import server.user.Customer;
 import server.user.Registration;
 
@@ -28,24 +25,10 @@ public class NewBankClientHandler extends Thread {
 
 	// Method that prompts the user to enter their username and password
 	// Returns a UserCredential object
-	private UserCredentials takeCredentials(BufferedReader in, PrintWriter out) throws IOException {
-		// ask for user name
-		out.println("Enter Username");
-		String username = in.readLine();
-		// ask for password
-		out.println("Enter Password");
-		String password = in.readLine();
-		out.println("Checking Details...");
 
-		UserCredentials uc = new UserCredentials(username, password);
-
-		return uc;
+	private boolean validateLogin(){
+		out.
 	}
-
-	// TODO: move customer creation to the customer class or a new registration class
-
-	// While this chunk of code works, it's best to encapsulate the sign-up functionality in a different class
-
 
 	// Adding the customer object to bank.customers<String, Customer> HashMap
 	private void registerCustomer(Customer c){
@@ -72,7 +55,7 @@ public class NewBankClientHandler extends Thread {
 								out.println("What do you want to do?"
 										+ "\n1. Show my accounts"
 										+ "\n2. Withdraw amount"
-										+ "\n3. Deposit amount "
+										+ "\n3. Deposit amount"
 										+ "\n4. Create a new account"
 										+ "\n5. Request a loan"
 										+ "\n6. View my loan status"
@@ -91,7 +74,6 @@ public class NewBankClientHandler extends Thread {
 						}
 						break;
 
-					// You can use this for account creation? (Register)
 					case "2":
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();

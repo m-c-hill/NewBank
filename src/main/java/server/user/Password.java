@@ -3,8 +3,6 @@ package server.user;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -17,22 +15,23 @@ import java.util.Arrays;
 import static server.database.Connection.getDBConnection;
 
 /**
- * TODO: class doc string
+ * Class to create, store and authenticate user login and password using a simple salt and hash encryption algorithm
  * Reference: https://www.javacodegeeks.com/2012/05/secure-password-storage-donts-dos-and.html
  */
 public class Password {
-	private int userId;
-	private String login;
+	private final int userId;
+	private final String login;
 	private final java.sql.Connection con = getDBConnection();
 
 	public Password(int userId, String login, String plainTextPassword) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		this.userId = userId;
 		this.login = login;
-		if (!checkLoginExists(login)){
+
+		// If the login does not exist, then store a new login, salt and hash. This will be used during Registration.
+		if (!checkLoginExists()){
 			byte[] salt = generateSalt();
 			byte[] hash = encryptPassword(plainTextPassword, salt);
-			storeSaltAndHash(userId, login, salt, hash);
-			System.out.println("New password has been stored");
+			storeSaltAndHash(salt, hash);
 		}
 	}
 
@@ -45,18 +44,6 @@ public class Password {
 		byte[] salt = new byte[8];
 		RANDOM.nextBytes(salt);
 		return salt;
-	}
-
-	public boolean authenticate(int userId, String plainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Method to check authentication when user enters a password
-
-		byte[][] saltAndHash = retrieveSaltAndHash(userId);
-		byte[] salt = saltAndHash[0];
-		byte[] hashDB = saltAndHash[1];
-
-		byte[] hashPlainText = encryptPassword(plainTextPassword, salt);
-
-		return Arrays.equals(hashPlainText, hashDB);
 	}
 
 	/**
@@ -75,18 +62,32 @@ public class Password {
 	}
 
 	/**
+	 * Method to check authentication when user enters their password
+	 * @param plainTextPassword Password entered by the user
+	 * @return True if the user enters the correct password
+	 */
+	public boolean authenticate(String plainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+		byte[][] saltAndHash = retrieveSaltAndHash();
+		byte[] salt = saltAndHash[0];
+		byte[] hashDB = saltAndHash[1];
+
+		byte[] hashPlainText = encryptPassword(plainTextPassword, salt);
+
+		return Arrays.equals(hashPlainText, hashDB);
+	}
+
+	/**
 	 * Method to store a salt and hash in the database
-	 * @param userId User ID
-	 * @param login User's login
 	 * @param salt Unique salt generated for user
 	 * @param hash Encrypted password
 	 */
-	public void storeSaltAndHash(int userId, String login, byte[] salt, byte[] hash){
+	public void storeSaltAndHash(byte[] salt, byte[] hash){
 		try{
 			String query = "INSERT INTO password (user_id, login, pw_salt, pw_hash) VALUES (?, ?, ?, ?)";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, userId);
-			preparedStatement.setString(2, login);
+			preparedStatement.setInt(1, this.userId);
+			preparedStatement.setString(2, this.login);
 			preparedStatement.setBytes(3, salt);
 			preparedStatement.setBytes(4, hash);
 			preparedStatement.executeUpdate();
@@ -97,17 +98,17 @@ public class Password {
 	}
 
 	/**
-	 * Method to retrieve a string from the database
+	 * Method to retrieve a salt and hash for a specific user from the database
 	 * @return Array containing two byte arrays: the user's salt and user's hash
 	 */
-	private byte[][] retrieveSaltAndHash(int userId){
+	private byte[][] retrieveSaltAndHash(){
 		byte[] salt = new byte[]{};
 		byte[] hash = new byte[]{};
 
 		try{
 			String query = "SELECT * FROM password WHERE user_id = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(1, this.userId);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()){
 				salt = rs.getBytes("pw_salt");
@@ -120,19 +121,15 @@ public class Password {
 		return new byte[][] {salt, hash};
 	}
 
-	private int retrieveUserId(String login){
-		return 1;
-	}
-
 	/**
 	 * Method to check if user has entered a unique ID (check in database)
 	 * @return True if user login is
 	 */
-	public boolean checkLoginExists(String login){
+	public boolean checkLoginExists(){
 		String query = "SELECT 1 FROM password WHERE login = ?";
 		try{
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, login);
+			preparedStatement.setString(1, this.login);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()){
 				return true;
@@ -143,11 +140,18 @@ public class Password {
 		return false;
 	}
 
+	/**
+	 * Method to reset a user's password
+	 * @param newPlainTextPassword New password entered by the user
+	 */
 	public void resetPassword(String newPlainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] salt = retrieveSaltAndHash(this.userId)[0];
-		byte[] newHash = encryptPassword(newPlainTextPassword, salt);
-		storeSaltAndHash(this.userId, this.login, salt, newHash);
 
+		// Encrypt the new password using the original salt for that user
+		byte[] salt = retrieveSaltAndHash()[0];
+		byte[] newHash = encryptPassword(newPlainTextPassword, salt);
+		storeSaltAndHash(salt, newHash);
+
+		// Store the new hash in the database
 		try{
 			String query = "UPDATE password SET pw_hash = ? WHERE user_id = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);

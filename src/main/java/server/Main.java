@@ -11,13 +11,13 @@ public class Main {
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		Password pw = new Password(200,"matt", "password");
 		System.out.println("test");
-		boolean auth = pw.authenticate(200, "password");
+		boolean auth = pw.authenticate("password");
 		System.out.println(auth);
-		boolean auth2 = pw.authenticate(200, "notthepassword");
+		boolean auth2 = pw.authenticate("notthepassword");
 		System.out.println(auth2);
 		pw.resetPassword("newpassword1");
 		System.out.println("Password successfully reset");
-		boolean auth3 = pw.authenticate(200, "newpassword1");
+		boolean auth3 = pw.authenticate("newpassword1");
 		System.out.println(auth3);
 	}
 }
