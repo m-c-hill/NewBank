@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS customer (
 CREATE TABLE IF NOT EXISTS password (
     user_id int REFERENCES user(user_id),
     login varchar(255),
-    pw_salt varchar(255),
-    pw_hash varchar(255)
+    pw_salt varbinary,
+    pw_hash varbinary
 );
 
 -- Create account table

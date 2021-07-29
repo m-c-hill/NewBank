@@ -33,6 +33,16 @@
             <type>jar</type>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>4.1.61.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.ion</groupId>
+            <artifactId>ion-java</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <properties>
