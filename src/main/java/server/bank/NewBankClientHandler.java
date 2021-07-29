@@ -68,7 +68,6 @@ public class NewBankClientHandler extends Thread {
 		try {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
-			UserCredentials uc;
 			while (true) {
 				// A welcome screen offering one option to login and another to register
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
@@ -148,5 +147,4 @@ public class NewBankClientHandler extends Thread {
 			}
 		}
 	}
-
 }
