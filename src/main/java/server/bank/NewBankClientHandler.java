@@ -39,10 +39,11 @@ public class NewBankClientHandler extends Thread {
 	 *
 	 * @return Boolean array [login_authenticated, isCustomer, isAdmin]
 	 */
-	private boolean[] login() {
+	private Object[] login() {
 
 		String login = "";
 		String password = "";
+		int userId = 0;
 
 		boolean isCustomer = false;
 		boolean isAdmin = false;
@@ -57,21 +58,34 @@ public class NewBankClientHandler extends Thread {
 				if (!Password.checkLoginExists(login)) {
 					out.println("This login is invalid, please try again.");
 				} else {
+					userId = Password.getExistingUserId(login);
 					validLogin = true;
 				}
 			}
-			out.println("Please enter your password: ");
-			password = in.readLine();
-			Password credentials = new Password(login, password);
-			grantAccess = credentials.authenticate(password);
 
-			isCustomer = isCustomer(login);
-			isAdmin = isAdmin(login);
+			int count = 0;
+			while (count < 3) {
+				out.println("Please enter your password: ");
+				password = in.readLine();
+				Password credentials = new Password(login, password);
+				grantAccess = credentials.authenticate(password);
+
+				// TODO: the logic of users entering an incorrect password a maximum number of times will need thinking through a bit more
+				if (!grantAccess) {
+					out.println("Incorrect password. " + (3 - count) + " attempts left");
+					count++;
+				} else {
+					break;
+				}
+			}
+
+			isCustomer = isCustomer(userId);
+			isAdmin = isAdmin(userId);
 
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 		}
-		return new boolean[]{grantAccess, isCustomer, isAdmin};
+		return new Object[]{userId, grantAccess, isCustomer, isAdmin};
 	}
 
 	// Adding the customer object to bank.customers<String, Customer> HashMap
@@ -89,22 +103,36 @@ public class NewBankClientHandler extends Thread {
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						if (login() && isCustomer()) {
-							customerMenu();
+						Object[] authCust = login();
+
+						if ((boolean)authCust[1]) {
+							out.println("Login successful");
+							if ((boolean)authCust[2]) {
+								customerMenu((int)authCust[0]);
+							} else {
+								out.println("You do not have permission to access the customer menu.");
+							}
 						}
+						break;
 
 					case "2":
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
+
 					case "3":
-						if (login() && isAdmin()) {
-							adminMenu();
+						Object[] authAdmin = login();
+						if ((boolean)authAdmin[1]) {
+							out.println("Login successful");
+							if ((boolean) authAdmin[3]) {
+								adminMenu((int) authAdmin[0]);
+							} else {
+								out.println("You do not have permission to access the admin menu.");
+							}
 						}
-						;
+						break;
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -118,68 +146,65 @@ public class NewBankClientHandler extends Thread {
 		}
 	}
 
-	private boolean customerMenu() {
-		CustomerID customer = bank.checkCustomerLogInDetails(uc.getUsername(), uc.getPassword());
-		// if the user is authenticated then get requests from the user and process them
-		if (customer != null) {
-			out.println("Login Successful.");
-			while (true) {
-				out.println("What do you want to do?"
-						+ "\n1. Show my accounts"
-						+ "\n2. Withdraw amount"
-						+ "\n3. Deposit amount"
-						+ "\n4. Create a new account"
-						+ "\n5. Request a loan"
-						+ "\n6. View my loan status"
-						+ "\n7. Pay back my loan"
-						+ "\n8. Go back to the main menu");
-				String request = in.readLine();
-				if (request.equals("8")) {
-					break;
-				}
-				System.out.println("Request from " + customer.getKey());
-				String response = bank.processCustomerRequest(customer, request, in, out);
-				out.println(response);
+	/**
+	 * Method to display the options available in the customer menu
+	 * @param userId User ID
+	 */
+	private void customerMenu(int userId) {
+		while (true) {
+			String request = "";
+			out.println("Please choose an option:"
+					+ "\n1. Show my accounts"
+					+ "\n2. Withdraw amount"
+					+ "\n3. Deposit amount"
+					+ "\n4. Create a new account"
+					+ "\n5. Request a loan"
+					+ "\n6. View my loan status"
+					+ "\n7. Pay back my loan"
+					+ "\n8. Go back to the main menu");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} else {
-			out.println("Login Failed");
+			if (request.equals("8")) {
+				break;
+			}
+			String response = bank.processCustomerRequest(userId, request, in, out);
+			out.println(response);
 		}
-		break;
 	}
 
-	private boolean adminMenu() {
-		String admin = bank.checkAdminLogInDetails(uc.getUsername(), uc.getPassword());
-
-		if (admin != null) {
-			out.println("Login successful.");
-			while (true) {
-				out.println("What do you want to do:"
-						+ "\n1. Check loans list"
-						+ "\n2. Accept/Decline a loan request"
-						+ "\n3. Go back to the main menu");
-
-				String request = in.readLine();
-				if (request.equals("3")) {
-					break;
-				}
-
-				System.out.println("Request from " + admin);
-
-				String response = bank.processAdminRequest(admin, request, in, out);
-				out.println(response);
+	/**
+	 * Method to display the options available in the admin menu
+	 * @param userId User ID
+	 */
+	private void adminMenu(int userId) {
+		while (true) {
+			String request = "";
+			out.println("Please choose an option:"
+					+ "\n1. Check loans list"
+					+ "\n2. Accept/Decline a loan request"
+					+ "\n3. Go back to the main menu");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} else {
-			out.println("Login failed.");
+			if (request.equals("3")) {
+				break;
+			}
+			String response = bank.processAdminRequest(userId, request, in, out);
+			out.println(response);
 		}
 	}
 
 	/**
 	 * Method to determine if a user is a customer
-	 * @param login User's login ID
+	 * @param userId User ID
 	 * @return True if user is a customer
 	 */
-	private boolean isCustomer(String login) throws SQLException {
-		int userId = Password.getExistingUserId(login);
+	private boolean isCustomer(int userId) {
 		String query = "SELECT 1 FROM customer WHERE user_id = ?";
 		try {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -196,11 +221,10 @@ public class NewBankClientHandler extends Thread {
 
 	/**
 	 * Method to determine if a user is an admin
-	 * @param login User's login ID
+	 * @param userId User ID
 	 * @return True if user is a customer
 	 */
-	private boolean isAdmin(String login){
-		int userId = Password.getExistingUserId(login);
+	private boolean isAdmin(int userId){
 		String query = "SELECT 1 FROM admin WHERE user_id = ?";
 		try {
 			PreparedStatement preparedStatement = con.prepareStatement(query);

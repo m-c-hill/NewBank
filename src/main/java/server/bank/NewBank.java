@@ -22,7 +22,7 @@ public class NewBank {
 	private ArrayList<BankLoan> loansList;
 	// Interest rate
 	private static final double INTEREST_RATE = 2.78;
-	// Loan credit limit
+	// Loan credit limitadmin
 	private static final double LOAN_LIMIT = 2500;
 
 	private NewBank() {
@@ -140,7 +140,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processCustomerRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
+	public synchronized String processCustomerRequest(int userId, String request, BufferedReader in, PrintWriter out) {
 		if (customers.containsKey(customer.getKey())) {
 			switch (request) {
 				case "1":
@@ -170,7 +170,7 @@ public class NewBank {
 		return "FAIL";
 	}
 
-	public synchronized String processAdminRequest(String admin, String request, BufferedReader in, PrintWriter out){
+	public synchronized String processAdminRequest(int userId, String request, BufferedReader in, PrintWriter out){
 		
 		if (admins.containsKey(admin)) {
 			switch (request) {
