@@ -16,9 +16,8 @@ import static server.database.Connection.getDBConnection;
 public class DbUtils {
 
     private final PrintWriter out;
-    final int REGULAR_ACCOUNT_ID = 1;
-    final int NEWBANK_ID = 1;
-
+    private final int REGULAR_ACCOUNT_ID = 1;
+    private final int NEWBANK_ID = 1;
     public DbUtils(PrintWriter out) throws IOException {
         this.out = out;
     }
@@ -100,7 +99,7 @@ public class DbUtils {
             }
 
         } catch (SQLException exception) {
-            out.println(exception.toString());
+            out.println(exception);
         }
         out.println("New regular account created: " + accountNum);
 
@@ -177,48 +176,4 @@ public class DbUtils {
         return addressId;
     }
 
-    public void storeSaltAndHash(int userId, String login, byte[] salt, byte[] hash){
-        try{
-            String query = "INSERT INTO password (user_id, login, salt, hash) VALUES (?, ?, ?, ?)";
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setString(2, login);
-            preparedStatement.setBytes(3, salt);
-            preparedStatement.setBytes(4, hash);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException exception) {
-            out.println(exception);
-        }
-    }
-
-    /**
-     * Method to retrieve a string from the database
-     */
-    public byte[][] retrieveSaltAndHash(int userId){
-        byte[] salt = new byte[]{};
-        byte[] hash = new byte[]{};
-
-        try{
-            String query = "SELECT * FROM password WHERE user_id=?";
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            preparedStatement.setInt(1, userId);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()){
-                salt = rs.getBytes("pw_salt");
-                hash = rs.getBytes("pw_hash");
-            }
-        } catch (SQLException exception) {
-            out.println(exception);
-        }
-
-        return new byte[][] {salt, hash};
-    }
-
-    /**
-     * Method to retrieve a byte array from the database
-     */
-    private void retrieveByteArray(String table, String key, String field){
-
-    }
 }

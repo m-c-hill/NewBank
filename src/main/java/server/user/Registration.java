@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class Registration {
 	// Customer registration
@@ -103,8 +105,9 @@ public class Registration {
 			String loginID = in.readLine();  //TODO: validate user login in input processor
 			out.println("Please enter a password: ");
 			String password = in.readLine();  //TODO: validate user password in input processor
-			return new Password(loginID, password); // Encrypt password and store in database
-		} catch (IOException e){
+			int userID = 200; //TODO: Change this ASAP
+			return new Password(userID, loginID, password); // Encrypt password and store in database
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){
 			e.printStackTrace();
 			return null;
 		}
