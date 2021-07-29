@@ -23,17 +23,24 @@ public class Password {
 	private final String login;
 	private final java.sql.Connection con = getDBConnection();
 
-	public Password(int userId, String login, String plainTextPassword) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		this.userId = userId;
+	public Password(String login, String plainTextPassword) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		this.login = login;
 
 		// If the login does not exist, then store a new login, salt and hash. This will be used during Registration.
-		if (!checkLoginExists()){
+		if (!checkLoginExists(this.login)){
+			this.userId = getNewUserId();
 			byte[] salt = generateSalt();
 			byte[] hash = encryptPassword(plainTextPassword, salt);
 			storeSaltAndHash(salt, hash);
 		}
+
+		// If the login does exist, pull the user id from the database
+		else{
+			this.userId = getExistingUserId(this.login);
+		}
+
 	}
+
 
 	/**
 	 * Generates a random salt using the pseudo random number generator algorithm "SHA1PRNG"
@@ -125,11 +132,11 @@ public class Password {
 	 * Method to check if user has entered a unique ID (check in database)
 	 * @return True if user login is
 	 */
-	public boolean checkLoginExists(){
+	public static boolean checkLoginExists(String login){
 		String query = "SELECT 1 FROM password WHERE login = ?";
 		try{
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, this.login);
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setString(1, login);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()){
 				return true;
@@ -161,6 +168,45 @@ public class Password {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
 
+	/**
+	 * Method to return the next user ID to be stored in the database
+	 * @return User ID
+	 */
+	private int getNewUserId(){
+		int userId = 0;
+		String query = "SELECT MAX(user_id) FROM user";
+
+		try {
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				userId = rs.getInt("user_id") + 1;
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		return userId;
+	}
+
+	/**
+	 * Method to return the existing user ID from login
+	 * @return User ID
+	 */
+	private int getExistingUserId(String login){
+		int userId = 0;
+		String query = "SELECT * FROM password WHERE login = ?";
+		try {
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, login);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				userId = rs.getInt("user_id");
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		return userId;
 	}
 }

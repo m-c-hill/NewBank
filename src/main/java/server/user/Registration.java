@@ -105,7 +105,6 @@ public class Registration {
 	 */
 	private void setUserCredentials() {
 
-		int newUserId = getNewUserId();
 		String loginId = "";
 		String plainTextPassword = "";
 
@@ -123,7 +122,7 @@ public class Registration {
 			}
 			out.println("Please enter a password: ");
 			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
-			Password password = new Password(newUserId, loginId, plainTextPassword);
+			Password password = new Password(loginId, plainTextPassword);
 			out.println("Password successfully encrypted and stored.");
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){
 			e.printStackTrace();
@@ -133,7 +132,7 @@ public class Registration {
 
 	/**
 	 * Method to register a new customer
-	 * @return
+	 * @return True if customer is registered successfully
 	 */
 	public boolean registerCustomer(){
 
@@ -154,26 +153,6 @@ public class Registration {
 	}
 
 	/**
-	 * Method to return the next user ID to be stored in the database
-	 * @return User ID
-	 */
-	private int getNewUserId(){
-		int userId = -1;
-		String query = "SELECT MAX(user_id) FROM user";
-
-		try {
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.next()) {
-				userId = rs.getInt("user_id") + 1;
-			}
-		} catch(SQLException e){
-			e.printStackTrace();
-		}
-		return userId;
-	}
-
-	/**
 	 * Method to check if user has entered a unique ID (check in database)
 	 * @return True if user login is
 	 */
@@ -191,7 +170,4 @@ public class Registration {
 		}
 		return false;
 	}
-
 }
-
-

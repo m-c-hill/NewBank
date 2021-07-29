@@ -1,6 +1,8 @@
 package server.bank;
 
+import server.support.InputProcessor;
 import server.user.Customer;
+import server.user.Password;
 import server.user.Registration;
 
 import java.io.BufferedReader;
@@ -8,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class NewBankClientHandler extends Thread {
 
@@ -26,8 +30,32 @@ public class NewBankClientHandler extends Thread {
 	// Method that prompts the user to enter their username and password
 	// Returns a UserCredential object
 
-	private boolean validateLogin(){
-		out.
+	private boolean login() {
+
+		String login = "";
+		String password = "";
+
+		boolean validLogin = false;
+		boolean grantAccess = false;
+
+		try {
+			while (!validLogin) {
+				out.println("Please enter your login ID: ");
+				login = in.readLine();
+				if (!Password.checkLoginExists(login)) {
+					out.println("This login is invalid, please try again.");
+				} else {
+					validLogin = true;
+				}
+			}
+			out.println("Please enter your password: ");
+			password = in.readLine();
+			Password credentials = new Password(login, password);
+			grantAccess = credentials.authenticate(password);
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+		return grantAccess;
 	}
 
 	// Adding the customer object to bank.customers<String, Customer> HashMap

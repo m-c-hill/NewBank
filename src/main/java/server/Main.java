@@ -9,7 +9,7 @@ import java.security.spec.InvalidKeySpecException;
 public class Main {
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		Password pw = new Password(200,"matt", "password");
+		Password pw = new Password("matt", "password");
 		System.out.println("test");
 		boolean auth = pw.authenticate("password");
 		System.out.println(auth);
