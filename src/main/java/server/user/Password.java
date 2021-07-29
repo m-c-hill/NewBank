@@ -21,10 +21,12 @@ import static server.database.Connection.getDBConnection;
  * Reference: https://www.javacodegeeks.com/2012/05/secure-password-storage-donts-dos-and.html
  */
 public class Password {
+	private int userId;
 	private String login;
 	private final java.sql.Connection con = getDBConnection();
 
 	public Password(int userId, String login, String plainTextPassword) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		this.userId = userId;
 		this.login = login;
 		if (!checkLoginExists(login)){
 			byte[] salt = generateSalt();
@@ -103,7 +105,7 @@ public class Password {
 		byte[] hash = new byte[]{};
 
 		try{
-			String query = "SELECT * FROM password WHERE user_id=?";
+			String query = "SELECT * FROM password WHERE user_id = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, userId);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -141,7 +143,20 @@ public class Password {
 		return false;
 	}
 
-	public void resetPassword(){
+	public void resetPassword(String newPlainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] salt = retrieveSaltAndHash(this.userId)[0];
+		byte[] newHash = encryptPassword(newPlainTextPassword, salt);
+		storeSaltAndHash(this.userId, this.login, salt, newHash);
+
+		try{
+			String query = "UPDATE password SET pw_hash = ? WHERE user_id = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setBytes(1, newHash);
+			preparedStatement.setInt(2, userId);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 }

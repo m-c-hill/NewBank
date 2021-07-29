@@ -15,5 +15,9 @@ public class Main {
 		System.out.println(auth);
 		boolean auth2 = pw.authenticate(200, "notthepassword");
 		System.out.println(auth2);
+		pw.resetPassword("newpassword1");
+		System.out.println("Password successfully reset");
+		boolean auth3 = pw.authenticate(200, "newpassword1");
+		System.out.println(auth3);
 	}
 }
