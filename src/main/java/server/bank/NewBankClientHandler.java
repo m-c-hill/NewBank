@@ -1,5 +1,6 @@
 package server.bank;
 
+import server.database.GetObject;
 import server.support.InputProcessor;
 import server.user.Customer;
 import server.user.Password;
@@ -151,6 +152,9 @@ public class NewBankClientHandler extends Thread {
 	 * @param userId User ID
 	 */
 	private void customerMenu(int userId) {
+
+		Customer customer = GetObject.getCustomer(userId);
+
 		while (true) {
 			String request = "";
 			out.println("Please choose an option:"
@@ -170,7 +174,7 @@ public class NewBankClientHandler extends Thread {
 			if (request.equals("8")) {
 				break;
 			}
-			String response = bank.processCustomerRequest(userId, request, in, out);
+			String response = bank.processCustomerRequest(customer, request, in, out);
 			out.println(response);
 		}
 	}

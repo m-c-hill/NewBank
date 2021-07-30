@@ -2,7 +2,6 @@ package server.bank;
 
 public class Address {
 	private int addressID;
-	private String addressNumber; // String variable since address number could contain letters (ie. flat 2B)
 	private String addressLine1;
 	private String addressLine2 = null; // Default null as not all UK addresses will have a second line
 	private String city;
@@ -10,10 +9,9 @@ public class Address {
 	private String postcode;
 	private String country;
 
-	public Address(String addressNumber, String addressLine1, String addressLine2, String city, String region,
+	public Address(String addressLine1, String addressLine2, String city, String region,
 				   String postcode, String country) {
 		this.addressID = 1; // TODO: find a way to generate next primary key
-		this.addressNumber = addressNumber;
 		this.addressLine1 = addressLine1;
 		this.addressLine2 = addressLine2;
 		this.city = city;
@@ -30,14 +28,6 @@ public class Address {
 
 	public void setAddressID(int addressID) {
 		this.addressID = addressID;
-	}
-
-	public String getAddressNumber() {
-		return addressNumber;
-	}
-
-	public void setAddressNumber(String addressNumber) {
-		this.addressNumber = addressNumber;
 	}
 
 	public String getAddressLine1() {
@@ -90,11 +80,11 @@ public class Address {
 
 	public void displayAddress(){
 		if(addressLine2 != null){
-			System.out.println("Address: " + addressNumber + " " + addressLine1 + "\n" + addressLine2 + "\n" +
+			System.out.println("Address: " + addressLine1 + "\n" + addressLine2 + "\n" +
 					city + "\n" + region + "\n" + postcode + "\n" + country);
 		}
 		else{
-			System.out.println("Address: " + addressNumber + " " + addressLine1 + "\n" +
+			System.out.println("Address: " + addressLine1 + "\n" +
 					city + "\n" + region + "\n" + postcode + "\n" + country);
 		}
 	}

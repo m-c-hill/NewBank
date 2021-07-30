@@ -15,7 +15,7 @@ public class Account {
 	public Account(String accountNumber, double openingBalance) {
 		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
 
-		// Create the primary balance, default balance is gbp, but could be changed in the future so user can choose
+		// Create the primary balance, default balance is gbp, but could be changed in the future so user can choosex
 		Balance primaryBalance = new Balance(accountNumber = this.accountNumber,
 				new Currency(), openingBalance, true);
 		this.balance.add(primaryBalance);

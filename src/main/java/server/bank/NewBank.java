@@ -61,8 +61,7 @@ public class NewBank {
 		// This is to test the loan request as the first names is tied to the Customer object in the HashMap
 		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", "18/04/1982", "kylie@gmail.com", "04444444444", 
 				new Address(
-					"200", 
-					"Some Street", 
+					"200 Some Street",
 					"Some Other Street", 
 					"Tokyo", 
 					"Fuji", 
@@ -73,8 +72,7 @@ public class NewBank {
 		// Test Customer 02 using the overloaded constructor
 		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", "18/04/1982", "daniel@gmail.com", "04444444444", 
 				new Address(
-					"200", 
-					"Some Street", 
+					"200 Some Street",
 					"Some Other Street", 
 					"Bavaria", 
 					"Munich", 
@@ -88,8 +86,7 @@ public class NewBank {
 	public void addAdminTestData() {
 		Admin michael = new Admin(100, "GM", "Michael", "Corielli", "22446688", "20/07/1980", "bruce@gmail.com", "01234567891",
 				new Address(
-					"107", 
-					"Some Street", 
+					"107 Some Street",
 					"Some Other Street", 
 					"Seattle", 
 					"King County", 
@@ -98,15 +95,14 @@ public class NewBank {
 				500,
 				new AdminRole(
 					"Manager", 
-					"Has all the administrative privileges.", 
+					"Has all the administrative privileges.",
 					true, true, true, true, true, true)
 					);
 		admins.put(michael.getFirstName(), michael);
 
 		Admin grant = new Admin(100, "GM", "Grant", "Stevenson", "22446688", "20/07/1980", "grant@gmail.com", "01234567891",
 				new Address(
-					"107", 
-					"Some Street", 
+					"107 Some Street",
 					"Some Other Street", 
 					"Cheshire", 
 					"North West Engalnd", 
@@ -125,49 +121,33 @@ public class NewBank {
 		return bank;
 	}
 
-	public synchronized CustomerID checkCustomerLogInDetails(String userName, String password) {
-		if (customers.containsKey(userName)) {
-			return new CustomerID(userName);
-		}
-		return null;
-	}
-
-	public synchronized String checkAdminLogInDetails(String userName, String password) {
-		if (admins.containsKey(userName)) {
-			return userName;
-		}
-		return null;
-	}
-
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processCustomerRequest(int userId, String request, BufferedReader in, PrintWriter out) {
-		if (customers.containsKey(customer.getKey())) {
-			switch (request) {
-				case "1":
-					return showMyAccounts(customer);
-				// Added "WITHDRAW" command
-				case "2":
-					return withdrawAmount(customer, in, out);
-				// "DEPOSIT" command
-				case "3":
-					return depositAmount(customer, in, out);
-				// "CREATE ACCOUNT" command
-				case "4":
-					return createAccount(customer, in, out);
-				// "RLOAN" command
-				case "5":
-					return requestLoan(customer, in, out);
-				// "SHOWMYLOANSTATUS" command
-				case "6":
-					return showMyLoanStatus(customer, in, out);
-				// "PAYBACKLOAN" command
-				case "7":
-					return payBackLoan(customer, in, out);
-				default:
-					return "FAIL";
-			}
+
+		switch (request) {
+			case "1":
+				return showMyAccounts(customer);
+			// Added "WITHDRAW" command
+			case "2":
+				return withdrawAmount(customer, in, out);
+			// "DEPOSIT" command
+			case "3":
+				return depositAmount(customer, in, out);
+			// "CREATE ACCOUNT" command
+			case "4":
+				return createAccount(customer, in, out);
+			// "RLOAN" command
+			case "5":
+				return requestLoan(customer, in, out);
+			// "SHOWMYLOANSTATUS" command
+			case "6":
+				return showMyLoanStatus(customer, in, out);
+			// "PAYBACKLOAN" command
+			case "7":
+				return payBackLoan(customer, in, out);
+			default:
+				return "FAIL";
 		}
-		return "FAIL";
 	}
 
 	public synchronized String processAdminRequest(int userId, String request, BufferedReader in, PrintWriter out){
@@ -202,7 +182,6 @@ public class NewBank {
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 		
 		if (customerAccounts.isEmpty()) {
-			
 			return String.format("There is no account found for this customer.");
 		} else {
 			out.println("Please enter the name of the account you want to withdraw from" 
@@ -251,16 +230,14 @@ public class NewBank {
 
 	// Make Deposit Feature
 	public String depositAmount(CustomerID customer, BufferedReader in, PrintWriter out){
-			
+
 		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
 		if (customerAccounts.isEmpty()) {
-			
 			return String.format("There is no account found under this customer name.");
 		}
 		else {
 			out.println("Please enter the name of the account you want to make a deposit to" 
 					+ "(choose from the list below):" + "\nPlease type EXIT to go back to the main menu.");
-			
 			// Display Customer-related accounts as visual aid for providing a choice	
 			out.println(showMyAccounts(customer));
 				
@@ -384,7 +361,6 @@ public class NewBank {
 				}
 			}
 		}
-
 		return "You have not submitted any loan requests.";
 	}
 
@@ -409,5 +385,4 @@ public class NewBank {
 		}
 		return "You have not submitted any loan requests.";
 	}
-
 }
