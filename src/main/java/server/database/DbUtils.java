@@ -153,17 +153,16 @@ public class DbUtils {
 
         try {
             Address userAddress = customer.getAddress();
-            String createUserAddress = "INSERT INTO address (address_num, address_line_1, address_line_2, city, region, postcode, country)" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String createUserAddress = "INSERT INTO address (address_line_1, address_line_2, city, region, postcode, country)" +
+                    " VALUES (?, ?, ?, ?, ?, ?);";
 
             PreparedStatement preparedStatement = con.prepareStatement(createUserAddress, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, userAddress.getAddressNumber());
-            preparedStatement.setString(2, userAddress.getAddressLine1());
-            preparedStatement.setString(3, userAddress.getAddressLine2());
-            preparedStatement.setString(4, userAddress.getCity());
-            preparedStatement.setString(5, userAddress.getRegion());
-            preparedStatement.setString(6, userAddress.getPostcode());
-            preparedStatement.setString(7, userAddress.getCountry());
+            preparedStatement.setString(1, userAddress.getAddressLine1());
+            preparedStatement.setString(2, userAddress.getAddressLine2());
+            preparedStatement.setString(3, userAddress.getCity());
+            preparedStatement.setString(4, userAddress.getRegion());
+            preparedStatement.setString(5, userAddress.getPostcode());
+            preparedStatement.setString(6, userAddress.getCountry());
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if(rs.next()) {

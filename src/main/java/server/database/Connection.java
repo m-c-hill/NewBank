@@ -157,7 +157,6 @@ public class Connection {
 				}
 				System.out.println("\n\n");
 			}
-
 		}
 	}
 }

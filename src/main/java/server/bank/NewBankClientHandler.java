@@ -2,6 +2,7 @@ package server.bank;
 
 import server.database.GetObject;
 import server.support.InputProcessor;
+import server.user.Admin;
 import server.user.Customer;
 import server.user.Password;
 import server.user.Registration;
@@ -184,6 +185,9 @@ public class NewBankClientHandler extends Thread {
 	 * @param userId User ID
 	 */
 	private void adminMenu(int userId) {
+
+		Admin admin = GetObject.getAdmin(userId);
+
 		while (true) {
 			String request = "";
 			out.println("Please choose an option:"
@@ -198,7 +202,7 @@ public class NewBankClientHandler extends Thread {
 			if (request.equals("3")) {
 				break;
 			}
-			String response = bank.processAdminRequest(userId, request, in, out);
+			String response = bank.processAdminRequest(admin, request, in, out);
 			out.println(response);
 		}
 	}

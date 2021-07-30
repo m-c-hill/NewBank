@@ -55,7 +55,7 @@ INSERT INTO newbank.account_type(name, description)
 VALUES
        ('Regular', 'Standard account for new customer');
 
-INSERT INTO newbank.address(address_num, address_line_1, address_line_2, city, region, postcode, country)
+INSERT INTO newbank.address(address_line_1, address_line_2, city, region, postcode, country)
 VALUES
        ('183 Liverpool Road', NULL, 'Slough', 'Surrey', 'SL1 4QZ', 'United Kingdom'),
        ('5 Appold Street', NULL, 'London', 'London', 'EC2A 2AG', 'United Kingdom'),

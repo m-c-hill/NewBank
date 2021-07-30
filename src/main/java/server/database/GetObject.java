@@ -76,11 +76,14 @@ public class GetObject {
 
 	/**
 	 * Method to retreive account data from the database and create an account object
-	 * @param customerId
-	 * @return
+	 * @param customerId Customer ID
+	 * @return Account
 	 */
 	public static Account getAccount(int customerId){
 		String query = "SELECT * FROM account WHERE account_id = ?";
+
+		
+
 		return null;
 	}
 
@@ -90,8 +93,8 @@ public class GetObject {
 
 	/**
 	 * Method to retrieve admin data from the database and create an Admin object
-	 * @param userId
-	 * @return
+	 * @param userId User ID
+	 * @return Admin
 	 */
 	public static Admin getAdmin(int userId){
 		// TODO create method to retrieve an admin account and roles

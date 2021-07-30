@@ -122,7 +122,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processCustomerRequest(int userId, String request, BufferedReader in, PrintWriter out) {
+	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 
 		switch (request) {
 			case "1":
@@ -150,25 +150,21 @@ public class NewBank {
 		}
 	}
 
-	public synchronized String processAdminRequest(int userId, String request, BufferedReader in, PrintWriter out){
-		
-		if (admins.containsKey(admin)) {
-			switch (request) {
-				case "1":
-					return admins.get(admin).showLoansList(loansList, out);
-				case "2":
-					return admins.get(admin).handleLoanRequest(loansList, customers, in, out);
-				default:
-					break;
-			}
+	public synchronized String processAdminRequest(Admin admin, String request, BufferedReader in, PrintWriter out){
+		switch (request) {
+			case "1":
+				return admin.showLoansList(loansList, out);
+			case "2":
+				return admin.handleLoanRequest(loansList, customers, in, out);
+			default:
+				break;
 		}
 		return "Fail";
 	}
 
-	private String showMyAccounts(CustomerID customer) {
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+	private String showMyAccounts(Customer customer) {
+		ArrayList<Account> customerAccounts = customer.getAccounts();
 		if (customerAccounts.isEmpty()) {
-
 			return String.format("There is no account found under this customer.");
 		} else {
 
@@ -177,9 +173,9 @@ public class NewBank {
 	}
 
 	// Withdrawal Feature
-	public String withdrawAmount(CustomerID customer, BufferedReader in, PrintWriter out){
+	public String withdrawAmount(Customer customer, BufferedReader in, PrintWriter out){
 		
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		ArrayList<Account> customerAccounts = customer.getAccounts();
 		
 		if (customerAccounts.isEmpty()) {
 			return String.format("There is no account found for this customer.");
@@ -229,9 +225,9 @@ public class NewBank {
 	}
 
 	// Make Deposit Feature
-	public String depositAmount(CustomerID customer, BufferedReader in, PrintWriter out){
+	public String depositAmount(Customer customer, BufferedReader in, PrintWriter out){
 
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		ArrayList<Account> customerAccounts = customer.getAccounts();
 		if (customerAccounts.isEmpty()) {
 			return String.format("There is no account found under this customer name.");
 		}
@@ -263,10 +259,9 @@ public class NewBank {
 						// Values to be printed
 						accountPrntIndex = i;
 						depositPrntAmount = amount;
-							
 							break;
 						}
-					}	
+					}
 
 					return String.format("Process succeeded. You've made a deposit of "
 					 +  depositPrntAmount + " to " + accountNumber
@@ -277,9 +272,9 @@ public class NewBank {
 	}
 
 	// Creating New Account Feature
-	public String createAccount(CustomerID customer, BufferedReader in, PrintWriter out) {
+	public String createAccount(Customer customer, BufferedReader in, PrintWriter out) {
 
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+		ArrayList<Account> customerAccounts = customer.getAccounts();
 
 		out.println("Please enter a name for the account you want to create:"
 				+ "\nPlease enter Exit to go back to the main menu.");
@@ -294,7 +289,7 @@ public class NewBank {
 		else {
 			double openingBalance = 0;
 
-			customers.get(customer.getKey()).addAccount(new Account(accountName, openingBalance));
+			customer.addAccount(new Account(accountName, openingBalance));
 
 			return String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
 					+ Double.toString(openingBalance));
@@ -303,9 +298,9 @@ public class NewBank {
 	}
 
 	// Loan Request Feature
-	private String requestLoan(CustomerID customer, BufferedReader in, PrintWriter out) {
-		if (customers.get(customer.getKey()).isAllowedToRequestLoan()) {
-			ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+	private String requestLoan(Customer customer, BufferedReader in, PrintWriter out) {
+		if (customer.isAllowedToRequestLoan()) {
+			ArrayList<Account> customerAccounts = customer.getAccounts();
 
 			if (customerAccounts.isEmpty()) {
 				return "There is no account found for this customer.";
@@ -328,10 +323,10 @@ public class NewBank {
 							out.println("Please provide a justification for requesting a loan:");
 							String jStatement = InputProcessor.takeValidRegularInput(in, out);
 
-							BankLoan bankLoan = new BankLoan(customers.get(customer.getKey()), customerAccount, jStatement, amount, INTEREST_RATE);
+							BankLoan bankLoan = new BankLoan(customer, customerAccount, jStatement, amount, INTEREST_RATE);
 							this.loansList.add(bankLoan);
 
-							customers.get(customer.getKey()).setAllowedToRequestLoan(false);
+							customer.setAllowedToRequestLoan(false);
 
 							return String.format("Your loan request has been submitted."
 									+ "\nPlease remember to check for updates on the loan status from the menu");
@@ -348,9 +343,9 @@ public class NewBank {
 	}
 
 	// Method to check my loan status
-	private String showMyLoanStatus(CustomerID customer, BufferedReader in, PrintWriter out) {
+	private String showMyLoanStatus(Customer customer, BufferedReader in, PrintWriter out) {
 		for (BankLoan bankLoan : loansList) {
-			if (bankLoan.getCustomer().getFirstName().equals(customer.getKey())) {
+			if (bankLoan.getCustomer().getFirstName().equals(customer.getFirstName())) {
 				if (!bankLoan.isChecked()) {
 					return "Your loan request has not been checked yet.";
 				} else if (bankLoan.isChecked() && bankLoan.isAccepted()) {
@@ -365,18 +360,18 @@ public class NewBank {
 	}
 
 	// Method to pay back loan
-	private String payBackLoan(CustomerID customer, BufferedReader in, PrintWriter out){
-		ArrayList<Account> customerAccounts = customers.get(customer.getKey()).getAccounts();
+	private String payBackLoan(Customer customer, BufferedReader in, PrintWriter out){
+		ArrayList<Account> customerAccounts = customer.getAccounts();
 		
 		for (BankLoan bankLoan : loansList) {
-			if(bankLoan.getCustomer().getFirstName().equals(customer.getKey()) && bankLoan.isAccepted()){				
+			if(bankLoan.getCustomer().getFirstName().equals(customer.getFirstName()) && bankLoan.isAccepted()){
 				out.println("Which account would you like to use in order to pay back the loan?" + "\n" + showMyAccounts(customer));
 				String accountName = InputProcessor.takeValidInput(customerAccounts, bankLoan.getPayBackAmount(), in, out);
 
 				for (int i = 0; i < customerAccounts.size(); i++) {
 					if (customerAccounts.get(i).getAccountNumber().equalsIgnoreCase(accountName)) {
 						customerAccounts.get(i).payBackLoan(bankLoan.getPayBackAmount());
-						customers.get(customer.getKey()).setAllowedToRequestLoan(true);
+						customer.setAllowedToRequestLoan(true);
 						bankLoan.setPaidBack(true);
 						return "Loan was successfully paid back.";
 					}
