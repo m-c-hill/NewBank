@@ -61,13 +61,6 @@ public class Registration {
 		//TODO: tidy this up
 		String number = "";
 
-		out.println("Please enter your address number: ");
-		try {
-			number = in.readLine(); // TODO: both letters and numbers acceptable, update InputProcessor?
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-
 		out.println("Please enter your first address line: ");
 		String firstLine = InputProcessor.takeValidInput("letters", in, out);
 
@@ -86,7 +79,7 @@ public class Registration {
 		out.println("Please enter your country: ");
 		String country = InputProcessor.takeValidInput("letters", in, out);
 
-		return new Address(number, firstLine, secondLine, city, region, postcode, country);
+		return new Address(firstLine, secondLine, city, region, postcode, country);
 	}
 
 	private String takeEmail(){

@@ -9,13 +9,13 @@ public class Account {
 	private String accountNumber;
 	private String accountName;
 	private final Bank bank = new Bank(1, "NewBank", "1 Bank Street", "010001");
-	private ArrayList<Balance> balance = new ArrayList<Balance>();
+	private final ArrayList<Balance> balance = new ArrayList<Balance>();
 	private String statementSchedule = "monthly"; // User may change frequency of statements to weekly, monthly
 	
 	public Account(String accountNumber, double openingBalance) {
 		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
 
-		// Create the primary balance, default balance is gbp, but could be changed in the future so user can choosex
+		// Create the primary balance, default balance is gbp, but could be changed in the future so user can choose
 		Balance primaryBalance = new Balance(accountNumber = this.accountNumber,
 				new Currency(), openingBalance, true);
 		this.balance.add(primaryBalance);

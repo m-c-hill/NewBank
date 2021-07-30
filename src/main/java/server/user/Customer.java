@@ -2,12 +2,13 @@ package server.user;
 
 import server.account.Account;
 import server.bank.Address;
+import server.database.GetObject;
 
 import java.util.ArrayList;
 
 public class Customer extends User {
-	
-	private final ArrayList<Account> accounts;
+
+	private ArrayList<Account> accounts;
 	private boolean allowedToRequestLoan;
 
 	public Customer(){
@@ -20,7 +21,7 @@ public class Customer extends User {
 					String dateOfBirth, String emailAddress, String phoneNumber, Address address) {
 
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
-		this.accounts = new ArrayList<>();
+		retrieveAccounts();
 		this.allowedToRequestLoan = true;
 	}
 
@@ -35,7 +36,7 @@ public class Customer extends User {
 	public void setAllowedToRequestLoan(boolean allowedToRequestLoan) {
 		this.allowedToRequestLoan = allowedToRequestLoan;
 	}
-	
+
 	public String accountsToString() {
 		String accountList = "";
 		for(Account a : accounts) {
@@ -45,6 +46,11 @@ public class Customer extends User {
 	}
 
 	public void addAccount(Account account) {
-		accounts.add(account);		
+		accounts.add(account);
+		// TODO: save new account details to the database
+	}
+
+	private void retrieveAccounts() {
+		this.accounts = GetObject.getAccounts(this.getUserID());
 	}
 }

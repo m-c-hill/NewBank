@@ -247,20 +247,3 @@ public class NewBankClientHandler extends Thread {
 		return false;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

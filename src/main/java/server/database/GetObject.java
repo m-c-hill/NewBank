@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import static server.database.Connection.getDBConnection;
 
 public class GetObject {
-
 	/**
 	 * Method to retrieve customer data from the database and create a Customer object
 	 * @param userId User ID
@@ -76,14 +75,25 @@ public class GetObject {
 
 	/**
 	 * Method to retreive account data from the database and create an account object
-	 * @param customerId Customer ID
+	 * @param userId User ID
 	 * @return Account
 	 */
-	public static Account getAccount(int customerId){
-		String query = "SELECT * FROM account WHERE account_id = ?";
-
-		
-
+	public static ArrayList<Account> getAccounts(int userId){
+		ArrayList<Account> accounts = new ArrayList<>();
+		// TODO: update the database to include multiple accounts per user
+		String query = "SELECT * FROM customer c LEFT JOIN user u ON c.user_id = u.user_id LEFT JOIN account a ON a.account_number = c.account_number LEFT JOIN balance b ON a.account_number = b.account_number WHERE u.user_id = ? AND b.primary_balance=true";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				String accountNumber = rs.getString("c.account_number");
+				double balance = rs.getDouble("amount");
+				accounts.add(new Account(accountNumber, balance));
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
 		return null;
 	}
 

@@ -165,7 +165,7 @@ public class NewBank {
 	private String showMyAccounts(Customer customer) {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 		if (customerAccounts.isEmpty()) {
-			return String.format("There is no account found under this customer.");
+			return "There is no account found under this customer.";
 		} else {
 
 			return OutputProcessor.createsAccountsTable(customerAccounts);
@@ -178,7 +178,7 @@ public class NewBank {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 		
 		if (customerAccounts.isEmpty()) {
-			return String.format("There is no account found for this customer.");
+			return "There is no account found for this customer.";
 		} else {
 			out.println("Please enter the name of the account you want to withdraw from" 
 						+ " (choose from the list below):" + "\nPlease enter Exit to go back to the main menu.");
