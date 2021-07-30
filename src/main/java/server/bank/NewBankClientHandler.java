@@ -186,6 +186,7 @@ public class NewBankClientHandler extends Thread {
 	 */
 	private void adminMenu(int userId) {
 
+		// TODO: update required to get admin objects from the database
 		Admin admin = GetObject.getAdmin(userId);
 
 		while (true) {
