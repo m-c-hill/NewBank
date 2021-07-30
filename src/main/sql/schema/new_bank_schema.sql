@@ -1,4 +1,3 @@
--- Warning: only run this for a hard reset of the production database.
 DROP SCHEMA IF EXISTS newbank;
 CREATE SCHEMA IF NOT EXISTS newbank;
 
@@ -32,14 +31,14 @@ CREATE TABLE IF NOT EXISTS customer (
 CREATE TABLE IF NOT EXISTS password (
     user_id int REFERENCES user(user_id),
     login varchar(255),
-    pw_salt varbinary,
-    pw_hash varbinary
+    pw_salt varbinary(300),
+    pw_hash varbinary(300)
 );
 
 -- Create account table
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
-    account_number int(8) PRIMARY KEY AUTO_INCREMENT,
+    account_number varchar(8) PRIMARY KEY,
     bank_id int REFERENCES bank(bank_id),
     account_type_id int REFERENCES account_type(account_type_id),
     statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly'
@@ -104,7 +103,6 @@ CREATE TABLE IF NOT EXISTS currency (
 -- Description: address information
 CREATE TABLE IF NOT EXISTS address (
     address_id int PRIMARY KEY AUTO_INCREMENT,
-    address_num varchar(10),
     address_line_1 varchar(255),
     address_line_2 varchar(255),
     city varchar(255),
@@ -161,7 +159,7 @@ CREATE TABLE IF NOT EXISTS transfer (
 CREATE TABLE IF NOT EXISTS loans (
     loan_id int PRIMARY KEY AUTO_INCREMENT,
     customer_id int REFERENCES customer(customer_id),
-    account_number int REFERENCES account(account_number),
+    account_number varchar(8) REFERENCES account(account_number),
     amount double,
     currency_id varchar(255) REFERENCES currency(currency_id),
     approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
