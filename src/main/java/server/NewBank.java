@@ -5,11 +5,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//TWILIO library imports for the SMS Server 
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-
 
 public class NewBank {
 
@@ -24,13 +19,7 @@ public class NewBank {
 	// Loan credit limit
 	private static final double LOAN_LIMIT = 2500;
 	//twilio server account ID
-	public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
-	//twilio server account TOKEN
-	public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
-	//number to send the SMS to -target number
-	public static final String PHONE_TO_SEND = System.getenv("MY_PHONE_NUMBER");
-	//number to send the SMS from, provided by the TWILIO servers
-	public static final String TRIAL_NUMBER = System.getenv("TWILIO_TRIAL_NUMBER");
+	
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -146,22 +135,6 @@ public class NewBank {
 		return null;
 	}
 	
-	/* This method allows to send an SMS using external Twilio hosting service
-	 * The ACCOUNT_SID, AUTH_TOKEN is the server credentials
-	 * The PHONE_TO_SEND is the target phone number and the TRIAL_NUMBER
-	 * is the phone number provided by TWILIO web service
-	 * They are stored secret under environment variables.
-	 */	
-	public void sendText(String notification) { 	
-	     Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-	     Message message = Message.creator(
-	             new com.twilio.type.PhoneNumber(PHONE_TO_SEND),
-	             new com.twilio.type.PhoneNumber(TRIAL_NUMBER),
-	             notification)
-	         .create();
-
-	     System.out.println(message.getSid());
-	 }
 	
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processCustomerRequest(CustomerID customer, String request, BufferedReader in, PrintWriter out) {
@@ -269,7 +242,7 @@ public class NewBank {
 						 + "\nRemining balance: " 
 						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
 				
-				sendText(notification);
+				Sms.sendText(notification);
 				
 				return notification;
 				
@@ -325,7 +298,7 @@ public class NewBank {
 						 + "\nUpdated balance: " 
 						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
 
-				sendText(notification);
+				Sms.sendText(notification);
 				
 				return notification;
 				
@@ -356,7 +329,7 @@ public class NewBank {
 			String notification = String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
 					+ Double.toString(openingBalance));
 			
-			sendText(notification);
+			Sms.sendText(notification);
 			
 			return notification;
 		}
@@ -393,13 +366,13 @@ public class NewBank {
 
 							customers.get(customer.getKey()).setAllowedToRequestLoan(false);
 
-							String sms_notification  = String.format("Your loan request has been submitted." 
-									+ "\nYou will receive a confirmation SMS once your request is reviewed by the bank.");
+							String notification  = String.format("Your loan request has been submitted." 
+									+ "\nYou will receive a confirmation SMS once your request is reviewed by the bank."
+									+  "\nYou can also check for the updates on the loan status from the menu");
 							
-							sendText (sms_notification);
+							Sms.sendText (notification);
 
-							return String.format("Your loan request has been submitted."
-									+ "\nPlease remember to check for updates on the loan status from the menu");
+							return notification;
 						}
 					}
 					return "Interrupted.";
@@ -423,7 +396,7 @@ public class NewBank {
 					String notification = String.format("Your loan request has been accepted." + "\nThe requested amount has been added to your "
 							+ bankLoan.getAccount().getAccountNumber() + " account.");
 					
-					sendText (notification);
+					Sms.sendText (notification);
 					
 					return notification;
 					
@@ -431,7 +404,7 @@ public class NewBank {
 					
 					String notification =  "Your loan request has been rejected. You may request a new loan.";
 					
-					sendText (notification);
+					Sms.sendText (notification);
 					
 					return notification;	
 				}
@@ -458,7 +431,7 @@ public class NewBank {
 						
 						String notification = "Loan was successfully paid back.";
 						
-						sendText(notification);
+						Sms.sendText(notification);
 						
 						return notification;
 					}
