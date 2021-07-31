@@ -1,5 +1,6 @@
 package server.bank;
 
+import server.Sms;
 import server.account.Account;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
@@ -11,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class NewBank {
 
@@ -24,6 +26,7 @@ public class NewBank {
 	private static final double INTEREST_RATE = 2.78;
 	// Loan credit limitadmin
 	private static final double LOAN_LIMIT = 2500;
+	//twilio server account ID
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -215,10 +218,15 @@ public class NewBank {
 					}
 				}	
 		
-				return String.format("Process succeeded. You've withdrawn "
-				 + withdrawPrntAmount 
-				 + "\nRemining balance: " 
-				 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+				String notification = String.format("Process succeeded. You've withdrawn "
+						 + withdrawPrntAmount 
+						 + "\nRemining balance: " 
+						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+				
+				Sms.sendText(notification);
+				
+				return notification;
+				
 			}
 				
 		}
@@ -263,10 +271,15 @@ public class NewBank {
 						}
 					}
 
-					return String.format("Process succeeded. You've made a deposit of "
-					 +  depositPrntAmount + " to " + accountNumber
-					 + "\nUpdated balance: " 
-					 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+				String notification = String.format("Process succeeded. You've made a deposit of "
+						 +  depositPrntAmount + " to " + accountNumber
+						 + "\nUpdated balance: " 
+						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+
+				Sms.sendText(notification);
+				
+				return notification;
+				
 				}
 		}
 	}
@@ -291,9 +304,12 @@ public class NewBank {
 
 			customer.addAccount(new Account(accountName, openingBalance));
 
-			return String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
+			String notification = String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
 					+ Double.toString(openingBalance));
-
+			
+			Sms.sendText(notification);
+			
+			return notification;
 		}
 	}
 
@@ -328,8 +344,13 @@ public class NewBank {
 
 							customer.setAllowedToRequestLoan(false);
 
-							return String.format("Your loan request has been submitted."
-									+ "\nPlease remember to check for updates on the loan status from the menu");
+							String notification  = String.format("Your loan request has been submitted." 
+									+ "\nYou will receive a confirmation SMS once your request is reviewed by the bank."
+									+  "\nYou can also check for the updates on the loan status from the menu");
+							
+							Sms.sendText (notification);
+
+							return notification;
 						}
 					}
 					return "Interrupted.";
@@ -349,10 +370,21 @@ public class NewBank {
 				if (!bankLoan.isChecked()) {
 					return "Your loan request has not been checked yet.";
 				} else if (bankLoan.isChecked() && bankLoan.isAccepted()) {
-					return String.format("Your loan request has been accepted." + "\nThe requested amount has been added to your "
-								+ bankLoan.getAccount().getAccountNumber() + " account.");
+					
+					String notification = String.format("Your loan request has been accepted." + "\nThe requested amount has been added to your "
+							+ bankLoan.getAccount().getAccountNumber() + " account.");
+					
+					Sms.sendText (notification);
+					
+					return notification;
+					
 				} else if (bankLoan.isChecked() && !bankLoan.isAccepted()) {
-					return "Your loan request has been rejected. You may request a new loan.";
+					
+					String notification =  "Your loan request has been rejected. You may request a new loan.";
+					
+					Sms.sendText (notification);
+					
+					return notification;	
 				}
 			}
 		}
@@ -373,7 +405,12 @@ public class NewBank {
 						customerAccounts.get(i).payBackLoan(bankLoan.getPayBackAmount());
 						customer.setAllowedToRequestLoan(true);
 						bankLoan.setPaidBack(true);
-						return "Loan was successfully paid back.";
+						
+						String notification = "Loan was successfully paid back.";
+						
+						Sms.sendText(notification);
+						
+						return notification;
 					}
 				}
 			}
