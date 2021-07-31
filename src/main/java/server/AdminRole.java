@@ -7,18 +7,20 @@ public class AdminRole {
 	private boolean canViewUserStatement = false;
 	private boolean canOpenAccount = false;
 	private boolean canCloseAccount = false;
-	private boolean canGrantLoan = false;
+	private boolean allowedToViewLoanRequests = false;
+	private boolean allowedToHandleLoanRequests = false;
 
 	public AdminRole(String name, String description, boolean canViewUserInfo,
 					 boolean canViewUserStatement, boolean canOpenAccount,
-					 boolean canCloseAccount, boolean canGrantLoan) {
+					 boolean canCloseAccount, boolean allowedToHandleLoanRequest, boolean allowedToViewLoanRequests) {
 		this.name = name;
 		this.description = description;
 		this.canViewUserInfo = canViewUserInfo;
 		this.canViewUserStatement = canViewUserStatement;
 		this.canOpenAccount = canOpenAccount;
 		this.canCloseAccount = canCloseAccount;
-		this.canGrantLoan = canGrantLoan;
+		this.allowedToHandleLoanRequests = allowedToHandleLoanRequest;
+		this.allowedToViewLoanRequests = allowedToViewLoanRequests;
 
 		storeAdminRole();
 	}
@@ -29,7 +31,7 @@ public class AdminRole {
 		this.description = "Can grant loans, view user information";
 		this.canViewUserInfo = true;
 		this.canViewUserStatement = true;
-		this.canGrantLoan = true;
+		this.allowedToHandleLoanRequests = true;
 	}
 
 	private void storeAdminRole(){
@@ -52,8 +54,12 @@ public class AdminRole {
 		return this.canCloseAccount;
 	}
 
-	public boolean canGrantLoan(){
-		return this.canGrantLoan;
+	public boolean isAllowedToViewLoanRequests() {
+		return allowedToViewLoanRequests;
+	}
+
+	public boolean isAllowedToHandleLoanRequests() {
+		return allowedToHandleLoanRequests;
 	}
 
 }

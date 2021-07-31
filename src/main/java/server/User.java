@@ -16,7 +16,7 @@ public abstract class User {
     // Constructor overload
     public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
                 String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){
-        this.userID = userID; //TODO: find a way to autoincrement the userID and generate a new ID based on latest primary key in database
+        this.userID = userID;
         this.prefix = prefix;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -28,16 +28,103 @@ public abstract class User {
         this.password = password;
     }
 
+    // Constructor overload - Without the password
+    // Remove after testing
+    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
+                String dateOfBirth, String emailAddress, String phoneNumber, Address address){
+        this.userID = userID;
+        this.prefix = prefix;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nationalInsuranceNumber = nationalInsuranceNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
     public User() {
     }
 
-    // We're exposing the first name because we want to use it as a key in the customers<String, Customer> HashMap
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
-    private void storeUserDetails(){
-        // Method to store user details in the database
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getNationalInsuranceNumber() {
+        return nationalInsuranceNumber;
+    }
+
+    public void setNationalInsuranceNumber(String nationalInsuranceNumber) {
+        this.nationalInsuranceNumber = nationalInsuranceNumber;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public void setPassword(Password password) {
+        this.password = password;
+
     }
     
 }
