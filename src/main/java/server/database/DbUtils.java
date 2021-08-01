@@ -1,4 +1,8 @@
-package server;
+package server.database;
+
+import server.transaction.StatementSchedule;
+import server.bank.Address;
+import server.user.Customer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,14 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static server.Connection.getDBConnection;
+import static server.database.Connection.getDBConnection;
 
 public class DbUtils {
 
     private final PrintWriter out;
-    final int REGULAR_ACCOUNT_ID = 1;
-    final int NEWBANK_ID = 1;
-
+    private final int REGULAR_ACCOUNT_ID = 1;
+    private final int NEWBANK_ID = 1;
     public DbUtils(PrintWriter out) throws IOException {
         this.out = out;
     }
@@ -63,7 +66,7 @@ public class DbUtils {
             }
 
         } catch (SQLException exception) {
-            out.println(exception.toString());
+            out.println(exception);
         }
         return customerId;
     }
@@ -96,7 +99,7 @@ public class DbUtils {
             }
 
         } catch (SQLException exception) {
-            out.println(exception.toString());
+            out.println(exception);
         }
         out.println("New regular account created: " + accountNum);
 
@@ -150,26 +153,44 @@ public class DbUtils {
 
         try {
             Address userAddress = customer.getAddress();
-            String createUserAddress = "INSERT INTO address (address_num, address_line_1, address_line_2, city, region, postcode, country)" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String createUserAddress = "INSERT INTO address (address_line_1, address_line_2, city, region, postcode, country)" +
+                    " VALUES (?, ?, ?, ?, ?, ?);";
 
             PreparedStatement preparedStatement = con.prepareStatement(createUserAddress, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, userAddress.getAddressNumber());
-            preparedStatement.setString(2, userAddress.getAddressLine1());
-            preparedStatement.setString(3, userAddress.getAddressLine2());
-            preparedStatement.setString(4, userAddress.getCity());
-            preparedStatement.setString(5, userAddress.getRegion());
-            preparedStatement.setString(6, userAddress.getPostcode());
-            preparedStatement.setString(7, userAddress.getCountry());
+            preparedStatement.setString(1, userAddress.getAddressLine1());
+            preparedStatement.setString(2, userAddress.getAddressLine2());
+            preparedStatement.setString(3, userAddress.getCity());
+            preparedStatement.setString(4, userAddress.getRegion());
+            preparedStatement.setString(5, userAddress.getPostcode());
+            preparedStatement.setString(6, userAddress.getCountry());
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if(rs.next()) {
                 addressId = rs.getInt(1);
             }
         } catch (SQLException exception) {
-            out.println(exception.toString());
+            out.println(exception);
         }
 
         return addressId;
+    }
+
+    /**
+     * Method to check if user has entered a unique ID (check in database)
+     * @return True if user login is
+     */
+    public static boolean checkLoginExists(String login){
+        String query = "SELECT 1 FROM password WHERE login = ?";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, login);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

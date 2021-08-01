@@ -1,4 +1,4 @@
-package server;
+package server.user;
 
 public class AdminRole {
 	private String name;

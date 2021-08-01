@@ -1,16 +1,29 @@
-package server;
+package server.user;
+
+import server.bank.Address;
+import server.database.Connection;
+import server.database.DbUtils;
+import server.support.InputProcessor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static server.database.Connection.getDBConnection;
 
 public class Registration {
 	// Customer registration
 
-	private BufferedReader in;
-	private PrintWriter out;
+	private final BufferedReader in;
+	private final PrintWriter out;
+	private final static java.sql.Connection con = getDBConnection();
 
 	public Registration(Socket socket) throws IOException {
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -19,20 +32,17 @@ public class Registration {
 
 	private String takePrefix(){
 		out.println("Please enter your prefix: ");
-		String prefix = InputProcessor.takeValidInput("letters", in, out);
-		return prefix;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeFirstName(){
 		out.println("Please enter your first name: ");
-		String firstName = InputProcessor.takeValidInput("letters", in, out);
-		return firstName;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeLastName(){
 		out.println("Please enter your last name: ");
-		String lastName = InputProcessor.takeValidInput("letters", in, out);
-		return lastName;
+		return InputProcessor.takeValidInput("letters", in, out);
 	}
 
 	private String takeNationalInsuranceNumber(){
@@ -48,8 +58,7 @@ public class Registration {
 	}
 
 	private Address takeAddress(){
-
-		out.println("Please enter your house number and/or first address line: ");
+		out.println("Please enter your house number and first line of your address: ");
 		String firstLine = InputProcessor.takeValidInput("letters and numbers", in, out);
 
 		out.println("Please enter your second address line: ");
@@ -82,23 +91,48 @@ public class Registration {
 		return phoneNum;
 	}
 
-	private Password setUserCredentials(){
+	/**
+	 * Method to take a new login ID and password from the user.
+	 * Password is encrypted and stored using a basic salt and hash method.
+	 */
+	private void setUserCredentials() {
+
+		String loginId = "";
+		String plainTextPassword = "";
+
+		boolean loginValid = false;
 		try {
-			out.println("Please enter a new login ID: ");
-			String loginID = in.readLine();  //TODO: validate user login in input processor
+			while(!loginValid) {
+				out.println("Please enter a new login ID: ");
+				loginId = in.readLine();  //TODO: validate user login in input processor (ie. no spaces, invalid characters)
+				if (DbUtils.checkLoginExists(loginId)) {
+					out.println("This login has already been taken, please try again.");
+				}
+				else {
+					loginValid = true;
+				}
+			}
 			out.println("Please enter a password: ");
-			String password = in.readLine();  //TODO: validate user password in input processor
-			return new Password(loginID, password); // Encrypt password and store in database
-		} catch (IOException e){
+			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			Password password = new Password(loginId, plainTextPassword);
+			out.println("Password successfully encrypted and stored.");
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){
 			e.printStackTrace();
-			return null;
 		}
 	}
 
+
+	/**
+	 * Method to register a new customer
+	 * @return True if customer is registered successfully
+	 */
 	public boolean registerCustomer(){
 
 		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress(),  setUserCredentials());
+				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
+
+		// Set and store user's login/hash separately
+		setUserCredentials();
 
 		try {
 			DbUtils utils = new DbUtils(out);
@@ -106,9 +140,7 @@ public class Registration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return true;
 	}
-
 }
-
-

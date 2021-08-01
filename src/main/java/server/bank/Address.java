@@ -1,4 +1,4 @@
-package server;
+package server.bank;
 
 public class Address {
 	private int addressID;
@@ -28,14 +28,6 @@ public class Address {
 
 	public void setAddressID(int addressID) {
 		this.addressID = addressID;
-	}
-
-	public String getAddressNumber() {
-		return addressNumber;
-	}
-
-	public void setAddressNumber(String addressNumber) {
-		this.addressNumber = addressNumber;
 	}
 
 	public String getAddressLine1() {

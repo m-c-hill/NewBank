@@ -1,4 +1,6 @@
-package server;
+package server.account;
+
+import server.bank.Bank;
 
 import java.util.ArrayList;
 
@@ -7,7 +9,7 @@ public class Account {
 	private String accountNumber;
 	private String accountName;
 	private final Bank bank = new Bank(1, "NewBank", "1 Bank Street", "010001");
-	private ArrayList<Balance> balance = new ArrayList<Balance>();
+	private final ArrayList<Balance> balance = new ArrayList<Balance>();
 	private String statementSchedule = "monthly"; // User may change frequency of statements to weekly, monthly
 	
 	public Account(String accountNumber, double openingBalance) {

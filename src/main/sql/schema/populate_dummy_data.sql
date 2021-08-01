@@ -55,14 +55,14 @@ INSERT INTO newbank.account_type(name, description)
 VALUES
        ('Regular', 'Standard account for new customer');
 
-INSERT INTO newbank.address(address_num, address_line_1, address_line_2, city, region, postcode, country)
+INSERT INTO newbank.address(address_line_1, address_line_2, city, region, postcode, country)
 VALUES
-       ('183', 'Liverpool Road', NULL, 'Slough', 'Surrey', 'SL1 4QZ', 'United Kingdom'),
-       ('5', 'Appold Street', NULL, 'London', 'London', 'EC2A 2AG', 'United Kingdom'),
-       ('108', 'Crown Street', NULL, 'London', 'London', 'SW5 7NL', 'United Kingdom'),
-       ('27', 'Market Place', NULL, 'London', 'London', 'SE6 8SL', 'United Kingdom'),
-       ('13', 'Sherburn Avenue', NULL, 'London', 'London', 'W1 8HB', 'United Kingdom'),
-       ('1', 'Trafalgar Row', NULL, 'London', 'London', 'W2 3RR', 'United Kingdom');
+       ('183 Liverpool Road', NULL, 'Slough', 'Surrey', 'SL1 4QZ', 'United Kingdom'),
+       ('5 Appold Street', NULL, 'London', 'London', 'EC2A 2AG', 'United Kingdom'),
+       ('108 Crown Street', NULL, 'London', 'London', 'SW5 7NL', 'United Kingdom'),
+       ('27 Market Place', NULL, 'London', 'London', 'SE6 8SL', 'United Kingdom'),
+       ('13 Sherburn Avenue', NULL, 'London', 'London', 'W1 8HB', 'United Kingdom'),
+       ('1 Trafalgar Row', NULL, 'London', 'London', 'W2 3RR', 'United Kingdom');
 
 INSERT INTO newbank.admin(user_id)
 VALUES
@@ -104,9 +104,9 @@ VALUES
 
 INSERT INTO newbank.customer(user_id, account_number)
 VALUES
-       (1, 1),
-       (2, 2),
-       (4, 3);
+       (1, '08040302'),
+       (2, '07776191'),
+       (4, '39867532');
 
 INSERT INTO newbank.loans(customer_id, account_number, amount, currency_id, approval_status, transfer_status)
 VALUES

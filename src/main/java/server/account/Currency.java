@@ -1,4 +1,4 @@
-package server;
+package server.account;
 
 public class Currency {
 	private String currencyID; // ie. usd, eur, btc

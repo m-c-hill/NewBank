@@ -1,4 +1,4 @@
-package server;
+package server.transaction;
 
 public class TransactionType {
 	private int transactionTypeID;

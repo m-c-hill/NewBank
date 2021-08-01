@@ -1,4 +1,4 @@
-package server;
+package server.account;
 
 public class Balance {
 	private int balanceID;

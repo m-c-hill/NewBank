@@ -1,4 +1,4 @@
-package server;
+package server.database;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -157,7 +157,6 @@ public class Connection {
 				}
 				System.out.println("\n\n");
 			}
-
 		}
 	}
 }

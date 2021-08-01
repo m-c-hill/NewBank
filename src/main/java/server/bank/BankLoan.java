@@ -1,4 +1,7 @@
-package server;
+package server.bank;
+
+import server.account.Account;
+import server.user.Customer;
 
 public class BankLoan {
     private Customer customer;

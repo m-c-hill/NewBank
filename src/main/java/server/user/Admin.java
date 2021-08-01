@@ -1,18 +1,24 @@
-package server;
+package server.user;
+
+import server.account.Account;
+import server.bank.Address;
+import server.bank.BankLoan;
+import server.support.InputProcessor;
+import server.support.OutputProcessor;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Admin extends User{
+public class Admin extends User {
 	int adminID;
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
 				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
 				 Password password, int adminID, AdminRole role) {
-		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address, password);
+		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.adminID = adminID;
 		this.role = role;
 	}
@@ -50,7 +56,7 @@ public class Admin extends User{
 
     // Accepting or rejecting a loan request
     public String handleLoanRequest(ArrayList<BankLoan> loansList, HashMap<String, Customer> customers,
-            BufferedReader in, PrintWriter out) {
+									BufferedReader in, PrintWriter out) {
         if (this.checkPermission("grantLoan")) {
             // Display only the loans that are pending
             ArrayList<BankLoan> pendingLoansList = this.createPendingLoansList(loansList);
