@@ -46,21 +46,21 @@ public class Registration {
 	}
 
 	private String takeNationalInsuranceNumber(){
-		out.println("Please enter your National Insurance Number: ");
-		// TODO: update InputProcessor to include both letters AND numbers
-		return InputProcessor.takeValidInput("numbers", in, out);
+		out.println("Please enter your National Insurance/Social Security Number: ");
+		String nationalInsuranceNumber = InputProcessor.takeValidInput("letters and numbers", in, out);
+		return nationalInsuranceNumber;
 	}
 
 	private String takeDateOfBirth(){
-		out.println("Please enter your date of birth (DD/MM/YYYY): ");
-		return InputProcessor.takeValidInput("date", in, out);
+		out.println("Please enter your date of birth in DDMMYYYY format: ");
+		String dateOfBirth = InputProcessor.takeValidInput("valid dates", in, out);
+		return dateOfBirth;
 	}
 
 	private Address takeAddress(){
-
-		out.println("Please enter your first address line: ");
-		String firstLine = InputProcessor.takeValidInput("letters", in, out);
-
+		out.println("Please enter your house number and first line of your address: ");
+		String firstLine = InputProcessor.takeValidInput("letters and numbers", in, out);
+		
 		out.println("Please enter your second address line: ");
 		String secondLine = InputProcessor.takeValidInput("letters", in, out);
 
@@ -70,8 +70,8 @@ public class Registration {
 		out.println("Please enter your county/state: ");
 		String region = InputProcessor.takeValidInput("letters", in, out);
 
-		out.println("Please enter your postcode: ");
-		String postcode = InputProcessor.takeValidInput("postcode", in, out);
+		out.println("Please enter your postcode/zipcode: ");
+		String postcode = InputProcessor.takeValidInput("valid postcodes/zipcodes", in, out);
 
 		out.println("Please enter your country: ");
 		String country = InputProcessor.takeValidInput("letters", in, out);
@@ -81,12 +81,14 @@ public class Registration {
 
 	private String takeEmail(){
 		out.println("Please enter your email address: ");
-		return InputProcessor.takeValidInput("email", in, out);
+		String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+		return email;
 	}
 
 	private String takePhoneNum(){
-		out.println("Please enter your phone number (must start with a 0 followed by 10 digits): ");
-		return InputProcessor.takeValidInput("phonenumber", in, out);
+		out.println("Please enter your phone number (no spaces): ");
+		String phoneNum = InputProcessor.takeValidInput("valid phone numbers", in, out);
+		return phoneNum;
 	}
 
 	/**
