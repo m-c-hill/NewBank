@@ -1,26 +1,19 @@
 package server.account;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+
 public class Currency {
 	private String currencyID; // ie. usd, eur, btc
 	private double usdExchangeRate;
-	private String dtUpdated;
+	private Timestamp dtUpdated;
 	private boolean crypto;
 
-	public Currency(String currencyID, double usdExchangeRate, String dtUpdated, boolean crypto) {
+	public Currency(String currencyID, double usdExchangeRate, Timestamp dtUpdated, boolean crypto) {
 		this.currencyID = currencyID;
 		this.usdExchangeRate = usdExchangeRate;
 		this.dtUpdated = dtUpdated;
 		this.crypto = crypto;
-
-		storeCurrency();
-	}
-
-	public Currency(){
-		// To be used as default currency until database is connected
-		this.currencyID = "gbp";
-		this.usdExchangeRate = 1.38;
-		this.dtUpdated = "2021-07-22";
-		this.crypto = false;
 	}
 
 	public double convertCurrency(int currencyID, double amount){
@@ -45,6 +38,6 @@ public class Currency {
 	}
 
 	private void storeCurrency(){
-		// Method to add new currency to the database
+		// TODO: Method to add new currency to the database if it doesn't already exist
 	}
 }

@@ -1,6 +1,7 @@
 package server.database;
 
 import server.account.Account;
+import server.account.Currency;
 import server.bank.Address;
 import server.bank.Bank;
 import server.user.Admin;
@@ -9,6 +10,7 @@ import server.user.Customer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import static server.database.Connection.getDBConnection;
@@ -128,4 +130,28 @@ public class GetObject {
 		}
 		return null;
 	}
+
+	/**
+	 * Method to retrieve currency data from the database and create a Currency object
+	 * @param currencyId Currency ID
+	 * @return Currency (null if no currency found for the ID provided)
+	 */
+	public static Currency getCurrency(String currencyId){
+		String query = "SELECT * FROM currency WHERE currency_id=?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setString(1, currencyId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				double exchangerate = rs.getDouble("usd_exchange_rate");
+				Timestamp dtUpdated = rs.getTimestamp("dt_updated");
+				boolean crypto = rs.getBoolean("crypto");
+				return new Currency(currencyId, exchangerate, dtUpdated, crypto);
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
 }
