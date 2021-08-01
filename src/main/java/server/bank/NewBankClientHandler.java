@@ -106,12 +106,12 @@ public class NewBankClientHandler extends Thread {
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						Object[] authCust = login();
+						Object[] authCustomer = login();
 
-						if ((boolean)authCust[1]) {
+						if ((boolean)authCustomer[1]) {
 							out.println("Login successful");
-							if ((boolean)authCust[2]) {
-								customerMenu((int)authCust[0]);
+							if ((boolean)authCustomer[2]) {
+								customerMenu((int)authCustomer[0]);
 							} else {
 								out.println("You do not have permission to access the customer menu.");
 							}
@@ -186,8 +186,6 @@ public class NewBankClientHandler extends Thread {
 	 * @param userId User ID
 	 */
 	private void adminMenu(int userId) {
-
-		// TODO: update required to get admin objects from the database
 		Admin admin = GetObject.getAdmin(userId);
 
 		while (true) {

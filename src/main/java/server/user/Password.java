@@ -41,6 +41,11 @@ public class Password {
 		}
 	}
 
+	// Constructor for creating a Password object when retrieving data from database
+	public Password(int userId, String login){
+		this.userId = userId;
+		this.login = login;
+	}
 
 	/**
 	 * Generates a random salt using the pseudo random number generator algorithm "SHA1PRNG"
