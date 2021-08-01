@@ -46,7 +46,8 @@ public class Sms {
 		boolean authentication = false;
 		
 		//getphonenumber
-		//String numberOut = Customer.getPhoneNumber();
+		
+		//String numberOut = User.getPhoneNumber(); - getter needs to be static? I daren't change it! 
 		
 		//generate random 4 digit code - store as String 'expectedCode'
 		Random random = new Random();
@@ -56,7 +57,7 @@ public class Sms {
 
 		//twilio method - send 'code' to user with instructions
 
-		System.out.println("Your four digit passcode has been sent to: " /*+ phonenumber*/); // add phonenumber
+		System.out.println("Your four digit passcode has been sent to: " /* + phonenumber*/); // add phonenumber
 
 		//askforcodeinput
 		System.out.println("Please enter the four digit code:");
