@@ -2,14 +2,18 @@ package server.bank;
 
 import server.Sms;
 import server.account.Account;
+import server.database.GetObject;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
 import server.user.Admin;
-import server.user.AdminRole;
 import server.user.Customer;
+import server.user.Password;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,28 +21,24 @@ import java.util.HashMap;
 public class NewBank {
 
 	private static final NewBank bank = new NewBank();
-	private HashMap<String, Customer> customers;
-	// Admins HashMap
-	private HashMap<String, Admin> admins;
-	// loansList ArrayList
-	private ArrayList<BankLoan> loansList;
+	// TODO: Move interest rate to the loans class and make the loan limit unique to each customer
 	// Interest rate
 	private static final double INTEREST_RATE = 2.78;
 	// Loan credit limitadmin
 	private static final double LOAN_LIMIT = 2500;
-	//twilio server account ID
-
-
-	// Exposing the functionality of adding a new customer to the HashMap
-	public void addCustomer(Customer c) {
-		this.customers.put(c.getFirstName(), c);
-	}
 
 	public static NewBank getBank() {
 		return bank;
 	}
 
-	// commands from the NewBank customer are processed in this method
+	/**
+	 * commands from the NewBank customer are processed in this method
+	 * @param customer Customer
+	 * @param request Request to process
+	 * @param in Input BufferedReader
+	 * @param out Output PrintWriter
+	 * @return Result of request
+	 */
 	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 		// TODO: add a reset password option
 		switch (request) {
@@ -62,6 +62,8 @@ public class NewBank {
 			// "PAYBACKLOAN" command
 			case "7":
 				return payBackLoan(customer, in, out);
+			case "8":
+				return resetPassword(customer, in, out);
 			default:
 				return "FAIL";
 		}
@@ -339,5 +341,18 @@ public class NewBank {
 			}
 		}
 		return "You have not submitted any loan requests.";
+	}
+
+	/**
+	 * User can reset their password
+	 */
+	private void ResetPassword(Customer customer, BufferedReader in, PrintWriter out) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+		out.println("Please enter your current password: ");
+		Password password = GetObject.getPassword(customer.getUserID()); // Retrieve password object
+		boolean auth = password.authenticate(in.readLine()); // Ask user to enter their plain text password
+		if(auth){
+			Password.
+		}
 	}
 }

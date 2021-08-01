@@ -7,6 +7,7 @@ import server.bank.Bank;
 import server.user.Admin;
 import server.user.AdminRole;
 import server.user.Customer;
+import server.user.Password;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -218,8 +219,12 @@ public class GetObject {
 		return null;
 	}
 
+	/**
+	 * Method to retrieve admin role data from the database and create an Admin Role object
+	 * @param adminRoleId Admin Role ID
+	 * @return AdminRole
+	 */
 	public static AdminRole getAdminRole(int adminRoleId){
-
 		String query = "SELECT * FROM admin_role_type WHERE admin_role_type_id = ?";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -242,5 +247,26 @@ public class GetObject {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Method to retrieve login data from the database and create a Password object
+	 * Hash and salt are not retrieved at this point in the process for security purposes
+	 * @param userId User ID
+	 * @return Password
+	 */
+	public static Password getPassword(int userId){
+		String query = "SELECT * FROM password WHERE user_id = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				String login = rs.getString("login");
+				return new Password(userId, login);
+			}
+		} catch(SQLException exception){
+			exception.printStackTrace();
+		}
+		return null;
+	}
 }
