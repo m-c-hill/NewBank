@@ -25,6 +25,8 @@ public class NewBank {
 	// TODO: Move interest rate to the loans class and make the loan limit unique to each customer
 	private static final double INTEREST_RATE = 2.78;
 	private static final double LOAN_LIMIT = 2500;
+	ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
+	HashMap<String, Customer> customers = new HashMap<String, Customer>();
 
 	public static NewBank getBank() {
 		return bank;
@@ -240,13 +242,15 @@ public class NewBank {
 		} else {
 			double openingBalance = 0;
 			Currency currency = GetObject.getCurrency("gbp");
-			// TODO: for now, default currency if gbp. Need to allow user to choose
+			// TODO: for now, default currency is gbp. Need to allow user to choose
 			// TODO: create a method in InputProcessor to check if the currency of choice is valid (ie. in the database)
 
+			// Automatically saves new account to the database through constructor
 			customer.addAccount(new Account(customer, accountName, openingBalance, currency));
 
-			String notification = String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
-					+ Double.toString(openingBalance));
+			assert currency != null;
+			String notification = "Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
+					+ Double.toString(openingBalance) + " " + currency.getName();
 
 			Sms.sendText(notification);
 
@@ -386,6 +390,7 @@ public class NewBank {
 
 		out.println("Please enter your current password: ");
 		Password password = GetObject.getPassword(customer.getUserID()); // Retrieve password object
+		assert password != null; // TODO: remove this once added to input processor
 		boolean auth = password.authenticate(in.readLine()); // Ask user to enter their plain text password
 		if (auth) {
 			boolean passwordReset = false;
@@ -403,7 +408,7 @@ public class NewBank {
 			}
 		}
 		else{
-			return "The password you have entered is incorrect. Taking you back to the main menu.");
+			return "The password you have entered is incorrect. Taking you back to the main menu.";
 		}
 		return "Password has been successfully reset.";
 	}

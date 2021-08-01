@@ -1,4 +1,5 @@
 -- Run to reset all database dummy data
+-- NOTE: to provide the dummy users with logins/passwords, you'll need to also run Server/Main.java
 
 DELETE FROM newbank.account;
 ALTER TABLE newbank.account AUTO_INCREMENT = 1;
