@@ -77,7 +77,7 @@ public class GetObject {
 	/**
 	 * Method to retrieve account data from the database and create an array of Account objects associated with a customer
 	 * @param userId User ID
-	 * @return List of Accounts for a Customer
+	 * @return List of Accounts for a Customer (empty array if no accounts found)
 	 */
 	public static ArrayList<Account> getAccounts(int userId){
 		ArrayList<Account> accounts = new ArrayList<>();
@@ -105,8 +105,8 @@ public class GetObject {
 
 	/**
 	 * Method to retrieve bank data from the database and create a Bank object
-	 * @param bankId
-	 * @return
+	 * @param bankId Bank ID
+	 * @return Bank (null if no bank found for the ID provided)
 	 */
 	public static Bank getBank(int bankId){
 		String query = "SELECT * FROM bank WHERE bank_id=?";
