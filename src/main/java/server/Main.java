@@ -1,8 +1,11 @@
 package server;
 
+import server.database.GetObject;
+import server.user.Customer;
 import server.user.Password;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -10,11 +13,22 @@ public class Main {
 
 	/**
 	 * This is for testing purposes and will be deleted before final release
-	 * @param args
+	 * @param args Args
 	 */
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		// Generates logins and passwords for the dummy data (3 customers, 3 admins)
 		dummyLogins();
+		testSQL();
+		System.out.println("test");
+	}
+
+	/**
+	 * Method to test out various SQL pieces
+	 */
+	private static void testSQL(){
+		Customer customer = GetObject.getCustomer(1);
+		System.out.println(customer.getFirstName());
+		System.out.println(customer.toString());
 	}
 
 	/**

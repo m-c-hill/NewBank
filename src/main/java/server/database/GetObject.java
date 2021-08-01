@@ -43,7 +43,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				String dateOfBirth = rs.getDate("date_of_birth").toString();
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");

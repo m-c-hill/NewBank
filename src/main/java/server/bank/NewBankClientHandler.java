@@ -30,7 +30,7 @@ public class NewBankClientHandler extends Thread {
 	private final static java.sql.Connection con = getDBConnection();
 
 	public NewBankClientHandler(Socket socket) throws IOException {
-		socket = socket;
+		this.socket = socket;
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(socket.getOutputStream(), true);
