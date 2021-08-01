@@ -22,7 +22,7 @@ public class InputProcessor{
         "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
         "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
         "valid phone numbers", "^0[\\d]{7,12}$",
-        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$";
+        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$",
         "four digit codes", "^[0-9]{4}$"
         );
 
