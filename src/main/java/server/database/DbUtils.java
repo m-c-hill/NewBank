@@ -233,4 +233,48 @@ public class DbUtils {
         }
         return false;
     }
+
+    /**
+     * Method to check if an admin role exists
+     * @return True if admin roles exists in the database
+     */
+    public static boolean checkAdminRoleExists(String roleName) {
+        String query = "SELECT 1 FROM admin_role_type WHERE name = ?";
+        try {
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, roleName);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Method to store a new admin role in the database
+     */
+    public static void storeAdminRole(String name, String description, boolean canViewUserInfo,
+                                      boolean canViewUserStatement, boolean canOpenAccount, boolean canCloseAccount,
+                                      boolean canViewLoanRequests, boolean canHandleLoanRequests){
+        String query = "INSERT INTO newbank.admin_role_type(name, description, can_view_user_info, " +
+                "can_view_user_statement, can_open_account, can_close_account, can_view_loan_requests, " +
+                "can_handle_loan_requests) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, description);
+            preparedStatement.setBoolean(3, canViewUserInfo);
+            preparedStatement.setBoolean(4, canViewUserStatement);
+            preparedStatement.setBoolean(5, canOpenAccount);
+            preparedStatement.setBoolean(6, canCloseAccount);
+            preparedStatement.setBoolean(7, canViewLoanRequests);
+            preparedStatement.setBoolean(8, canHandleLoanRequests);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
 }

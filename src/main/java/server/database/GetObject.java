@@ -5,6 +5,7 @@ import server.account.Currency;
 import server.bank.Address;
 import server.bank.Bank;
 import server.user.Admin;
+import server.user.AdminRole;
 import server.user.Customer;
 
 import java.sql.PreparedStatement;
@@ -83,7 +84,7 @@ public class GetObject {
 	 * @param accountNumber Account number
 	 * @return Account (null if no account found)
 	 */
-	public static Account getAccounts(String accountNumber){
+	public static Account getAccount(String accountNumber){
 		String query = "SELECT * FROM account WHERE account_number = ?";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -181,4 +182,10 @@ public class GetObject {
 	public static Admin getAdmin(int userId) {
 		return null;
 	}
+
+	public static AdminRole getAdminRole(int admin_id){
+		return null;
+	}
+
+
 }

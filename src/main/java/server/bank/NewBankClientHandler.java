@@ -29,17 +29,17 @@ public class NewBankClientHandler extends Thread {
 
 	private final static java.sql.Connection con = getDBConnection();
 
-	public NewBankClientHandler(Socket s) throws IOException {
-		socket = s;
+	public NewBankClientHandler(Socket socket) throws IOException {
+		socket = socket;
 		bank = NewBank.getBank();
-		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		out = new PrintWriter(s.getOutputStream(), true);
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		out = new PrintWriter(socket.getOutputStream(), true);
 	}
 
 	/**
-	 * Method to authenticate login details entered by the user and return account type
-	 *
-	 * @return Boolean array [login_authenticated, isCustomer, isAdmin]
+	 * Method to authenticate login details entered by the user and return an array of authentication information
+	 * including the user id, whether the password was correct and if the account is a customer or admin account.
+	 * @return Boolean array [userId, login_authenticated, isCustomer, isAdmin]
 	 */
 	private Object[] login() {
 
