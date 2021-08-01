@@ -29,7 +29,10 @@ public class GetObject {
 	public static Customer getCustomer(int userId) {
 
 		// Query will return the details of a single customer from their user_id
-		String query = "SELECT * FROM customer c LEFT JOIN user u ON u.user_id = c.user_id WHERE u.user_id = ?";
+		String query = "SELECT * FROM customer c " +
+				"LEFT JOIN user u " +
+				"ON u.user_id = c.user_id " +
+				"WHERE u.user_id = ?";
 		try {
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
 			preparedStatement.setInt(1, userId);
@@ -179,13 +182,65 @@ public class GetObject {
 		return null;
 	}
 
+	/**
+	 * Method to retrieve admin data from the database and create an Admin object
+	 * @param userId User ID
+	 * @return Admin
+	 */
 	public static Admin getAdmin(int userId) {
+		// Query will return the details of a single admin from their user_id
+		String query = "SELECT * FROM admin a " +
+				"LEFT JOIN user u " +
+				"ON u.user_id = c.user_id " +
+				"WHERE u.user_id = ?";
+		try {
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				String prefix = rs.getString("prefix");
+				String firstName = rs.getString("first_names");
+				String lastName = rs.getString("last_name");
+				String nationalInsuranceNumber = rs.getString("national_insurance_number");
+				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				String emailAddress = rs.getString("email_address");
+				String phoneNumber = rs.getString("phone_number");
+				int addressId = rs.getInt("address_id");
+				Address adminAddress = getAddress(addressId);
+				int adminRoleId = rs.getInt("admin_role_type_id");
+				AdminRole role = getAdminRole(adminRoleId);
+				return new Admin(userId, prefix, firstName, lastName, nationalInsuranceNumber, dateOfBirth, emailAddress,
+						phoneNumber, adminAddress, role);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	public static AdminRole getAdminRole(int admin_id){
+	public static AdminRole getAdminRole(int adminRoleId){
+
+		String query = "SELECT * FROM admin_role_type WHERE admin_role_type_id = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, adminRoleId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+				boolean canViewUserInfo = rs.getBoolean("can_view_user_info");
+				boolean canViewUserStatement = rs.getBoolean("can_view_user_statement");
+				boolean canOpenAccount = rs.getBoolean("can_open_account");
+				boolean canCloseAccount = rs.getBoolean("can_close_account");
+				boolean canViewLoanRequests = rs.getBoolean("can_view_loan_requests");
+				boolean canHandleLoanRequest = rs.getBoolean("can_handle_loan_requests");
+				return new AdminRole(name, description, canViewUserInfo, canViewUserStatement, canOpenAccount,
+						canCloseAccount, canHandleLoanRequest,canViewLoanRequests);
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
 		return null;
 	}
-
-
+	
 }

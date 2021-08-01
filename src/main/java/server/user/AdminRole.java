@@ -3,7 +3,7 @@ package server.user;
 import server.database.DbUtils;
 
 /**
- * Class to represent the roles of an admin and the permissons that each role has access to
+ * Class to represent the roles of an admin and the permissions that each role has access to
  */
 public class AdminRole {
 	private final String name;
@@ -17,7 +17,7 @@ public class AdminRole {
 
 	public AdminRole(String name, String description, boolean canViewUserInfo,
 					 boolean canViewUserStatement, boolean canOpenAccount,
-					 boolean canCloseAccount, boolean canHandleLoanRequest, boolean canViewLoanRequests) {
+					 boolean canCloseAccount, boolean canViewLoanRequests, boolean canHandleLoanRequests) {
 		this.name = name;
 		this.description = description;
 		this.canViewUserInfo = canViewUserInfo;
@@ -25,7 +25,7 @@ public class AdminRole {
 		this.canOpenAccount = canOpenAccount;
 		this.canCloseAccount = canCloseAccount;
 		this.canViewLoanRequests = canViewLoanRequests;
-		this.canHandleLoanRequests = canHandleLoanRequest;
+		this.canHandleLoanRequests = canHandleLoanRequests;
 
 		// If the role does not currently exist, then store it in the database
 		if(!DbUtils.checkAdminRoleExists(this.name));

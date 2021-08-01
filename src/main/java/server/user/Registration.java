@@ -14,7 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 
 import static server.database.Connection.getDBConnection;
 
-/** Class to register a user in the system (either a customer or an admin)
+/** Class to register a user in the system
  */
 public class Registration {
 	private final BufferedReader in;
@@ -135,25 +135,5 @@ public class Registration {
 			e.printStackTrace();
 		}
 		return true;
-	}
-
-	// TODO: fix this once admin class is fixed
-	/**
-	 * Method to register a new customer
-	 * @return True if customer is registered successfully
-	 */
-	public boolean registerAdmin(){
-		Admin newAdmin = new Admin(...);
-		setUserCredentials();
-
-		try {
-			DbUtils utils = new DbUtils(out);
-			utils.registerNewAdmin(newAdmin);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return true;
-
 	}
 }
