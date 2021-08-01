@@ -182,7 +182,6 @@ public class Password {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
-				rs.beforeFirst();
 				System.out.println(rs);
 				userId = rs.getInt("user_id") + 1;
 			}
