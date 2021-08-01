@@ -3,6 +3,7 @@ package server.user;
 import server.account.Account;
 import server.bank.Address;
 import server.bank.BankLoan;
+import server.database.GetObject;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
 
@@ -171,10 +172,11 @@ public class Admin extends User {
 		}
 	}
 
-	private void closeAccount(int accountID){
+	private void closeAccount(int accountNumber){
 		// TODO: create method to close an account (delete Account object from memory and from the database)
 		if(checkPermission("closeAccount")) {
-			// code here
+			Account accountToClose = GetObject.getAccount(accountNumber);
+			accountToClose.closeAccount();
 		}
 	}
 

@@ -79,6 +79,30 @@ public class GetObject {
 	}
 
 	/**
+	 * Method to retrieve account data from the database and create a single Account object
+	 * @param accountNumber Account number
+	 * @return Account (null if no account found)
+	 */
+	public static Account getAccounts(String accountNumber){
+		String query = "SELECT * FROM account WHERE account_number = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setString(1, accountNumber);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				String accountName = rs.getString("account_name");
+				int bankId = rs.getInt("bank_id");
+				double balance = rs.getDouble("balance");
+				String currencyId = rs.getString("currency_id");
+				return new Account(accountNumber, accountName, bankId, balance, currencyId);
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
 	 * Method to retrieve account data from the database and create an array of Account objects associated with a customer
 	 * @param userId User ID
 	 * @return List of Accounts for a Customer (empty array if no accounts found)
@@ -98,7 +122,7 @@ public class GetObject {
 				String accountName = rs.getString("account_name");
 				int bankId = rs.getInt("bank_id");
 				double balance = rs.getDouble("balance");
-				String currencyId = rs.getString("currency");
+				String currencyId = rs.getString("currency_id");
 				accounts.add(new Account(accountNumber, accountName, bankId, balance, currencyId));
 			}
 		} catch (SQLException exception) {
