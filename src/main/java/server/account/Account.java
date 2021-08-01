@@ -3,6 +3,7 @@ package server.account;
 import server.bank.Bank;
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.user.Customer;
 
 import java.util.Random;
 
@@ -18,13 +19,21 @@ public class Account {
 	private final Currency currency;
 
 	// Constructor for new bank accounts with an assigned random account number
-	public Account(String accountName, double openingBalance, Currency currency) {
+	public Account(Customer customer, String accountName, double openingBalance, Currency currency) {
 		this.accountNumber = generateNewAccountNumber(); // Random and unique 8-digit account number generated
 		this.accountName = accountName;
 		this.bank = GetObject.getBank(1); // Returns default bank - for now all new accounts are "NewBank" accounts
 		this.statementSchedule = "monthly"; // Default to monthly schedule for now
 		this.balance = openingBalance;
 		this.currency = currency;
+
+		DbUtils.storeAccount(customer,
+				this.accountNumber,
+				this.accountName,
+				1,
+				this.statementSchedule,
+				this.balance,
+				this.currency.getName());
 	}
 
 	// Separate constructor method for creating an object from data in the database

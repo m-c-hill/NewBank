@@ -268,7 +268,7 @@ public class InputProcessor{
     private static boolean hasSufficientFunds(String account, ArrayList<Account> accountsList, double payBackAmount){
         for (int i = 0; i < accountsList.size(); i++) {
             if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
-                if (accountsList.get(i).getPrimaryBalance().getBalance() >= payBackAmount) {
+                if (accountsList.get(i).getBalance() >= payBackAmount) {
                     return true;
                 }
             }

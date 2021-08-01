@@ -2,7 +2,6 @@ package server.user;
 
 import server.account.Account;
 import server.bank.Address;
-import server.database.DbUtils;
 import server.database.GetObject;
 
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class Customer extends User {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		retrieveAccounts();
 		this.allowedToRequestLoan = true;
+		// TODO: add allowedToRequestLoan field to the database
+		// TODO: add a customer loan limit field and add to the database
 	}
 
 	public ArrayList<Account> getAccounts() {
@@ -37,10 +38,17 @@ public class Customer extends User {
 
 	public String accountsToString() {
 		String accountList = "";
-		for(Account a : accounts) {
-			accountList += a.toString() + "\n";
+		for(Account account: accounts) {
+			accountList += account.toString() + "\n";
 		}
 		return accountList;
+	}
+
+	/**
+	 * Method to retrieve an array of Account objects (accounts belonging to a user) from the database
+	 */
+	private void retrieveAccounts() {
+		this.accounts = GetObject.getAccounts(this.getUserID());
 	}
 
 	public void addAccount(Account account) {
@@ -48,7 +56,8 @@ public class Customer extends User {
 		// TODO: save new account details to the database
 	}
 
-	private void retrieveAccounts() {
-		this.accounts = GetObject.getAccounts(this.getUserID());
-	}
+	/**
+	 * Method to retrieve the customer ID from the database
+	 * @return
+	 */
 }
