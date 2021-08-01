@@ -98,7 +98,7 @@ public class GetObject {
 				String accountName = rs.getString("account_name");
 				int bankId = rs.getInt("bank_id");
 				double balance = rs.getDouble("balance");
-				String currencyId = rs.getString("currency")
+				String currencyId = rs.getString("currency");
 				accounts.add(new Account(accountNumber, accountName, bankId, balance, currencyId));
 			}
 		} catch (SQLException exception) {
@@ -154,4 +154,7 @@ public class GetObject {
 		return null;
 	}
 
+	public static Admin getAdmin(int userId) {
+		return null;
+	}
 }

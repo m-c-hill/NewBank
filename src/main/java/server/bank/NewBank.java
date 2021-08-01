@@ -62,24 +62,24 @@ public class NewBank {
 
 		// Test Customer 01 using the overloaded constructor
 		// This is to test the loan request as the first names is tied to the Customer object in the HashMap
-		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", "18/04/1982", "kylie@gmail.com", "04444444444", 
+		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", "18/04/1982", "kylie@gmail.com", "04444444444",
 				new Address(
 					"200 Some Street",
-					"Some Other Street", 
-					"Tokyo", 
-					"Fuji", 
-					"1000004", "Japan")); 
+					"Some Other Street",
+					"Tokyo",
+					"Fuji",
+					"1000004", "Japan"));
 		kylie.addAccount(new Account("Saving", 4500.0));
 		customers.put(kylie.getFirstName(), kylie);
 
 		// Test Customer 02 using the overloaded constructor
-		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", "18/04/1982", "daniel@gmail.com", "04444444444", 
+		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", "18/04/1982", "daniel@gmail.com", "04444444444",
 				new Address(
 					"200 Some Street",
-					"Some Other Street", 
-					"Bavaria", 
-					"Munich", 
-					"80803", "Germany")); 
+					"Some Other Street",
+					"Bavaria",
+					"Munich",
+					"80803", "Germany"));
 		daniel.addAccount(new Account("Checking", 2700.0));
 		daniel.addAccount(new Account("Main", 800));
 		customers.put(daniel.getFirstName(), daniel);
@@ -126,11 +126,11 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
-
+		// TODO: add a reset password option
 		switch (request) {
 			case "1":
 				return showMyAccounts(customer);
-			// Added "WITHDRAW" command
+			// "WITHDRAW" command
 			case "2":
 				return withdrawAmount(customer, in, out);
 			// "DEPOSIT" command
@@ -154,6 +154,7 @@ public class NewBank {
 	}
 
 	public synchronized String processAdminRequest(Admin admin, String request, BufferedReader in, PrintWriter out){
+		// TODO: add a reset password option
 		switch (request) {
 			case "1":
 				return admin.showLoansList(loansList, out);
@@ -206,7 +207,7 @@ public class NewBank {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing withdrawal amount
 						out.println("Enter the amount you want to withdraw:");	
-						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getPrimaryBalance().getBalance(), in, out);
+						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getBalance(), in, out);
 						// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
 						customerAccounts.get(i).withdrawAmount(amount);	
 						
@@ -221,7 +222,7 @@ public class NewBank {
 				String notification = String.format("Process succeeded. You've withdrawn "
 						 + withdrawPrntAmount 
 						 + "\nRemining balance: " 
-						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+						 + customerAccounts.get(accountPrntIndex).getBalance());
 				
 				Sms.sendText(notification);
 				
@@ -261,7 +262,7 @@ public class NewBank {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing deposit amount
 						out.println("Enter the amount you want to deposit:");	
-						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getPrimaryBalance().getBalance(), in, out);
+						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getBalance(), in, out);
 						// Calling the given account makeDeposit()
 						customerAccounts.get(i).makeDeposit(amount);	
 						// Values to be printed
@@ -274,7 +275,7 @@ public class NewBank {
 				String notification = String.format("Process succeeded. You've made a deposit of "
 						 +  depositPrntAmount + " to " + accountNumber
 						 + "\nUpdated balance: " 
-						 + customerAccounts.get(accountPrntIndex).getPrimaryBalance().getBalance());
+						 + customerAccounts.get(accountPrntIndex).getBalance());
 
 				Sms.sendText(notification);
 				

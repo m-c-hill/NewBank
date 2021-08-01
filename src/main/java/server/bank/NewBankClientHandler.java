@@ -2,7 +2,6 @@ package server.bank;
 
 import server.database.DbUtils;
 import server.database.GetObject;
-import server.support.InputProcessor;
 import server.user.Admin;
 import server.user.Customer;
 import server.user.Password;
@@ -103,6 +102,7 @@ public class NewBankClientHandler extends Thread {
 			// User should execute "MENU" command
 			while (true) {
 				// A welcome screen offering one option to login and another to register
+				// TODO: add account recovery method for forgotten passwords
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
@@ -207,6 +207,10 @@ public class NewBankClientHandler extends Thread {
 			String response = bank.processAdminRequest(admin, request, in, out);
 			out.println(response);
 		}
+	}
+
+	private void recoverAccount(){
+		// TODO: add account recovery method for forgotten passwords
 	}
 
 	/**
