@@ -1,7 +1,6 @@
 package server.database;
 
 import server.account.Account;
-import server.account.Balance;
 import server.bank.Address;
 import server.bank.Bank;
 import server.user.Admin;
@@ -14,7 +13,11 @@ import java.util.ArrayList;
 
 import static server.database.Connection.getDBConnection;
 
+/**
+ * Class to include methods that retrieve data from the database tables to create corresponding objects
+ */
 public class GetObject {
+
 	/**
 	 * Method to retrieve customer data from the database and create a Customer object
 	 * @param userId User ID
@@ -73,7 +76,6 @@ public class GetObject {
 		return null;
 	}
 
-	// TODO: refactor this method ASAP
 	/**
 	 * Method to retrieve account data from the database and create an array of Account objects associated with a customer
 	 * @param userId User ID
@@ -81,21 +83,21 @@ public class GetObject {
 	 */
 	public static ArrayList<Account> getAccounts(int userId){
 		ArrayList<Account> accounts = new ArrayList<>();
-		// TODO: update the database to include multiple accounts per user
-		String query = "SELECT * FROM customer c " +
-				"LEFT JOIN user u ON c.user_id = u.user_id " +
-				"LEFT JOIN account a ON a.account_number = c.account_number " +
-				"LEFT JOIN balance b ON a.account_number = b.account_number " +
-				"WHERE u.user_id = ? " + "" +
-				"AND b.primary_balance=true";
+		String query = "SELECT * FROM customer c "+
+				"LEFT JOIN user u ON c.user_id = u.user_id "+
+				"LEFT JOIN account a ON a.customer_id = c.customer_id "+
+				"WHERE u.user_id = ?";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
 			preparedStatement.setInt(1, userId);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				String accountNumber = rs.getString("c.account_number");
-				double balance = rs.getDouble("amount");
-				accounts.add(new Account(accountNumber, balance));
+				String accountNumber = rs.getString("account_number");
+				String accountName = rs.getString("account_name");
+				int bankId = rs.getInt("bank_id");
+				double balance = rs.getDouble("balance");
+				String currencyId = rs.getString("currency")
+				accounts.add(new Account(accountNumber, accountName, bankId, balance, currencyId));
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();

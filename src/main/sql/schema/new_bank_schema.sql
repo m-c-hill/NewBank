@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS account (
     account_name varchar(255),
     customer_id int REFERENCES customer(customer_id),
     bank_id int REFERENCES bank(bank_id),
-    account_type_id int REFERENCES account_type(account_type_id) DEFAULT 1,
+    account_type_id int DEFAULT 1 REFERENCES account_type(account_type_id),
     statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly',
     balance double,
     currency_id varchar(255) REFERENCES currency(currency_id)

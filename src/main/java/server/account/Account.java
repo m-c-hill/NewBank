@@ -13,16 +13,28 @@ public class Account {
 	private final String accountNumber;
 	private final String accountName;
 	private final Bank bank;
-	private final String statementSchedule = "monthly";
+	private final String statementSchedule;
 	private double balance;
 	private final Currency currency;
 
 	public Account(String accountName, double openingBalance, Currency currency) {
-		this.accountNumber = "00000001";  // generateNewAccountNumber(); // TODO: find a way to generate unique account IDs to replace user input
+		this.accountNumber = generateNewAccountNumber(); // Random and unique 8-digit account number generated
 		this.accountName = accountName;
 		this.bank = GetObject.getBank(1); // Returns default bank - for now all new accounts are "NewBank" accounts
+		this.statementSchedule = "monthly"; // Default to monthly schedule for now
 		this.balance = openingBalance;
 		this.currency = currency;
+	}
+
+	// Separate constructor method for when creating object from data in the database
+	// (need to set account number, not generate a new random one)
+	public Account(String accountNumber, String accountName, int bankId, double openingBalance, String currencyId) {
+		this.accountNumber = accountNumber;
+		this.accountName = accountName;
+		this.bank = GetObject.getBank(bankId);
+		this.statementSchedule = "monthly"; // Default to monthly schedule for now
+		this.balance = openingBalance;
+		this.currency = GetObject.getCurrecny(currencyId);
 	}
 
 	public double getBalance(){
@@ -34,7 +46,7 @@ public class Account {
 	}
 
 	public String getAccountNumber(){
-		return accountNumber;
+		return this.accountNumber;
 	}
 
 	public Bank getBank(){
@@ -42,7 +54,11 @@ public class Account {
 	}
 
 	public String getAccountName() {
-		return accountName;
+		return this.accountName;
+	}
+
+	public String getStatementSchedule(){
+		return this.statementSchedule;
 	}
 
 	/**
