@@ -2,24 +2,27 @@ package server.account;
 
 import server.bank.Bank;
 import server.database.GetObject;
+import server.user.Customer;
 
 import java.util.ArrayList;
 
 public class Account {
 
+	private final int customerId;
 	private final String accountNumber;
-	private String accountName;
-	private final Bank bank = GetObject.getDefaultBank();
-	private final ArrayList<Balance> balance = new ArrayList<Balance>();
+	private final String accountName;
+	private final Bank bank;
 	private final String statementSchedule = "monthly";
-	
-	public Account(String accountNumber, double openingBalance) {
-		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
+	private double balance;
+	private Currency currency;
 
-		// Create the primary balance, default balance is gbp, but could be changed in the future so user can choose
-		Balance primaryBalance = new Balance(accountNumber = this.accountNumber,
-				new Currency(), openingBalance, true);
-		this.balance.add(primaryBalance);
+	public Account(Customer customer, String accountName, double openingBalance, Currency currency) {
+		this.customerId = customer.getCustomerId();
+		this.accountNumber = "00000001";  // generateNewAccountNumber(); // TODO: find a way to generate unique account IDs to replace user input
+		this.accountName = accountName;
+		this.bank = GetObject.getBank(1); // Returns default bank
+		this.balance = openingBalance;
+		this.currency = currency;
 	}
 
 	public String toString() {
@@ -31,15 +34,8 @@ public class Account {
 		return accountName;
 	}
 
-	public Balance getPrimaryBalance(){
-		// Method to find the primary balance for the account
-		// Primary balance is the default balance through which transactions occur
-		for (Balance b: this.balance){
-			if(b.isPrimaryBalance()){
-				return b;
-			}
-		}
-		return null;
+	public double getBalance(){
+
 	}
 
 	public void withdrawAmount(double amount){
@@ -90,4 +86,27 @@ public class Account {
 	public String getAccountNumber(){
 		return accountNumber;
 	}
+
+	public double getBalance(){
+		return this.amount;
+	}
+
+	public String getCurrency(){
+		return this.currency.toString();
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public void updateBalance(double newBalance){
+		this.amount = newBalance;
+		// TODO: update the corresponding balance in the database
+		// Method to update the balance amount in the database after a transaction has occurred
+	}
+
+	private void generateNewAccountNumber(){
+
+	}
+
 }

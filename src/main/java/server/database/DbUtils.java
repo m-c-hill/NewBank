@@ -1,5 +1,6 @@
 package server.database;
 
+import server.bank.Bank;
 import server.transaction.StatementSchedule;
 import server.bank.Address;
 import server.user.Customer;
@@ -117,7 +118,7 @@ public class DbUtils {
 
         try {
 
-            String createUserScript = "INSERT INTO user (prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number, login_id)" +
+            String createUserScript = "INSERT INTO user (prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement preparedStatement = con.prepareStatement(createUserScript, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, customer.getPrefix());
@@ -128,7 +129,6 @@ public class DbUtils {
             preparedStatement.setString(6, customer.getEmailAddress());
             preparedStatement.setString(7, customer.getPhoneNumber());
             preparedStatement.setString(8, customer.getNationalInsuranceNumber());
-            preparedStatement.setString(9, "testLoginId");
             preparedStatement.executeUpdate();
 
             // get auto-generated userId
