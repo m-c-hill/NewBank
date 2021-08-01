@@ -175,4 +175,23 @@ public class DbUtils {
         return addressId;
     }
 
+    /**
+     * Method to check if user has entered a unique ID (check in database)
+     * @return True if user login is
+     */
+    public static boolean checkLoginExists(String login){
+        String query = "SELECT 1 FROM password WHERE login = ?";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, login);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

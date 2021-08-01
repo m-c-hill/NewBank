@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 import static server.database.Connection.getDBConnection;
+import static server.database.DbUtils.checkLoginExists;
 
 /**
  * Class to create, store and authenticate user login and password using a simple salt and hash encryption algorithm
@@ -38,7 +39,6 @@ public class Password {
 		else{
 			this.userId = getExistingUserId(this.login);
 		}
-
 	}
 
 
@@ -55,9 +55,11 @@ public class Password {
 
 	/**
 	 * Encrypts a plain text password using the 'PBKDF2 with SHA-1' hashing algorithm
+	 * The method appends the user's unique pseudo-random salt to the plain text password and then applies the PBKDF2
+	 * algorithm multiple times over a cycle of 1000 iterations
 	 * @param plainTextPassword Plain text password entered by the user
 	 * @param salt User's unique salt
-	 * @return Encrypted password
+	 * @return Encrypted password in byte array form
 	 */
 	private byte[] encryptPassword(String plainTextPassword, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String algorithm = "PBKDF2WithHmacSHA1";
@@ -129,25 +131,6 @@ public class Password {
 	}
 
 	/**
-	 * Method to check if user has entered a unique ID (check in database)
-	 * @return True if user login is
-	 */
-	public static boolean checkLoginExists(String login){
-		String query = "SELECT 1 FROM password WHERE login = ?";
-		try{
-			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
-			preparedStatement.setString(1, login);
-			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.next()){
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
 	 * Method to reset a user's password
 	 * @param newPlainTextPassword New password entered by the user
 	 */
@@ -156,7 +139,6 @@ public class Password {
 		// Encrypt the new password using the original salt for that user
 		byte[] salt = retrieveSaltAndHash()[0];
 		byte[] newHash = encryptPassword(newPlainTextPassword, salt);
-		storeSaltAndHash(salt, newHash);
 
 		// Store the new hash in the database
 		try{

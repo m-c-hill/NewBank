@@ -52,7 +52,6 @@ public class GetObject {
 	 * @return Address
 	 */
 	public static Address getAddress(int addressId){
-		// TODO: redo address table in database
 		String query = "SELECT * FROM address WHERE address_id = ?";
 		try {
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -81,7 +80,12 @@ public class GetObject {
 	public static ArrayList<Account> getAccounts(int userId){
 		ArrayList<Account> accounts = new ArrayList<>();
 		// TODO: update the database to include multiple accounts per user
-		String query = "SELECT * FROM customer c LEFT JOIN user u ON c.user_id = u.user_id LEFT JOIN account a ON a.account_number = c.account_number LEFT JOIN balance b ON a.account_number = b.account_number WHERE u.user_id = ? AND b.primary_balance=true";
+		String query = "SELECT * FROM customer c " +
+				"LEFT JOIN user u ON c.user_id = u.user_id " +
+				"LEFT JOIN account a ON a.account_number = c.account_number " +
+				"LEFT JOIN balance b ON a.account_number = b.account_number " +
+				"WHERE u.user_id = ? " + "" +
+				"AND b.primary_balance=true";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
 			preparedStatement.setInt(1, userId);

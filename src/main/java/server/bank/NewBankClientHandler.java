@@ -1,5 +1,6 @@
 package server.bank;
 
+import server.database.DbUtils;
 import server.database.GetObject;
 import server.support.InputProcessor;
 import server.user.Admin;
@@ -57,7 +58,7 @@ public class NewBankClientHandler extends Thread {
 			while (!validLogin) {
 				out.println("Please enter your login ID: ");
 				login = in.readLine();
-				if (!Password.checkLoginExists(login)) {
+				if (!DbUtils.checkLoginExists(login)) {
 					out.println("This login is invalid, please try again.");
 				} else {
 					userId = Password.getExistingUserId(login);
