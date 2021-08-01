@@ -18,22 +18,17 @@ public class Admin extends User {
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
 				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
-				 Password password, int adminID, AdminRole role) {
-		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
-		this.adminID = adminID;
-		this.role = role;
-	}
-
-    // Constructor overload - Without the password
-    // Remove after testing
-    public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
 				 int adminID, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.adminID = adminID;
 		this.role = role;
 	}
 
+	/**
+	 * Method to check the permissions of a given admin (ie. can view user information and grant loans)
+	 * @param taskName Name of task to check permissions for
+	 * @return True if admin has permission to execute task
+	 */
 	private boolean checkPermission(String taskName){
 		// Method to check if an admin has the required permissions perform a specific task
 		switch(taskName){
@@ -46,9 +41,9 @@ public class Admin extends User {
 			case "closeAccount":
 				return role.canCloseAccount();
 			case "grantLoan":
-				return role.isAllowedToHandleLoanRequests();
+				return role.canHandleLoanRequests();
             case "viewLoans":
-                return role.isAllowedToViewLoanRequests();
+                return role.canViewLoanRequests();
 			default:
 				System.out.println("Warning: you do not have permission to perform the following action: " + taskName);
 				return false;
@@ -98,8 +93,8 @@ public class Admin extends User {
     private void acceptLoanRequest(BankLoan bankLoan){
         // Add the loan amount to the account balance
         Account customerAccount = bankLoan.getAccount();
-        double newAccountBalance = customerAccount.getPrimaryBalance().getBalance() + bankLoan.getAmount();
-        customerAccount.getPrimaryBalance().setAmount(newAccountBalance);
+        double newAccountBalance = customerAccount.getBalance() + bankLoan.getAmount();
+        customerAccount.updateBalance(newAccountBalance);
 
         // Change the loan request status in the loans list
         bankLoan.setChecked(true);
@@ -135,7 +130,6 @@ public class Admin extends User {
                 pendingLoansList.add(bankLoan);
             }
         }
-
         return pendingLoansList;
     }
 
@@ -147,7 +141,6 @@ public class Admin extends User {
         } else {
             out.println("You're not authorized to access the loans list.");
         }
-
         return "Success";
     }
 
@@ -172,8 +165,7 @@ public class Admin extends User {
 		}
 	}
 
-	private void closeAccount(int accountNumber){
-		// TODO: create method to close an account (delete Account object from memory and from the database)
+	private void closeAccount(String accountNumber){
 		if(checkPermission("closeAccount")) {
 			Account accountToClose = GetObject.getAccount(accountNumber);
 			accountToClose.closeAccount();

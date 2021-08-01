@@ -79,7 +79,8 @@ CREATE TABLE IF NOT EXISTS admin_role_type (
   can_view_user_statement boolean DEFAULT false,
   can_open_account boolean DEFAULT false,
   can_close_account boolean DEFAULT false,
-  can_grant_loan boolean DEFAULT false
+  can_view_loan_requests boolean DEFAULT false,
+  can_handle_loan_requests boolean DEFAULT false
 );
 
 -- Create bank table

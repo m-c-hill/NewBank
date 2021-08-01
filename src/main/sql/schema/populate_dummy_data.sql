@@ -75,11 +75,11 @@ VALUES
        (2, 2, '2021-12-01'),
        (3, 3, '2022-05-01');
 
-INSERT INTO newbank.admin_role_type(name, description, can_view_user_info, can_view_user_statement, can_open_account, can_close_account, can_grant_loan)
+INSERT INTO newbank.admin_role_type(name, description, can_view_user_info, can_view_user_statement, can_open_account, can_close_account, can_view_loan_requests, can_handle_loan_requests)
 VALUES
-       ('account_admin', 'User can view account info', TRUE, TRUE, FALSE, FALSE, FALSE),
-       ('bank_manager', 'User can open/close accounts and view account info',TRUE, TRUE,TRUE,TRUE, FALSE),
-       ('loan_manager', 'User can approve/reject loan requests', TRUE, TRUE, TRUE, TRUE, TRUE);
+       ('account_admin', 'User can view account info', TRUE, TRUE, FALSE, FALSE, FALSE, FALSE),
+       ('bank_manager', 'User can open/close accounts and view account info',TRUE, TRUE,TRUE,TRUE, FALSE, FALSE),
+       ('loan_manager', 'User can approve/reject loan requests', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
 
 INSERT INTO newbank.bank(name, address_id, sort_code)
 VALUES
