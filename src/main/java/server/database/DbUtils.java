@@ -14,6 +14,9 @@ import java.sql.Statement;
 
 import static server.database.Connection.getDBConnection;
 
+/**
+ * Utilities class for database interactions to retrieve and store data
+ */
 public class DbUtils {
 
     private final PrintWriter out;

@@ -13,14 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Admin extends User {
-	int adminID;
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
-				 int adminID, AdminRole role) {
+				 String dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
-		this.adminID = adminID;
 		this.role = role;
 	}
 

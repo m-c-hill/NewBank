@@ -7,16 +7,13 @@ import server.database.GetObject;
 
 import java.util.ArrayList;
 
+/**
+ * Class to represent a customer of the bank
+ */
 public class Customer extends User {
 
 	private ArrayList<Account> accounts;
 	private boolean allowedToRequestLoan;
-
-	public Customer(){
-		super();
-		this.accounts = new ArrayList<>();
-		this.allowedToRequestLoan = true;
-	}
 
 	public Customer(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
 					String dateOfBirth, String emailAddress, String phoneNumber, Address address) {
