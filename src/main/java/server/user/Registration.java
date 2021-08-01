@@ -14,7 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 
 import static server.database.Connection.getDBConnection;
 
-/** Class to register a user in the system
+/** Class to register a customer in the system
  */
 public class Registration {
 	private final BufferedReader in;

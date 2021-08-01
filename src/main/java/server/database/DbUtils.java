@@ -280,4 +280,43 @@ public class DbUtils {
             exception.printStackTrace();
         }
     }
+
+    // TODO: this method is temporary and should be merged with createNewAccount ASAP
+    /**
+     * Method to store a new admin role in the database
+     */
+    public static void storeAccount(Customer customer, String accountNumber, String accountName, int bankId,
+                                    String statementSchedule, double balance, String currency){
+        String query = "INSERT INTO account(account_number, account_name, customer_id, " +
+                "bank_id, account_type_id, statement_schedule, balance, currency_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, accountNumber);
+            preparedStatement.setString(2, accountName);
+            preparedStatement.setInt(3, DbUtils.getCustomerId(customer.getUserID()));
+            preparedStatement.setInt(4, bankId);
+            preparedStatement.setInt(5, 1); // All general accounts for now
+            preparedStatement.setString(6, statementSchedule);
+            preparedStatement.setDouble(7, balance);
+            preparedStatement.setString(8, currency);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static int getCustomerId(int userId){
+        String query = "SELECT * FROM customer WHERE user_id = ?";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setInt(1, userId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("customer_id");
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return -1; // Return -1 if no user found
+    }
 }

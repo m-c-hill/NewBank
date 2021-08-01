@@ -2,6 +2,7 @@ package server.bank;
 
 import server.Sms;
 import server.account.Account;
+import server.account.Currency;
 import server.database.GetObject;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
@@ -22,9 +23,7 @@ public class NewBank {
 
 	private static final NewBank bank = new NewBank();
 	// TODO: Move interest rate to the loans class and make the loan limit unique to each customer
-	// Interest rate
 	private static final double INTEREST_RATE = 2.78;
-	// Loan credit limitadmin
 	private static final double LOAN_LIMIT = 2500;
 
 	public static NewBank getBank() {
@@ -32,14 +31,14 @@ public class NewBank {
 	}
 
 	/**
-	 * Commands from the NewBank customer are processed in this method
+	 * Method to process a customer's request
 	 * @param customer Customer
 	 * @param request  Request to process
 	 * @param in       Input BufferedReader
 	 * @param out      Output PrintWriter
-	 * @return Result of request
+	 * @return Response
 	 */
-	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 		// TODO: add a reset password option
 		switch (request) {
 			case "1":
@@ -63,12 +62,24 @@ public class NewBank {
 			case "7":
 				return payBackLoan(customer, in, out);
 			case "8":
-				return resetPassword(customer, in, out);
+				try {
+					return resetPassword(customer, in, out);
+				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+					e.printStackTrace();
+				}
 			default:
 				return "FAIL";
 		}
 	}
 
+	/**
+	 * Method to process an admin's request
+	 * @param admin Admin
+	 * @param request Request to process
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	public synchronized String processAdminRequest(Admin admin, String request, BufferedReader in, PrintWriter out) {
 		// TODO: add a reset password option
 		switch (request) {
@@ -82,84 +93,88 @@ public class NewBank {
 		return "Fail";
 	}
 
+	/**
+	 * Method to allow customers to view their accounts
+	 * @param customer Customer
+	 * @return Response
+	 */
 	private String showMyAccounts(Customer customer) {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 		if (customerAccounts.isEmpty()) {
 			return "There is no account found under this customer.";
 		} else {
-
 			return OutputProcessor.createsAccountsTable(customerAccounts);
 		}
 	}
 
-	// Withdrawal Feature
+	/**
+	 * Method to withdraw a set amount from the customer's account
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	public String withdrawAmount(Customer customer, BufferedReader in, PrintWriter out) {
-
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 
 		if (customerAccounts.isEmpty()) {
 			return "There is no account found for this customer.";
 		} else {
-			out.println("Please enter the name of the account you want to withdraw from"
-					+ " (choose from the list below):" + "\nPlease enter Exit to go back to the main menu.");
+			out.println("Please enter the name of the account you wish to withdraw from"
+					+ " (choose from the list below):"
+					+ "\nPlease enter 'Exit' to go back to the main menu.");
 			// Display Customer-related accounts as visual aid for providing a choice	
 			out.println(showMyAccounts(customer));
 
 			// The provided account must exist within the accounts ArrayList
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-			//If the user enters Exit go back to main menu message appears
 			if (accountNumber.equals("Exit")) {
 				return "Exit request is taken, going back to the main menu.";
 			} else {
-
-				// These variables are for printing purposes
-				double withdrawPrntAmount = 0;
-				int accountPrntIndex = 0;
+				double withdrawPrintAmount = 0;
+				int accountPrintIndex = 0;
+				String currency = "";
 
 				for (int i = 0; i < customerAccounts.size(); i++) {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing withdrawal amount
-						out.println("Enter the amount you want to withdraw:");
+						out.println("Enter the amount you want to withdraw: ");
 						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getBalance(), in, out);
 						// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
 						customerAccounts.get(i).withdrawAmount(amount);
 
 						// Values to be printed
-						accountPrntIndex = i;
-						withdrawPrntAmount = amount;
+						accountPrintIndex = i;
+						withdrawPrintAmount = amount;
+						currency = customerAccounts.get(i).getCurrency().getName();
 
 						break;
 					}
 				}
 
-				String notification = String.format("Process succeeded. You've withdrawn "
-						+ withdrawPrntAmount
-						private NewBank() {
-					customers = new HashMap<>();
-					addCustomerTestData();
-
-					admins = new HashMap<>();
-					addAdminTestData();
-
-					loansList = new ArrayList<>();
-				}
-				+"\nRemining balance: "
-						+ customerAccounts.get(accountPrntIndex).getBalance());
+				String notification = String.format("Process successful. You've withdrawn: "
+						+ withdrawPrintAmount + " " + currency
+						+"\nRemaining balance: "
+						+ customerAccounts.get(accountPrintIndex).getBalance()) + " " + currency;
 
 				Sms.sendText(notification);
 
 				return notification;
-
 			}
-
 		}
 	}
 
-	// Make Deposit Feature
+	/**
+	 * Method to deposit a set amount into the customer's account
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	public String depositAmount(Customer customer, BufferedReader in, PrintWriter out) {
-
 		ArrayList<Account> customerAccounts = customer.getAccounts();
+
 		if (customerAccounts.isEmpty()) {
 			return String.format("There is no account found under this customer name.");
 		} else {
@@ -170,24 +185,22 @@ public class NewBank {
 
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-			//If the user enters Exit go back to main menu message appears
 			if (accountNumber.equals("EXIT")) {
 				return "Exit request is taken, going back to the main menu.";
 			} else {
-				// These variables are for printing purposes
 				double depositPrntAmount = 0;
 				int accountPrntIndex = 0;
 
 				for (int i = 0; i < customerAccounts.size(); i++) {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing deposit amount
-						out.println("Enter the amount you want to deposit:");
+						out.println("Enter the amount you want to deposit: ");
 						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getBalance(), in, out);
-						// Calling the given account makeDeposit()
 						customerAccounts.get(i).makeDeposit(amount);
-						// Values to be printed
+
 						accountPrntIndex = i;
 						depositPrntAmount = amount;
+
 						break;
 					}
 				}
@@ -205,7 +218,13 @@ public class NewBank {
 		}
 	}
 
-	// Creating New Account Feature
+	/**
+	 * Method for a customer to open a new account
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	public String createAccount(Customer customer, BufferedReader in, PrintWriter out) {
 
 		ArrayList<Account> customerAccounts = customer.getAccounts();
@@ -220,8 +239,11 @@ public class NewBank {
 			return "Exit request is taken, going back to the main menu.";
 		} else {
 			double openingBalance = 0;
+			Currency currency = GetObject.getCurrency("gbp");
+			// TODO: for now, default currency if gbp. Need to allow user to choose
+			// TODO: create a method in InputProcessor to check if the currency of choice is valid (ie. in the database)
 
-			customer.addAccount(new Account(accountName, openingBalance));
+			customer.addAccount(new Account(customer, accountName, openingBalance, currency));
 
 			String notification = String.format("Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
 					+ Double.toString(openingBalance));
@@ -232,7 +254,13 @@ public class NewBank {
 		}
 	}
 
-	// Loan Request Feature
+	/**
+	 * Method to allow customers to request loans
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	private String requestLoan(Customer customer, BufferedReader in, PrintWriter out) {
 		if (customer.isAllowedToRequestLoan()) {
 			ArrayList<Account> customerAccounts = customer.getAccounts();
@@ -281,7 +309,13 @@ public class NewBank {
 		}
 	}
 
-	// Method to check my loan status
+	/**
+	 * Method to allow customers to check their loan status
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
 	private String showMyLoanStatus(Customer customer, BufferedReader in, PrintWriter out) {
 		for (BankLoan bankLoan : loansList) {
 			if (bankLoan.getCustomer().getFirstName().equals(customer.getFirstName())) {
@@ -309,7 +343,13 @@ public class NewBank {
 		return "You have not submitted any loan requests.";
 	}
 
-	// Method to pay back loan
+	/**
+	 * Method to allow customers to pay back their loans
+	 * @param customer
+	 * @param in
+	 * @param out
+	 * @return
+	 */
 	private String payBackLoan(Customer customer, BufferedReader in, PrintWriter out) {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 

@@ -162,13 +162,14 @@ public class NewBankClientHandler extends Thread {
 					+ "\n5. Request a loan"
 					+ "\n6. View my loan status"
 					+ "\n7. Pay back my loan"
-					+ "\n8. Go back to the main menu");
+					+ "\n8. Reset my password"
+					+ "\n9. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("8")) {
+			if (request.equals("9")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);
