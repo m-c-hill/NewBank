@@ -85,7 +85,7 @@ public class Account {
 
 	public void updateBalance(double newBalance){
 		this.balance = newBalance; // Update the object balance
-		DbUtils.updateBalance(); // Update the balance in the database
+		DbUtils.updateBalance(this.accountNumber, newBalance); // Update the balance in the database
 	}
 
 	private void generateNewAccountNumber(){

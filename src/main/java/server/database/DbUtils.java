@@ -200,4 +200,19 @@ public class DbUtils {
         }
         return false;
     }
+
+    /**
+     * Method to update the account balance in the database
+     */
+    public static void updateBalance(String accountNumber, double newBalance){
+        String query = "UPDATE account SET balance = ? WHERE account_number = ?";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setDouble(1, newBalance);
+            preparedStatement.setString(2, accountNumber);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
 }
