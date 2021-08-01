@@ -49,8 +49,8 @@ public class OutputProcessor {
         for (Account account : accountsList) {
             accountsTable = accountsTable + String.format(accountsTableContentFormat, 
                     account.getAccountNumber(),
-                    Double.toString(account.getPrimaryBalance().getBalance()),
-                    account.getPrimaryBalance().getCurrency().toUpperCase());
+                    account.getBalance(),
+                    account.getCurrency().getName().toUpperCase());
             accountsTable = accountsTable + accountsTableRowSeparator;
         }
 

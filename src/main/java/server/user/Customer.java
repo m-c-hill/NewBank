@@ -2,6 +2,7 @@ package server.user;
 
 import server.account.Account;
 import server.bank.Address;
+import server.database.DbUtils;
 import server.database.GetObject;
 
 import java.util.ArrayList;
@@ -52,9 +53,5 @@ public class Customer extends User {
 
 	private void retrieveAccounts() {
 		this.accounts = GetObject.getAccounts(this.getUserID());
-	}
-
-	private int getCustomerId(){
-
 	}
 }
