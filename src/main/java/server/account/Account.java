@@ -4,6 +4,8 @@ import server.bank.Bank;
 import server.database.DbUtils;
 import server.database.GetObject;
 
+import java.util.Random;
+
 /**
  * Class to represent a customer's bank account. A user may have multiple accounts, each with an assigned currency.
  */
@@ -92,8 +94,28 @@ public class Account {
 		DbUtils.updateBalance(this.accountNumber, newBalance); // Update the balance in the database
 	}
 
-	private void generateNewAccountNumber(){
-		//
+	/**
+	 * Method to generate a random new 8-digit account number
+	 * Generates a random string of 8 digits and checks if the number exists in the database
+	 * @return New unique account number
+	 */
+	private String generateNewAccountNumber(){
+		boolean accountNumberUnique = false;
+		String newAccountNumber = "";
+		Random r = new Random();
+
+		// Continue to generate random 8-digit account numbers until account number found that does not exist in db
+		while(!accountNumberUnique) {
+			for (int i = 0; i < 8; i++) {
+				int num = r.nextInt(10);
+				newAccountNumber += num;
+			}
+			if(!DbUtils.checkAccountNumberExists(newAccountNumber)){
+				// If account number does not exist, break from loop and return newAccountNumber
+				accountNumberUnique = true;
+			}
+		}
+		return newAccountNumber;
 	}
 
 	public void closeAccount(){
