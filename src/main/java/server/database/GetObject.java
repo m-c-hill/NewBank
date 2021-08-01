@@ -3,6 +3,7 @@ package server.database;
 import server.account.Account;
 import server.account.Balance;
 import server.bank.Address;
+import server.bank.Bank;
 import server.user.Admin;
 import server.user.Customer;
 
@@ -72,10 +73,11 @@ public class GetObject {
 		return null;
 	}
 
+	// TODO: refactor this method ASAP
 	/**
-	 * Method to retreive account data from the database and create an account object
+	 * Method to retrieve account data from the database and create an array of Account objects associated with a customer
 	 * @param userId User ID
-	 * @return Account
+	 * @return List of Accounts for a Customer
 	 */
 	public static ArrayList<Account> getAccounts(int userId){
 		ArrayList<Account> accounts = new ArrayList<>();
@@ -98,22 +100,30 @@ public class GetObject {
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return null;
-	}
-
-	public static Balance getBalance(int balanceId){
-		return null;
+		return accounts;
 	}
 
 	/**
-	 * Method to retrieve admin data from the database and create an Admin object
-	 * @param userId User ID
-	 * @return Admin
+	 * Method to retrieve bank data from the database and create a Bank object
+	 * @param bankId
+	 * @return
 	 */
-	public static Admin getAdmin(int userId){
-		// TODO create method to retrieve an admin account and roles
-		String query = "SELECT * FROM admin a LEFT JOIN user u ON u.user_id = a.user_id WHERE u.user_id = ?";
-
+	public static Bank getBank(int bankId){
+		String query = "SELECT * FROM bank WHERE bank_id=?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, bankId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String name = rs.getString("name");
+				int addressId = rs.getInt("address_id");
+				String sortCode = rs.getString("sort_code");
+				Address bankAddress = getAddress(addressId);
+				return new Bank(name, bankAddress, sortCode);
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
 		return null;
 	}
 }

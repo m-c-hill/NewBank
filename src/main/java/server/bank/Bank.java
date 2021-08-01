@@ -1,13 +1,11 @@
 package server.bank;
 
 public class Bank {
-	private int bankID;
 	private String name;
-	private String address; // Change this to address object once database has been correctly connected
+	private Address address;
 	private String sortCode;
 
-	public Bank(int bankID, String name, String address, String sortCode) {
-		this.bankID = bankID;
+	public Bank(String name, Address address, String sortCode) {
 		this.name = name;
 		this.address = address;
 		this.sortCode = sortCode;
