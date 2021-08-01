@@ -28,96 +28,10 @@ public class NewBank {
 	private static final double LOAN_LIMIT = 2500;
 	//twilio server account ID
 
-	private NewBank() {
-		customers = new HashMap<>();
-		addCustomerTestData();
-		
-		admins = new HashMap<>();
-		addAdminTestData();
-
-		loansList = new ArrayList<>();
-	}
 
 	// Exposing the functionality of adding a new customer to the HashMap
 	public void addCustomer(Customer c) {
 		this.customers.put(c.getFirstName(), c);
-	}
-
-	private void addCustomerTestData() {
-		Customer bhagy = new Customer();
-		bhagy.addAccount(new Account("Main", 1000.0));
-		customers.put("Bhagy", bhagy);
-
-		Customer christina = new Customer();
-		christina.addAccount(new Account("Savings", 1500.0));
-		customers.put("Christina", christina);
-
-		Customer john = new Customer();
-		john.addAccount(new Account("Checking", 250.0));
-		customers.put("John", john);
-
-		// new test client with no account yet
-		Customer alex = new Customer();
-		customers.put("Alex", alex);
-
-		// Test Customer 01 using the overloaded constructor
-		// This is to test the loan request as the first names is tied to the Customer object in the HashMap
-		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", "18/04/1982", "kylie@gmail.com", "04444444444",
-				new Address(
-					"200 Some Street",
-					"Some Other Street",
-					"Tokyo",
-					"Fuji",
-					"1000004", "Japan"));
-		kylie.addAccount(new Account("Saving", 4500.0));
-		customers.put(kylie.getFirstName(), kylie);
-
-		// Test Customer 02 using the overloaded constructor
-		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", "18/04/1982", "daniel@gmail.com", "04444444444",
-				new Address(
-					"200 Some Street",
-					"Some Other Street",
-					"Bavaria",
-					"Munich",
-					"80803", "Germany"));
-		daniel.addAccount(new Account("Checking", 2700.0));
-		daniel.addAccount(new Account("Main", 800));
-		customers.put(daniel.getFirstName(), daniel);
-	}
-
-	// Admin Test Data
-	public void addAdminTestData() {
-		Admin michael = new Admin(100, "GM", "Michael", "Corielli", "22446688", "20/07/1980", "bruce@gmail.com", "01234567891",
-				new Address(
-					"107 Some Street",
-					"Some Other Street", 
-					"Seattle", 
-					"King County", 
-					"98103", 
-					"USA"),
-				500,
-				new AdminRole(
-					"Manager", 
-					"Has all the administrative privileges.",
-					true, true, true, true, true, true)
-					);
-		admins.put(michael.getFirstName(), michael);
-
-		Admin grant = new Admin(100, "GM", "Grant", "Stevenson", "22446688", "20/07/1980", "grant@gmail.com", "01234567891",
-				new Address(
-					"107 Some Street",
-					"Some Other Street", 
-					"Cheshire", 
-					"North West Engalnd", 
-					"CH11AA", 
-					"UK"),
-				500,
-				new AdminRole(
-					"Manager", 
-					"Can only view info.", 
-					true, true, false, false, false, true)
-					);
-		admins.put(grant.getFirstName(), grant);
 	}
 
 	public static NewBank getBank() {
@@ -221,7 +135,15 @@ public class NewBank {
 		
 				String notification = String.format("Process succeeded. You've withdrawn "
 						 + withdrawPrntAmount 
-						 + "\nRemining balance: " 
+						private NewBank() {
+		customers = new HashMap<>();
+		addCustomerTestData();
+
+		admins = new HashMap<>();
+		addAdminTestData();
+
+		loansList = new ArrayList<>();
+	}	 + "\nRemining balance: "
 						 + customerAccounts.get(accountPrntIndex).getBalance());
 				
 				Sms.sendText(notification);
