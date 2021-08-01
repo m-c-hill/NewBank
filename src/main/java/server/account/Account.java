@@ -83,13 +83,17 @@ public class Account {
 		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 
+	/**
+	 * Method to update the balance of the Account class and the corresponding balance stored in the database
+	 * @param newBalance New account balance
+	 */
 	public void updateBalance(double newBalance){
 		this.balance = newBalance; // Update the object balance
 		DbUtils.updateBalance(this.accountNumber, newBalance); // Update the balance in the database
 	}
 
 	private void generateNewAccountNumber(){
-		// TODO: ASAP
+		//
 	}
 
 	public void closeAccount(){

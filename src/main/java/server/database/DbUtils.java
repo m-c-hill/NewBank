@@ -183,7 +183,6 @@ public class DbUtils {
 
     /**
      * Method to check if user has entered a unique ID (check in database)
-     *
      * @return True if user login is
      */
     public static boolean checkLoginExists(String login) {
@@ -204,9 +203,9 @@ public class DbUtils {
     /**
      * Method to update the account balance in the database
      */
-    public static void updateBalance(String accountNumber, double newBalance){
+    public static void updateBalance(String accountNumber, double newBalance) {
         String query = "UPDATE account SET balance = ? WHERE account_number = ?";
-        try{
+        try {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setDouble(1, newBalance);
             preparedStatement.setString(2, accountNumber);
@@ -214,5 +213,24 @@ public class DbUtils {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    /**
+     * Method to check if an account number exists
+     * @return True if a given account number exists in the database
+     */
+    public static boolean checkAccountNumberExists(String accountNumber) {
+        String query = "SELECT 1 FROM account WHERE account_number = ?";
+        try {
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, accountNumber);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
