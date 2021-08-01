@@ -60,7 +60,7 @@ public class Registration {
 	private Address takeAddress(){
 		out.println("Please enter your house number and first line of your address: ");
 		String firstLine = InputProcessor.takeValidInput("letters and numbers", in, out);
-		
+
 		out.println("Please enter your second address line: ");
 		String secondLine = InputProcessor.takeValidInput("letters", in, out);
 
