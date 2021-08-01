@@ -1,5 +1,8 @@
 package server.bank;
 
+/**
+ * Class to represent a user's address
+ */
 public class Address {
 	private int addressID;
 	private String addressLine1;

@@ -14,8 +14,7 @@ CREATE TABLE IF NOT EXISTS user (
     date_of_birth datetime,
     email_address varchar(255),
     phone_number varchar(255),
-    national_insurance_number varchar(255),
-    login_id varchar(255)
+    national_insurance_number varchar(255)
 );
 
 -- Create customer table
@@ -39,9 +38,12 @@ CREATE TABLE IF NOT EXISTS password (
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
     account_number varchar(8) PRIMARY KEY,
+    customer_id int REFERENCES customer(customer_id),
     bank_id int REFERENCES bank(bank_id),
     account_type_id int REFERENCES account_type(account_type_id),
-    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly'
+    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly',
+    balance double,
+    currency_id int REFERENCES currency(currency_id)
 );
 
 -- Create account types table
@@ -109,18 +111,6 @@ CREATE TABLE IF NOT EXISTS address (
     region varchar(255),
     postcode varchar(255),
     country varchar(255)
-);
-
--- Create balance table
--- Description: balance object - each account can have several "balances" associated with it. This enables accounts
--- to store multiple currencies in different 'pots'. All transactions will take place on the default balance (determined
--- by the primary_balance boolean), unless otherwise specified.
-CREATE TABLE IF NOT EXISTS balance (
-    balance_id int PRIMARY KEY AUTO_INCREMENT,
-    account_number varchar(8) REFERENCES account(account_number),
-    currency_id varchar(255) REFERENCES currency(currency_id),
-    amount double,
-    primary_balance boolean
 );
 
 -- Create transaction types table
