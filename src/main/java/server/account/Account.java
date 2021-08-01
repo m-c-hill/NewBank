@@ -1,16 +1,17 @@
 package server.account;
 
 import server.bank.Bank;
+import server.database.GetObject;
 
 import java.util.ArrayList;
 
 public class Account {
 
-	private String accountNumber;
+	private final String accountNumber;
 	private String accountName;
-	private final Bank bank = new Bank(1, "NewBank", "1 Bank Street", "010001");
+	private final Bank bank = GetObject.getDefaultBank();
 	private final ArrayList<Balance> balance = new ArrayList<Balance>();
-	private String statementSchedule = "monthly"; // User may change frequency of statements to weekly, monthly
+	private final String statementSchedule = "monthly";
 	
 	public Account(String accountNumber, double openingBalance) {
 		this.accountNumber = accountNumber; // TODO: find a way to generate unique account IDs to replace user input
@@ -89,5 +90,4 @@ public class Account {
 	public String getAccountNumber(){
 		return accountNumber;
 	}
-
 }

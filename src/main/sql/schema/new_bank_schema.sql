@@ -18,11 +18,10 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 -- Create customer table
--- Description: bank customer information - each customer can has one account associated with them
+-- Description: bank customer information
 CREATE TABLE IF NOT EXISTS customer (
     customer_id int PRIMARY KEY AUTO_INCREMENT,
-    user_id int REFERENCES user(user_id),
-    account_number varchar(8) REFERENCES account(account_number)
+    user_id int REFERENCES user(user_id)
 );
 
 -- Create password table
@@ -37,13 +36,13 @@ CREATE TABLE IF NOT EXISTS password (
 -- Create account table
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
-    account_number varchar(8) PRIMARY KEY,
+    account_number varchar(8) UNIQUE PRIMARY KEY,
     customer_id int REFERENCES customer(customer_id),
     bank_id int REFERENCES bank(bank_id),
     account_type_id int REFERENCES account_type(account_type_id),
     statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly',
     balance double,
-    currency_id int REFERENCES currency(currency_id)
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create account types table

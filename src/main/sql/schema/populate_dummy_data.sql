@@ -18,9 +18,6 @@ ALTER TABLE newbank.admin_role AUTO_INCREMENT = 1;
 DELETE FROM newbank.admin_role_type;
 ALTER TABLE newbank.admin_role_type AUTO_INCREMENT = 1;
 
-DELETE FROM newbank.balance;
-ALTER TABLE newbank.balance AUTO_INCREMENT = 1;
-
 DELETE FROM newbank.bank;
 ALTER TABLE newbank.bank AUTO_INCREMENT = 1;
 
@@ -45,15 +42,17 @@ ALTER TABLE newbank.transfer AUTO_INCREMENT = 1;
 DELETE FROM newbank.user;
 ALTER TABLE newbank.user AUTO_INCREMENT = 1;
 
-INSERT INTO newbank.account(account_number, bank_id, account_type_id)
+INSERT INTO newbank.account(account_number, customer_id, bank_id, account_type_id, balance, currency_id)
 VALUES
-       ('08040302', 1, 1),
-       ('07776191', 1, 1),
-       ('39867532', 1, 1);
+       ('08040302', 1, 1, 1, 5100, 'gbp'),
+       ('07776191', 1, 1, 1, 420, 'usd'),
+       ('39867532', 2, 1, 1, 2500, 'gbp'),
+       ('29565555', 3, 1, 1, 600, 'gbp'),
+       ('94580021', 3, 1, 1, 2, 'btv');
 
 INSERT INTO newbank.account_type(name, description)
 VALUES
-       ('Regular', 'Standard account for new customer');
+       ('Regular', 'Standard current account for new customer');
 
 INSERT INTO newbank.address(address_line_1, address_line_2, city, region, postcode, country)
 VALUES
@@ -82,14 +81,6 @@ VALUES
        ('bank_manager', 'User can open/close accounts and view account info',TRUE, TRUE,TRUE,TRUE, FALSE),
        ('loan_manager', 'User can approve/reject loan requests', TRUE, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO newbank.balance(account_number, currency_id, amount, primary_balance)
-VALUES
-       ('08040302', 'gbp', 5100, TRUE),
-       ('08040302', 'eur', 420, FALSE),
-       ('07776191', 'usd', 2500, TRUE),
-       ('39867532', 'usd', 600,TRUE),
-       ('39867532', 'btc', 2, FALSE);
-
 INSERT INTO newbank.bank(name, address_id, sort_code)
 VALUES
        ('NewBank', 1, '010101'),
@@ -102,11 +93,11 @@ VALUES
        ('euro', 1.18, '2021-07-17', FALSE, 'Euro'),
        ('btc', 31642.80, '2021-07-17', TRUE, 'Bitcoin');
 
-INSERT INTO newbank.customer(user_id, account_number)
+INSERT INTO newbank.customer(user_id)
 VALUES
-       (1, '08040302'),
-       (2, '07776191'),
-       (4, '39867532');
+       (1),
+       (2),
+       (4);
 
 INSERT INTO newbank.loans(customer_id, account_number, amount, currency_id, approval_status, transfer_status)
 VALUES
