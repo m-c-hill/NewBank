@@ -90,11 +90,6 @@ public class NewBankClientHandler extends Thread {
 		return new Object[]{userId, grantAccess, isCustomer, isAdmin};
 	}
 
-	// Adding the customer object to bank.customers<String, Customer> HashMap
-	private void registerCustomer(Customer c) {
-		this.bank.addCustomer(c);
-	}
-
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
