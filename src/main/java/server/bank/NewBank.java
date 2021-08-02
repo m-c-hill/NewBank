@@ -122,7 +122,7 @@ public class NewBank {
 		if (customerAccounts.isEmpty()) {
 			return "There is no account found for this customer.";
 		} else {
-			out.println("Please enter the name of the account you wish to withdraw from"
+			out.println("Please enter the account number of the account you wish to withdraw from"
 					+ " (choose from the list below):"
 					+ "\nPlease enter 'Exit' to go back to the main menu.");
 			// Display Customer-related accounts as visual aid for providing a choice	
