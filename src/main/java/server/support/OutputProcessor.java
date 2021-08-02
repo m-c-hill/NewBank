@@ -17,14 +17,14 @@ public class OutputProcessor {
         "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
 
     // Accounts table format
-    private static final String accountsTableContentFormat = "|%-12s|%-10s|%-8s|%n";
+    private static final String accountsTableContentFormat = "|%-15s|%-10s|%-8s|%n";
     private static final String accountsTableHeader = String.format(
-        "+------------+----------+--------+%n" +
-        "|Account Name|Balanace  |Currency|%n" +
-        "+------------+----------+--------+%n"
+        "+---------------+----------+--------+%n" +
+        "|Account Number |Balanace  |Currency|%n" +
+        "+---------------+----------+--------+%n"
     );
     private static final String accountsTableRowSeparator = String.format(
-        "+------------+----------+--------+%n");
+        "+---------------+----------+--------+%n");
     
     // Loans table creator method for admins
     public static String createLoansTable(ArrayList<BankLoan> loansList) {

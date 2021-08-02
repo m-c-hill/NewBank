@@ -88,7 +88,18 @@ public class InputProcessor{
         } catch (IOException e) {
             out.println("Input error");
         }
+        out.println("Account selected: " + account);
         return account;
+    }
+
+    // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
+    private static boolean accountExists(String accountNumber, ArrayList<Account> accountsList){
+        for (Account account: accountsList) {
+            if (accountNumber.equalsIgnoreCase(account.getAccountNumber())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -109,8 +120,7 @@ public class InputProcessor{
                         break;
                     }
                     else{
-                        out.println("Insufficient funds. Choose a different account or make a new deposit:");
-                        continue;
+                        out.println("Insufficient funds. Choose a different account or make a new deposit: ");
                     }
                 }
                 else{
@@ -297,16 +307,6 @@ public class InputProcessor{
         }
 
         return info;
-    }
-
-    // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
-    private static boolean accountExists(String accountNumber, ArrayList<Account> accountsList){
-        for (Account account: accountsList) {
-            if (accountNumber.equalsIgnoreCase(account.getAccountNumber())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // Helper method that iterates through the Customer accounts ArrayList, find the selected account and checks if the funds are sufficient

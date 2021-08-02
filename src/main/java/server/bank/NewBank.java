@@ -125,44 +125,27 @@ public class NewBank {
 			out.println("Please enter the account number of the account you wish to withdraw from"
 					+ " (choose from the list below):"
 					+ "\nPlease enter 'Exit' to go back to the main menu.");
+			out.println(showMyAccounts(customer));  // Display accounts
 
-			// Display accounts
-			out.println(showMyAccounts(customer));
-
-			// Choose account
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-			if (accountNumber.equals("Exit")) {
+			if (accountNumber.equalsIgnoreCase("EXIT")) {
 				return "Exit request is taken, going back to the main menu.";
 			} else {
-				double withdrawPrintAmount = 0;
-				int accountPrintIndex = 0;
-				String currency = "";
+				System.out.println(accountNumber);
+				Account account = GetObject.getAccount(accountNumber);
+				out.println("Enter the amount you want to withdraw: ");
+				assert account != null;
+				double amount = InputProcessor.takeValidDoubleInput(account.getBalance(), in, out);
+				account.withdrawAmount(amount);
+				customer.retrieveAccounts(); // Update accounts for customer instance to reflect database changes
 
-				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
-						// Processing withdrawal amount
-						out.println("Enter the amount you want to withdraw: ");
-						double amount = InputProcessor.takeValidDoubleInput(customerAccounts.get(i).getBalance(), in, out);
-						// Calling the given account withdrawAmount() to perform deduction once it's been verified that the requested amount is a double and is less than or smaller than the available balance
-						customerAccounts.get(i).withdrawAmount(amount);
-
-						// Values to be printed
-						accountPrintIndex = i;
-						withdrawPrintAmount = amount;
-						currency = customerAccounts.get(i).getCurrency().getName();
-
-						break;
-					}
-				}
-
-				String notification = String.format("Process successful. You've withdrawn: "
-						+ withdrawPrintAmount + " " + currency
+				String notification = "Withdrawal successful. You've withdrawn: "
+						+ amount + " " + account.getCurrency().getName()
 						+"\nRemaining balance: "
-						+ customerAccounts.get(accountPrintIndex).getBalance()) + " " + currency;
+						+ account.getBalance() + " " + account.getCurrency().getName();
 
-				Sms.sendText(notification);
-
+				//Sms.sendText(notification);
 				return notification;
 			}
 		}
@@ -179,44 +162,33 @@ public class NewBank {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 
 		if (customerAccounts.isEmpty()) {
-			return String.format("There is no account found under this customer name.");
+			return "There is no account found under this customer name.";
 		} else {
 			out.println("Please enter the name of the account you want to make a deposit to"
 					+ "(choose from the list below):" + "\nPlease type EXIT to go back to the main menu.");
-			// Display Customer-related accounts as visual aid for providing a choice	
-			out.println(showMyAccounts(customer));
+			out.println(showMyAccounts(customer)); // Display customer accounts
 
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
-			if (accountNumber.equals("EXIT")) {
+			if (accountNumber.equalsIgnoreCase("EXIT")) {
 				return "Exit request is taken, going back to the main menu.";
 			} else {
-				double depositPrntAmount = 0;
-				int accountPrntIndex = 0;
+				Account account = GetObject.getAccount(accountNumber);
+				out.println("Enter the amount you want to deposit: ");
+				double amount = InputProcessor.takeValidDepositInput(in, out);
+				assert account != null;
+				account.makeDeposit(amount);
+				customer.retrieveAccounts();
 
-				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
-						// Processing deposit amount
-						out.println("Enter the amount you want to deposit: ");
-						double amount = InputProcessor.takeValidDepositInput(in, out);
-						customerAccounts.get(i).makeDeposit(amount);
-
-						accountPrntIndex = i;
-						depositPrntAmount = amount;
-
-						break;
-					}
-				}
-
-				String notification = String.format("Process succeeded. You've made a deposit of "
-						+ depositPrntAmount + " to " + accountNumber
+				String notification = "Deposit successful. You've made a deposit of "
+						+ amount + " to " + accountNumber
 						+ "\nUpdated balance: "
-						+ customerAccounts.get(accountPrntIndex).getBalance());
+						+ account.getBalance();
+				out.println(notification); // Update accounts for customer instance to reflect database changes
 
-				Sms.sendText(notification);
+				//Sms.sendText(notification);
 
 				return notification;
-
 			}
 		}
 	}
@@ -238,7 +210,7 @@ public class NewBank {
 		String accountName = InputProcessor.createValidAccountName(customerAccounts, in, out);
 
 		// If the user enters Exit go back to main menu message appears
-		if (accountName.equals("Exit")) {
+		if (accountName.equalsIgnoreCase("Exit")) {
 			return "Exit request is taken, going back to the main menu.";
 		} else {
 			double openingBalance = 0;

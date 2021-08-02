@@ -47,7 +47,7 @@ public class Customer extends User {
 	/**
 	 * Method to retrieve an array of Account objects (accounts belonging to a user) from the database
 	 */
-	private void retrieveAccounts() {
+	public void retrieveAccounts() {
 		this.accounts = GetObject.getAccounts(this.getUserID());
 	}
 
@@ -56,8 +56,4 @@ public class Customer extends User {
 		// TODO: save new account details to the database
 	}
 
-	/**
-	 * Method to retrieve the customer ID from the database
-	 * @return
-	 */
 }
