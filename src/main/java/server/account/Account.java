@@ -3,6 +3,7 @@ package server.account;
 import server.bank.Bank;
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.transaction.Transaction;
 import server.user.Customer;
 
 import java.util.Random;
@@ -84,6 +85,7 @@ public class Account {
 	 */
 	public void withdrawAmount(double amount){
 		updateBalance(this.balance - amount);
+		executeTransaction("withdraw", "Withdraw", -amount);
 	}
 
 	/**
@@ -92,6 +94,7 @@ public class Account {
 	 */
 	public void makeDeposit(double amount) {
 		updateBalance(this.balance + amount);
+		executeTransaction("deposit", "Deposit", amount);
 	}
 
 	/**
@@ -100,10 +103,12 @@ public class Account {
 	 */
 	public void payBackLoan(double amount){
 		updateBalance(this.balance - amount);
+		// TODO: log transaction here
 	}
 
-	public void executeTransaction(){
-		// TODO: create transactions and log them in the database
+	public void executeTransaction(String transactionTypeName, String payee, Double amount){
+		Transaction transaction = new Transaction(transactionTypeName, payee, this, amount, this.getCurrency());
+		System.out.println("Transaction logged successfully");
 	}
 
 	public void executeTransfer(){
