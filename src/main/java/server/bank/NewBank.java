@@ -120,15 +120,16 @@ public class NewBank {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
 
 		if (customerAccounts.isEmpty()) {
-			return "There is no account found for this customer.";
+			return "There are no accounts found for this customer.";
 		} else {
 			out.println("Please enter the account number of the account you wish to withdraw from"
 					+ " (choose from the list below):"
 					+ "\nPlease enter 'Exit' to go back to the main menu.");
-			// Display Customer-related accounts as visual aid for providing a choice	
+
+			// Display accounts
 			out.println(showMyAccounts(customer));
 
-			// The provided account must exist within the accounts ArrayList
+			// Choose account
 			String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
 
 			if (accountNumber.equals("Exit")) {
@@ -197,7 +198,7 @@ public class NewBank {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
 						// Processing deposit amount
 						out.println("Enter the amount you want to deposit: ");
-						double amount = InputProcessor.takeValidDepositInput(customerAccounts.get(i).getBalance(), in, out);
+						double amount = InputProcessor.takeValidDepositInput(in, out);
 						customerAccounts.get(i).makeDeposit(amount);
 
 						accountPrntIndex = i;
