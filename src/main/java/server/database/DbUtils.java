@@ -129,7 +129,7 @@ public class DbUtils {
         try {
 
             String createUserScript = "INSERT INTO user (prefix, first_names, last_name, address_id, date_of_birth, email_address, phone_number, national_insurance_number)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement preparedStatement = con.prepareStatement(createUserScript, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, customer.getPrefix());
             preparedStatement.setString(2, customer.getFirstName());

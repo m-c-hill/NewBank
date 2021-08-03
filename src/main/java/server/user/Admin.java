@@ -17,7 +17,7 @@ public class Admin extends User {
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
+				 Date dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.role = role;
 	}

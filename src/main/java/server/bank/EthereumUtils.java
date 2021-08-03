@@ -34,7 +34,7 @@ public class EthereumUtils {
         try {
 
             while(!success) {
-                out.println("Create a password");
+                out.println("Create a separate password for your Ethereum Wallet");
                 String password1 = in.readLine();
                 out.println("Re-enter password");
                 String password2 = in.readLine();
@@ -51,7 +51,7 @@ public class EthereumUtils {
 
                     // Wallet file contents have been stored in the database,
                     // we can now remove the file.
-                    File walletFile = new File(wallet.getFilename());
+                    File walletFile = new File(walletDirectory + "/" + wallet.getFilename());
                     walletFile.delete();
                     success = true;
                 } else {
