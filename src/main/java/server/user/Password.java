@@ -41,6 +41,24 @@ public class Password {
 		}
 	}
 
+	/**
+	 * WARNING: This method exists purely for testing purposes and should be deleted before releasing the final version.
+	 * It's purpose is to link with the Main class to generate the logins and passwords for the dummy data in the database.
+	 */
+	public Password(int userId, String login, String plainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		this.login = login;
+		this.userId = userId;
+		byte[] salt = generateSalt();
+		byte[] hash = encryptPassword(plainTextPassword, salt);
+		storeSaltAndHash(salt, hash);
+	}
+
+	// Constructor for creating a Password object when retrieving data from database
+	// TODO: review this method, may not be needed anymore
+	public Password(int userId, String login){
+		this.userId = userId;
+		this.login = login;
+	}
 
 	/**
 	 * Generates a random salt using the pseudo random number generator algorithm "SHA1PRNG"
@@ -164,6 +182,7 @@ public class Password {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
+				System.out.println(rs);
 				userId = rs.getInt("user_id") + 1;
 			}
 		} catch(SQLException e){

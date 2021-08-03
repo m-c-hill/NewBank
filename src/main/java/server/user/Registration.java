@@ -1,7 +1,6 @@
 package server.user;
 
 import server.bank.Address;
-import server.database.Connection;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 
@@ -12,15 +11,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static server.database.Connection.getDBConnection;
 
+/** Class to register a customer in the system
+ */
 public class Registration {
-	// Customer registration
-
 	private final BufferedReader in;
 	private final PrintWriter out;
 	private final static java.sql.Connection con = getDBConnection();
@@ -96,7 +92,6 @@ public class Registration {
 	 * Password is encrypted and stored using a basic salt and hash method.
 	 */
 	private void setUserCredentials() {
-
 		String loginId = "";
 		String plainTextPassword = "";
 
@@ -121,7 +116,6 @@ public class Registration {
 		}
 	}
 
-
 	/**
 	 * Method to register a new customer
 	 * @return True if customer is registered successfully
@@ -140,7 +134,6 @@ public class Registration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return true;
 	}
 }

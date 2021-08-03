@@ -14,16 +14,14 @@ CREATE TABLE IF NOT EXISTS user (
     date_of_birth datetime,
     email_address varchar(255),
     phone_number varchar(255),
-    national_insurance_number varchar(255),
-    login_id varchar(255)
+    national_insurance_number varchar(255)
 );
 
 -- Create customer table
--- Description: bank customer information - each customer can has one account associated with them
+-- Description: bank customer information
 CREATE TABLE IF NOT EXISTS customer (
     customer_id int PRIMARY KEY AUTO_INCREMENT,
-    user_id int REFERENCES user(user_id),
-    account_number varchar(8) REFERENCES account(account_number)
+    user_id int REFERENCES user(user_id)
 );
 
 -- Create password table
@@ -38,10 +36,14 @@ CREATE TABLE IF NOT EXISTS password (
 -- Create account table
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
-    account_number varchar(8) PRIMARY KEY,
+    account_number varchar(8) UNIQUE PRIMARY KEY,
+    account_name varchar(255),
+    customer_id int REFERENCES customer(customer_id),
     bank_id int REFERENCES bank(bank_id),
-    account_type_id int REFERENCES account_type(account_type_id),
-    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly'
+    account_type_id int DEFAULT 1 REFERENCES account_type(account_type_id),
+    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly',
+    balance double,
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create account types table
@@ -77,7 +79,8 @@ CREATE TABLE IF NOT EXISTS admin_role_type (
   can_view_user_statement boolean DEFAULT false,
   can_open_account boolean DEFAULT false,
   can_close_account boolean DEFAULT false,
-  can_grant_loan boolean DEFAULT false
+  can_view_loan_requests boolean DEFAULT false,
+  can_handle_loan_requests boolean DEFAULT false
 );
 
 -- Create bank table
@@ -109,18 +112,6 @@ CREATE TABLE IF NOT EXISTS address (
     region varchar(255),
     postcode varchar(255),
     country varchar(255)
-);
-
--- Create balance table
--- Description: balance object - each account can have several "balances" associated with it. This enables accounts
--- to store multiple currencies in different 'pots'. All transactions will take place on the default balance (determined
--- by the primary_balance boolean), unless otherwise specified.
-CREATE TABLE IF NOT EXISTS balance (
-    balance_id int PRIMARY KEY AUTO_INCREMENT,
-    account_number varchar(8) REFERENCES account(account_number),
-    currency_id varchar(255) REFERENCES currency(currency_id),
-    amount double,
-    primary_balance boolean
 );
 
 -- Create transaction types table

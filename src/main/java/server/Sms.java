@@ -30,8 +30,6 @@ public class Sms {
 	             new com.twilio.type.PhoneNumber(TRIAL_NUMBER),
 	             notification)
 	         .create();
-
 	     System.out.println(message.getSid());
 	 }
-	
 }

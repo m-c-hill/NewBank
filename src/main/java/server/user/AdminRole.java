@@ -1,41 +1,42 @@
 package server.user;
 
+import server.database.DbUtils;
+
+/**
+ * Class to represent the roles of an admin and the permissions that each role has access to
+ */
 public class AdminRole {
-	private String name;
-	private String description;
-	private boolean canViewUserInfo = false;
-	private boolean canViewUserStatement = false;
-	private boolean canOpenAccount = false;
-	private boolean canCloseAccount = false;
-	private boolean allowedToViewLoanRequests = false;
-	private boolean allowedToHandleLoanRequests = false;
+	private final String name;
+	private final String description;
+	private final boolean canViewUserInfo;
+	private final boolean canViewUserStatement;
+	private final boolean canOpenAccount;
+	private final boolean canCloseAccount;
+	private final boolean canViewLoanRequests;
+	private final boolean canHandleLoanRequests;
 
 	public AdminRole(String name, String description, boolean canViewUserInfo,
 					 boolean canViewUserStatement, boolean canOpenAccount,
-					 boolean canCloseAccount, boolean allowedToHandleLoanRequest, boolean allowedToViewLoanRequests) {
+					 boolean canCloseAccount, boolean canViewLoanRequests, boolean canHandleLoanRequests) {
 		this.name = name;
 		this.description = description;
 		this.canViewUserInfo = canViewUserInfo;
 		this.canViewUserStatement = canViewUserStatement;
 		this.canOpenAccount = canOpenAccount;
 		this.canCloseAccount = canCloseAccount;
-		this.allowedToHandleLoanRequests = allowedToHandleLoanRequest;
-		this.allowedToViewLoanRequests = allowedToViewLoanRequests;
+		this.canViewLoanRequests = canViewLoanRequests;
+		this.canHandleLoanRequests = canHandleLoanRequests;
 
-		storeAdminRole();
-	}
-
-	// Default admin role to be used until database is up and running, then can be removed.
-	public AdminRole(){
-		this.name = "Loan manager";
-		this.description = "Can grant loans, view user information";
-		this.canViewUserInfo = true;
-		this.canViewUserStatement = true;
-		this.allowedToHandleLoanRequests = true;
-	}
-
-	private void storeAdminRole(){
-		// TODO: create method to add admin role to the database
+		// If the role does not currently exist, then store it in the database
+		if(!DbUtils.checkAdminRoleExists(this.name));
+			DbUtils.storeAdminRole(this.name,
+					this.description,
+					this.canViewUserInfo,
+					this.canViewUserStatement,
+					this.canOpenAccount,
+					this.canCloseAccount,
+					this.canViewLoanRequests,
+					this.canHandleLoanRequests);
 	}
 
 	public boolean canViewUserInfo(){
@@ -54,12 +55,11 @@ public class AdminRole {
 		return this.canCloseAccount;
 	}
 
-	public boolean isAllowedToViewLoanRequests() {
-		return allowedToViewLoanRequests;
+	public boolean canViewLoanRequests() {
+		return this.canViewLoanRequests;
 	}
 
-	public boolean isAllowedToHandleLoanRequests() {
-		return allowedToHandleLoanRequests;
+	public boolean canHandleLoanRequests() {
+		return this.canHandleLoanRequests;
 	}
-
 }
