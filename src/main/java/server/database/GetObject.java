@@ -6,6 +6,7 @@ import server.bank.Address;
 import server.user.Admin;
 import server.user.Customer;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +33,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				Date dateOfBirth = rs.getDate("date_of_birth");
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");

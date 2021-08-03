@@ -9,6 +9,7 @@ import server.support.OutputProcessor;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Admin extends User {
@@ -16,8 +17,8 @@ public class Admin extends User {
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
-				 Password password, int adminID, AdminRole role) {
+                 Date dateOfBirth, String emailAddress, String phoneNumber, Address address,
+                 Password password, int adminID, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.adminID = adminID;
 		this.role = role;
@@ -26,7 +27,7 @@ public class Admin extends User {
     // Constructor overload - Without the password
     // Remove after testing
     public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address,
+				 Date dateOfBirth, String emailAddress, String phoneNumber, Address address,
 				 int adminID, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.adminID = adminID;

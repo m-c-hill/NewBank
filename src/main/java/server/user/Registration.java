@@ -1,7 +1,8 @@
 package server.user;
 
+import com.amazonaws.services.servicediscovery.model.transform.InstanceJsonUnmarshaller;
+import okhttp3.internal.cache.CacheInterceptor;
 import server.bank.Address;
-import server.database.Connection;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 
@@ -12,9 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Date;
 
 import static server.database.Connection.getDBConnection;
 
@@ -47,14 +46,12 @@ public class Registration {
 
 	private String takeNationalInsuranceNumber(){
 		out.println("Please enter your National Insurance/Social Security Number: ");
-		String nationalInsuranceNumber = InputProcessor.takeValidInput("letters and numbers", in, out);
-		return nationalInsuranceNumber;
+		return InputProcessor.takeValidInput("letters and numbers", in, out);
 	}
 
-	private String takeDateOfBirth(){
+	private Date takeDateOfBirth(){
 		out.println("Please enter your date of birth in DDMMYYYY format: ");
-		String dateOfBirth = InputProcessor.takeValidInput("valid dates", in, out);
-		return dateOfBirth;
+		return InputProcessor.takeValidDate(in, out);
 	}
 
 	private Address takeAddress(){
@@ -128,15 +125,18 @@ public class Registration {
 	 */
 	public boolean registerCustomer(){
 
-		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
+//		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+//				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
+
+		Address address = new Address("9 fake Street", "fake town", "fake city", "Yorkshire", "GH128UY", "England");
+		Customer newCustomer1 = new Customer(0, "Mr", "Ben", "Naylor", "JP374832C", InputProcessor.dateFromString("16101989"), "ben@gmail.com", "07635456352", address);
 
 		// Set and store user's login/hash separately
 		setUserCredentials();
 
 		try {
 			DbUtils utils = new DbUtils(out);
-			utils.registerNewCustomer(newCustomer);
+			utils.registerNewCustomer(newCustomer1);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

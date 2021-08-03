@@ -4,7 +4,9 @@ import server.account.Account;
 import server.bank.Address;
 import server.database.GetObject;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Customer extends User {
 
@@ -18,10 +20,9 @@ public class Customer extends User {
 	}
 
 	public Customer(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-					String dateOfBirth, String emailAddress, String phoneNumber, Address address) {
+					Date dateOfBirth, String emailAddress, String phoneNumber, Address address) {
 
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
-		retrieveAccounts();
 		this.allowedToRequestLoan = true;
 	}
 

@@ -1,5 +1,7 @@
 package server.bank;
 
+import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 import server.Sms;
 import server.account.Account;
 import server.support.InputProcessor;
@@ -10,6 +12,9 @@ import server.user.Customer;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,10 +35,10 @@ public class NewBank {
 
 	private NewBank() {
 		customers = new HashMap<>();
-		addCustomerTestData();
+		//addCustomerTestData();
 		
 		admins = new HashMap<>();
-		addAdminTestData();
+		//addAdminTestData();
 
 		loansList = new ArrayList<>();
 	}
@@ -62,24 +67,24 @@ public class NewBank {
 
 		// Test Customer 01 using the overloaded constructor
 		// This is to test the loan request as the first names is tied to the Customer object in the HashMap
-		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", "18/04/1982", "kylie@gmail.com", "04444444444", 
+		Customer kylie = new Customer(150, "Ms.", "Kylie", "Johnson", "32561351", InputProcessor.dateFromString("18041982"), "kylie@gmail.com", "04444444444",
 				new Address(
 					"200 Some Street",
-					"Some Other Street", 
-					"Tokyo", 
-					"Fuji", 
-					"1000004", "Japan")); 
+					"Some Other Street",
+					"Tokyo",
+					"Fuji",
+					"1000004", "Japan"));
 		kylie.addAccount(new Account("Saving", 4500.0));
 		customers.put(kylie.getFirstName(), kylie);
 
 		// Test Customer 02 using the overloaded constructor
-		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", "18/04/1982", "daniel@gmail.com", "04444444444", 
+		Customer daniel = new Customer(150, "Mr.", "Daniel", "Green", "32561351", InputProcessor.dateFromString("18041982"), "daniel@gmail.com", "04444444444",
 				new Address(
 					"200 Some Street",
-					"Some Other Street", 
-					"Bavaria", 
-					"Munich", 
-					"80803", "Germany")); 
+					"Some Other Street",
+					"Bavaria",
+					"Munich",
+					"80803", "Germany"));
 		daniel.addAccount(new Account("Checking", 2700.0));
 		daniel.addAccount(new Account("Main", 800));
 		customers.put(daniel.getFirstName(), daniel);
@@ -87,7 +92,8 @@ public class NewBank {
 
 	// Admin Test Data
 	public void addAdminTestData() {
-		Admin michael = new Admin(100, "GM", "Michael", "Corielli", "22446688", "20/07/1980", "bruce@gmail.com", "01234567891",
+
+		Admin michael = new Admin(100, "GM", "Michael", "Corielli", "22446688", InputProcessor.dateFromString("16101989"), "bruce@gmail.com", "01234567891",
 				new Address(
 					"107 Some Street",
 					"Some Other Street", 
@@ -103,7 +109,7 @@ public class NewBank {
 					);
 		admins.put(michael.getFirstName(), michael);
 
-		Admin grant = new Admin(100, "GM", "Grant", "Stevenson", "22446688", "20/07/1980", "grant@gmail.com", "01234567891",
+		Admin grant = new Admin(100, "GM", "Grant", "Stevenson", "22446688", InputProcessor.dateFromString("20071980"), "grant@gmail.com", "01234567891",
 				new Address(
 					"107 Some Street",
 					"Some Other Street", 
@@ -119,6 +125,8 @@ public class NewBank {
 					);
 		admins.put(grant.getFirstName(), grant);
 	}
+
+
 
 	public static NewBank getBank() {
 		return bank;
@@ -148,6 +156,9 @@ public class NewBank {
 			// "PAYBACKLOAN" command
 			case "7":
 				return payBackLoan(customer, in, out);
+			// "CREATE_ETHEREUM_WALLET" command
+			case "8":
+				return EthereumUtils.createEthereumWallet(customer, in, out);
 			default:
 				return "FAIL";
 		}

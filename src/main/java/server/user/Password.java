@@ -164,7 +164,7 @@ public class Password {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
-				userId = rs.getInt("user_id") + 1;
+				userId = rs.getInt("MAX(user_id)") + 1;
 			}
 		} catch(SQLException e){
 			e.printStackTrace();

@@ -6,7 +6,10 @@ import server.bank.BankLoan;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,6 +55,18 @@ public class InputProcessor{
 
         return info;
     }
+
+    public static Date takeValidDate(BufferedReader in, PrintWriter out){
+        try {
+            String stringDate = in.readLine();
+            // convert to Date object
+            return dateFromString(stringDate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     // Method overload for capturing the correct account name
     public static String takeValidInput(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){
@@ -289,5 +304,21 @@ public class InputProcessor{
         // Return true if there's a match and false if there isn't
         return m.matches();
     }
+
+    public static boolean doPasswordsMatch(String password1, String password2){
+        // do passwords match?
+        return password1.equals(password2);
+    }
+
+    public static Date dateFromString(String stringDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        try {
+            return sdf.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 }
