@@ -2,7 +2,6 @@ package server.bank;
 
 import server.database.DbUtils;
 import server.database.GetObject;
-import server.support.InputProcessor;
 import server.user.Admin;
 import server.user.Customer;
 import server.user.Password;
@@ -30,17 +29,17 @@ public class NewBankClientHandler extends Thread {
 
 	private final static java.sql.Connection con = getDBConnection();
 
-	public NewBankClientHandler(Socket s) throws IOException {
-		socket = s;
+	public NewBankClientHandler(Socket socket) throws IOException {
+		this.socket = socket;
 		bank = NewBank.getBank();
-		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		out = new PrintWriter(s.getOutputStream(), true);
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		out = new PrintWriter(socket.getOutputStream(), true);
 	}
 
 	/**
-	 * Method to authenticate login details entered by the user and return account type
-	 *
-	 * @return Boolean array [login_authenticated, isCustomer, isAdmin]
+	 * Method to authenticate login details entered by the user and return an array of authentication information
+	 * including the user id, whether the password was correct and if the account is a customer or admin account.
+	 * @return Boolean array [userId, login_authenticated, isCustomer, isAdmin]
 	 */
 	private Object[] login() {
 
@@ -91,11 +90,6 @@ public class NewBankClientHandler extends Thread {
 		return new Object[]{userId, grantAccess, isCustomer, isAdmin};
 	}
 
-	// Adding the customer object to bank.customers<String, Customer> HashMap
-	private void registerCustomer(Customer c) {
-		this.bank.addCustomer(c);
-	}
-
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
@@ -103,15 +97,16 @@ public class NewBankClientHandler extends Thread {
 			// User should execute "MENU" command
 			while (true) {
 				// A welcome screen offering one option to login and another to register
+				// TODO: add account recovery method for forgotten passwords
 				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
-						Object[] authCust = login();
+						Object[] authCustomer = login();
 
-						if ((boolean)authCust[1]) {
+						if ((boolean)authCustomer[1]) {
 							out.println("Login successful");
-							if ((boolean)authCust[2]) {
-								customerMenu((int)authCust[0]);
+							if ((boolean)authCustomer[2]) {
+								customerMenu((int)authCustomer[0]);
 							} else {
 								out.println("You do not have permission to access the customer menu.");
 							}
@@ -168,7 +163,8 @@ public class NewBankClientHandler extends Thread {
 					+ "\n6. View my loan status"
 					+ "\n7. Pay back my loan"
 					+ "\n8. Create Ethereum Wallet"
-					+ "\n9. Go back to the main menu");
+					+ "\n9. Reset my password"
+					+ "\n10. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
@@ -187,8 +183,6 @@ public class NewBankClientHandler extends Thread {
 	 * @param userId User ID
 	 */
 	private void adminMenu(int userId) {
-
-		// TODO: update required to get admin objects from the database
 		Admin admin = GetObject.getAdmin(userId);
 
 		while (true) {
@@ -208,6 +202,10 @@ public class NewBankClientHandler extends Thread {
 			String response = bank.processAdminRequest(admin, request, in, out);
 			out.println(response);
 		}
+	}
+
+	private void recoverAccount(){
+		// TODO: add account recovery method for forgotten passwords
 	}
 
 	/**
