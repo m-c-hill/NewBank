@@ -1,24 +1,27 @@
 package server.bank;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 import server.user.Customer;
 
 import java.io.*;
+import java.math.BigDecimal;
 
 public class EthereumUtils {
 
     static String pathToWallets = "./ethereum_wallets";
-//    private BufferedReader in;
-//    private PrintWriter out;
-//
-//    public EthereumUtils(BufferedReader in, PrintWriter out) throws IOException {
-//        this.in = in;
-//        this.out = out;
-//    }
+
+    // connection to Infura API
+    static Web3j web3 = Web3j.build(new HttpService("https://rinkeby.infura.io/v3/b9b8a5c7c40041d5a8bd82b921f378c9"));
 
     public static String createEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
 
@@ -65,4 +68,52 @@ public class EthereumUtils {
 
         return "Ethereum wallet successfully created";
     }
+
+    public static String showEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
+
+        String walletContents = "";
+        Credentials walletCredentials = null;
+        BigDecimal balance = null;
+
+        // retrieve customers Ethereum wallet from database
+        try {
+            DbUtils dbUtils = new DbUtils(out);
+            walletContents = dbUtils.retrieveEthereumWallet(customer.getUserID());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // create a Credentials object from the wallet contents
+        // this requires the user tp enter their separate Ethereum wallet password
+        out.println("Please enter your separate Ethereum wallet password");
+        try {
+            String walletPassword = in.readLine();
+            walletCredentials = WalletUtils.loadJsonCredentials(walletPassword, walletContents);
+        } catch (IOException | CipherException e) {
+            e.printStackTrace();
+        }
+
+        // wallet address
+        assert walletCredentials != null;
+        String address = walletCredentials.getAddress();
+
+        // get wallet balance
+        try {
+            balance = Convert.fromWei(web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send()
+                    .getBalance().toString(), Convert.Unit.ETHER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return  "Customer: " + customer.getFirstName() + " " + customer.getLastName() + "\n" +
+                "User ID: " + customer.getUserID() + "\n" +
+                "Ethereum Wallet Address: " + address + "\n" +
+                "Address Balance: " + balance + " Ether";
+    }
+
+    public static String transferEther(Customer customer, BufferedReader in, PrintWriter out) {
+
+        return "";
+    }
+
 }

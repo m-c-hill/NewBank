@@ -187,6 +187,12 @@ public class DbUtils {
     }
 
 
+    /**
+     * Method to store a newly created Ethereum wallet.
+     * @param userId the user id (primary key)of the user that has just
+     *               created the Ethereum wallet.
+     * @param wallet the wallet to be stored.
+     */
     public void storeEthereumWallet(int userId, Bip39Wallet wallet) {
 
         int result = 0;
@@ -207,6 +213,34 @@ public class DbUtils {
         } catch (SQLException | IOException exception) {
             out.println(exception);
         }
+    }
+
+    /**
+     * Method to retrieve a users Ethereum wallet from the database
+     * @param userId the user id used to query the database
+     * @return String wallet contents.
+     */
+    public String retrieveEthereumWallet(int userId){
+
+        String walletContents = "";
+        try {
+            String retrieveEthereumWallet = "SELECT * FROM ethereum_wallet WHERE userid=?";
+            PreparedStatement preparedStatement = con.prepareStatement(retrieveEthereumWallet);
+            preparedStatement.setInt(1, userId);
+            ResultSet rs = preparedStatement.executeQuery();
+            System.out.println("Result Set: " + rs);
+
+            if(rs.next()){
+                walletContents = rs.getString("wallet_contents");
+            } else {
+                out.println("You do not yet have an Ethereum Wallet");
+            }
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return walletContents;
     }
 
     /**

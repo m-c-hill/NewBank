@@ -165,14 +165,16 @@ public class NewBankClientHandler extends Thread {
 					+ "\n6. View my loan status"
 					+ "\n7. Pay back my loan"
 					+ "\n8. Create Ethereum Wallet"
-					+ "\n9. Reset my password"
-					+ "\n10. Go back to the main menu");
+					+ "\n9. Show Ethereum Wallet"
+					+ "\n10. Transfer Ether"
+					+ "\n11. Reset my password"
+					+ "\n12. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("9")) {
+			if (request.equals("12")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);

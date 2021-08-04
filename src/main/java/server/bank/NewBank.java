@@ -69,7 +69,13 @@ public class NewBank {
 			// "CREATE_ETHEREUM_WALLET" command
 			case "8":
 				return EthereumUtils.createEthereumWallet(customer, in, out);
+			// "SHOW_ETHEREUM_WALLET" command
 			case "9":
+				return EthereumUtils.showEthereumWallet(customer, in, out);
+			// "TRANSFER_ETHER" command
+			case "10":
+				return EthereumUtils.transferEther(customer, in, out);
+			case "11":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
