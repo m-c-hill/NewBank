@@ -204,7 +204,7 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	private void recoverAccount(){
-		// TODO: add account recovery method for forgotten passwords
+		// TODO: add account recovery method for forgotten passwords (user not logged in)
 	}
 
 	/**
