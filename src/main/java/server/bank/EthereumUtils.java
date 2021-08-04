@@ -1,13 +1,15 @@
 package server.bank;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import server.database.DbUtils;
 import server.support.InputProcessor;
@@ -15,6 +17,7 @@ import server.user.Customer;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class EthereumUtils {
 
@@ -25,6 +28,9 @@ public class EthereumUtils {
 
     public static String createEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
 
+        Credentials credentials = null;
+        String address = "";
+
         int userId = customer.getUserID();
         String customerFirstName = customer.getFirstName();
         out.println("Creating Ethereum Wallet for " + customerFirstName);
@@ -34,6 +40,7 @@ public class EthereumUtils {
 
         // take user password and create wallet file
         boolean success = false;
+
         try {
 
             while(!success) {
@@ -52,9 +59,13 @@ public class EthereumUtils {
                     DbUtils dbUtils = new DbUtils(out);
                     dbUtils.storeEthereumWallet(userId, wallet);
 
-                    // Wallet file contents have been stored in the database,
-                    // we can now remove the file.
                     File walletFile = new File(walletDirectory + "/" + wallet.getFilename());
+
+                    // get wallet address
+                    credentials = WalletUtils.loadCredentials(password1, walletFile);
+                    address = credentials.getAddress();
+
+                    // Wallet file contents have been stored in the database we can now remove the file.
                     walletFile.delete();
                     success = true;
                 } else {
@@ -66,44 +77,28 @@ public class EthereumUtils {
             e.printStackTrace();
         }
 
-        return "Ethereum wallet successfully created";
+        return "Ethereum wallet successfully created with address: " + address;
     }
 
-    public static String showEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
+    public static String showEthereumWalletInfo(Customer customer, BufferedReader in, PrintWriter out) {
 
-        String walletContents = "";
-        Credentials walletCredentials = null;
+        Credentials credentials = null;
         BigDecimal balance = null;
 
         // retrieve customers Ethereum wallet from database
         try {
             DbUtils dbUtils = new DbUtils(out);
-            walletContents = dbUtils.retrieveEthereumWallet(customer.getUserID());
+            credentials = dbUtils.retrieveEthereumCredentials(customer.getUserID(), in);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // create a Credentials object from the wallet contents
-        // this requires the user tp enter their separate Ethereum wallet password
-        out.println("Please enter your separate Ethereum wallet password");
-        try {
-            String walletPassword = in.readLine();
-            walletCredentials = WalletUtils.loadJsonCredentials(walletPassword, walletContents);
-        } catch (IOException | CipherException e) {
             e.printStackTrace();
         }
 
         // wallet address
-        assert walletCredentials != null;
-        String address = walletCredentials.getAddress();
+        assert credentials != null;
+        String address = credentials.getAddress();
 
         // get wallet balance
-        try {
-            balance = Convert.fromWei(web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send()
-                    .getBalance().toString(), Convert.Unit.ETHER);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        balance = getAddressBalance(address);
 
         return  "Customer: " + customer.getFirstName() + " " + customer.getLastName() + "\n" +
                 "User ID: " + customer.getUserID() + "\n" +
@@ -111,9 +106,75 @@ public class EthereumUtils {
                 "Address Balance: " + balance + " Ether";
     }
 
+    /**
+     * Method to return the balance of an address in the Ethereum network
+     * @param address the address to check
+     * @return
+     */
+    private static BigDecimal getAddressBalance(String address) {
+        try {
+            return Convert.fromWei(web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send()
+                    .getBalance().toString(), Convert.Unit.ETHER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * A method to transfer Ether from one Ethereum address to another.
+     * @param customer a Customer object representing the sender
+     * @param in {@link BufferedReader}
+     * @param out {@link PrintWriter}
+     * @return String with transaction details.
+     */
     public static String transferEther(Customer customer, BufferedReader in, PrintWriter out) {
 
-        return "";
+        Credentials credentials = null;
+        Optional<TransactionReceipt> transactionReceipt;
+        String response = "";
+
+        try {
+            DbUtils dbUtils = new DbUtils(out);
+            credentials = dbUtils.retrieveEthereumCredentials(customer.getUserID(), in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String senderAddress = credentials.getAddress();
+
+        String recipientAddress = null;
+        try {
+            out.println("Please enter the address you would like to send Ether to send");
+            recipientAddress = in.readLine();
+
+            out.println("Please enter the amount you would like to send (in Ether) Your current balance is: " + getAddressBalance(senderAddress));
+            long amountToSend = Long.parseLong(in.readLine());
+            transactionReceipt = Optional.ofNullable(Transfer.sendFunds(web3, credentials, recipientAddress, BigDecimal.valueOf(amountToSend), Convert.Unit.ETHER).send());
+
+            int count = 0;
+            do {
+                if(transactionReceipt.isPresent()){
+                    out.println("Transaction Successfully Mined");
+                    break;
+                } else {
+                    out.println("Please wait for transaction to be mined...");
+                    count++;
+                    Thread.sleep(3000);
+                }
+            } while (count > 10); // after 30 seconds exit loop
+
+            String transactionHash = transactionReceipt.get().getTransactionHash();
+            //TODO Return more transaction details here.
+            // maybe a link to the transaction, e.g. - https://rinkeby.etherscan.io/tx/0x9622b2297f32dd3af30f02b584c8a61236eceafe9fc4fbc3b4316e98e5a91b5c
+
+            response = "Transaction Hash: " + transactionHash;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
 }

@@ -2,10 +2,14 @@ package server.database;
 
 
 import org.web3j.crypto.Bip39Wallet;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import server.transaction.StatementSchedule;
 import server.bank.Address;
 import server.user.Customer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -220,9 +224,9 @@ public class DbUtils {
      * @param userId the user id used to query the database
      * @return String wallet contents.
      */
-    public String retrieveEthereumWallet(int userId){
+    public Credentials retrieveEthereumCredentials(int userId, BufferedReader in){
 
-        String walletContents = "";
+        Credentials credentials = null;
         try {
             String retrieveEthereumWallet = "SELECT * FROM ethereum_wallet WHERE userid=?";
             PreparedStatement preparedStatement = con.prepareStatement(retrieveEthereumWallet);
@@ -231,16 +235,26 @@ public class DbUtils {
             System.out.println("Result Set: " + rs);
 
             if(rs.next()){
-                walletContents = rs.getString("wallet_contents");
+                String walletContents = rs.getString("wallet_contents");
+
+                // create a Credentials object from the wallet contents
+                // this requires the user tp enter their separate Ethereum wallet password
+                out.println("Please enter your separate Ethereum wallet password");
+                try {
+                    String walletPassword = in.readLine();
+                    credentials = WalletUtils.loadJsonCredentials(walletPassword, walletContents);
+                } catch (IOException | CipherException e) {
+                    e.printStackTrace();
+                }
             } else {
-                out.println("You do not yet have an Ethereum Wallet");
+                out.println("You do not yet have an Ethereum Wallet, you can create one from the main menu");
             }
 
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
 
-        return walletContents;
+        return credentials;
     }
 
     /**

@@ -1,7 +1,5 @@
 package server.bank;
 
-import org.jetbrains.annotations.Nullable;
-import org.joda.time.DateTime;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
@@ -71,7 +69,7 @@ public class NewBank {
 				return EthereumUtils.createEthereumWallet(customer, in, out);
 			// "SHOW_ETHEREUM_WALLET" command
 			case "9":
-				return EthereumUtils.showEthereumWallet(customer, in, out);
+				return EthereumUtils.showEthereumWalletInfo(customer, in, out);
 			// "TRANSFER_ETHER" command
 			case "10":
 				return EthereumUtils.transferEther(customer, in, out);

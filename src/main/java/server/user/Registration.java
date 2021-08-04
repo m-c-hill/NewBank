@@ -101,6 +101,7 @@ public class Registration {
 			while(!loginValid) {
 				out.println("Please enter a new login ID: ");
 				loginId = in.readLine();  //TODO: validate user login in input processor (ie. no spaces, invalid characters)
+				out.println("Please wait...");
 				if (DbUtils.checkLoginExists(loginId)) {
 					out.println("This login has already been taken, please try again.");
 				}
@@ -110,6 +111,7 @@ public class Registration {
 			}
 			out.println("Please enter a password: ");
 			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			out.println("Please wait...");
 			Password password = new Password(loginId, plainTextPassword);
 			out.println("Password successfully encrypted and stored.");
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){
@@ -123,18 +125,15 @@ public class Registration {
 	 */
 	public boolean registerCustomer(){
 
-//		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
-//				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
-
-		Address address = new Address("9 fake Street", "fake town", "fake city", "Yorkshire", "GH128UY", "England");
-		Customer newCustomer1 = new Customer(0, "Mr", "Ben", "Naylor", "JP374832C", InputProcessor.dateFromString("16101989"), "ben@gmail.com", "07635456352", address);
+		Customer newCustomer = new Customer(0, takePrefix(), takeFirstName(), takeLastName(), takeNationalInsuranceNumber(),
+				takeDateOfBirth(), takeEmail(), takePhoneNum(), takeAddress());
 
 		// Set and store user's login/hash separately
 		setUserCredentials();
 
 		try {
 			DbUtils utils = new DbUtils(out);
-			utils.registerNewCustomer(newCustomer1);
+			utils.registerNewCustomer(newCustomer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
