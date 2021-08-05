@@ -7,7 +7,6 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
@@ -18,13 +17,15 @@ import server.user.Customer;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EthereumUtils {
 
     static String pathToWallets = "./ethereum_wallets";
 
     // connection to Infura API
-    static Web3j web3 = Web3j.build(new HttpService("https://rinkeby.infura.io/v3/b9b8a5c7c40041d5a8bd82b921f378c9"));
+    static Web3j web3 = Web3j.build(new HttpService("https://goerli.infura.io/v3/b9b8a5c7c40041d5a8bd82b921f378c9"));
 
     public static String createEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
 
@@ -93,8 +94,10 @@ public class EthereumUtils {
             e.printStackTrace();
         }
 
-        // wallet address
-        assert credentials != null;
+        if(credentials == null){
+            return "Unable to retrieve wallet file";
+        }
+
         String address = credentials.getAddress();
 
         // get wallet balance
@@ -141,19 +144,44 @@ public class EthereumUtils {
             e.printStackTrace();
         }
 
+        if(credentials == null){
+            return "Unable to retrieve wallet file";
+        }
+
         String senderAddress = credentials.getAddress();
 
         String recipientAddress = null;
         try {
             out.println("Please enter the address you would like to send Ether to send");
-            recipientAddress = in.readLine();
 
-            out.println("Please enter the amount you would like to send (in Ether) Your current balance is: " + getAddressBalance(senderAddress));
-            long amountToSend = Long.parseLong(in.readLine());
+            Pattern validEthereumAddress = Pattern.compile("([a-zA-Z0-9]{42})");
+            Matcher m;
+
+            do {
+                recipientAddress = in.readLine();
+                m = validEthereumAddress.matcher(recipientAddress);
+
+                if(!m.matches()) {
+                    out.println("Not a valid Ethereum Address, please re-enter");
+                }
+            } while (!m.matches());
+
+            out.println("Please enter the amount you would like to send (in Ether) Your current balance is: " + getAddressBalance(senderAddress) + " Eth");
+            double amountToSend = 0.0;
+
+            do {
+                amountToSend = Double.parseDouble(in.readLine());
+
+                //if amountToSend is greater than the senders balance
+                if(new BigDecimal(amountToSend).compareTo(getAddressBalance(senderAddress)) > 0){
+                    out.println("You do not have the funds required for this transaction. Please enter an amount that is equal to or less than your current balance of: " + getAddressBalance(senderAddress) + " Eth");
+                }
+            } while (new BigDecimal(amountToSend).compareTo(getAddressBalance(senderAddress)) > 0);
+
             transactionReceipt = Optional.ofNullable(Transfer.sendFunds(web3, credentials, recipientAddress, BigDecimal.valueOf(amountToSend), Convert.Unit.ETHER).send());
 
             int count = 0;
-            do {
+            do { //TODO why is this loop not working??
                 if(transactionReceipt.isPresent()){
                     out.println("Transaction Successfully Mined");
                     break;
@@ -162,13 +190,16 @@ public class EthereumUtils {
                     count++;
                     Thread.sleep(3000);
                 }
-            } while (count > 10); // after 30 seconds exit loop
+            } while (count < 10); // after 30 seconds exit loop
 
             String transactionHash = transactionReceipt.get().getTransactionHash();
-            //TODO Return more transaction details here.
-            // maybe a link to the transaction, e.g. - https://rinkeby.etherscan.io/tx/0x9622b2297f32dd3af30f02b584c8a61236eceafe9fc4fbc3b4316e98e5a91b5c
 
-            response = "Transaction Hash: " + transactionHash;
+            response = "Recipient Address: " + recipientAddress + "\n" +
+                       "Transaction amount: " + String.format("%,.010f", amountToSend) + " Eth" + "\n" +
+                       "Transaction Hash: " + transactionHash + "\n" +
+                       "Transaction Fee: " + transactionReceipt.get().getCumulativeGasUsed().toString() + " gwei" + "\n" +
+                       "To see more transaction details visit: " + "\n" +
+                       "https://goerli.etherscan.io/tx/" + transactionHash + "\n";
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -116,6 +116,7 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
+						out.println("Please wait...");
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
@@ -223,7 +224,7 @@ public class NewBankClientHandler extends Thread {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, userId);
 			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.isBeforeFirst() ){
+			if (rs.next()){
 				return true;
 			}
 		} catch (SQLException e) {
