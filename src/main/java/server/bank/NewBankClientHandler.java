@@ -22,10 +22,10 @@ import static server.database.Connection.getDBConnection;
 
 public class NewBankClientHandler extends Thread {
 
-	private NewBank bank;
-	private BufferedReader in;
-	private PrintWriter out;
-	private Socket socket;
+	private final NewBank bank;
+	private final BufferedReader in;
+	private final PrintWriter out;
+	private final Socket socket;
 
 	private final static java.sql.Connection con = getDBConnection();
 
@@ -92,15 +92,22 @@ public class NewBankClientHandler extends Thread {
 
 	public void run() {
 		// keep getting requests from the client and processing them
+		printNewBankLogo();
 		try {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
 				// A welcome screen offering one option to login and another to register
 				// TODO: add account recovery method for forgotten passwords
-				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
+				out.println("Please choose an option:\n" +
+						"1. Login as Customer\n" +
+						"2. Register for a New Customer Account\n" +
+						"3. Login as Admin\n" +
+						"4. Recover account\n"
+				);
 				switch (in.readLine()) {
 					case "1":
+						// Customer login option
 						Object[] authCustomer = login();
 
 						if ((boolean)authCustomer[1]) {
@@ -114,11 +121,13 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
+						// Customer registration option
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
 
 					case "3":
+						// Admin login option
 						Object[] authAdmin = login();
 						if ((boolean)authAdmin[1]) {
 							out.println("Login successful");
@@ -128,6 +137,11 @@ public class NewBankClientHandler extends Thread {
 								out.println("You do not have permission to access the admin menu.");
 							}
 						}
+						break;
+
+					case "4":
+						// Account recovery option
+						accountRecoveryMenu();
 						break;
 				}
 			}
@@ -246,4 +260,36 @@ public class NewBankClientHandler extends Thread {
 		}
 		return false;
 	}
+
+	/**
+	 * Method to print New Bank's logo on start up
+	 */
+	private void printNewBankLogo() {
+		String logo =
+				"//============================================\\\\\n" +
+				" | \\ | |             |  _ \\            | |   \n" +
+				" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
+				" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
+				" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
+				" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
+				"//============================================\\\\\n";
+		out.println(logo);
+	}
+
+	private void accountRecoveryMenu() {
+		out.println("Please choose an option:\n" +
+				"1. Forgotten account login\n" +
+				"2. Forgotten account password\n");
+		
+
+	}
+
+	private String forgottenLogin() {
+
+	}
+
+	private String forgottenPassword() {
+
+	}
+
 }
