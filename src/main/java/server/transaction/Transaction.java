@@ -38,6 +38,22 @@ public class Transaction {
 		DbUtils.storeTransaction(this.account, transactionTypeId, this.timestamp, this.payee, this.amount, this.currency);
 	}
 
+	/**
+	 * Constructs a transaction instance when retrieving transaction data from the database
+	 * @param payee Payee
+	 * @param account Account
+	 * @param amount Transaction amount
+	 * @param currency Transaction currency
+	 */
+	public Transaction(Timestamp timestamp, String payee, Account account, double amount, Currency currency){
+		this.transactionType = ""; // Ignore this for now as not needed for statements
+		this.timestamp = timestamp;
+		this.payee = payee;
+		this.account = account;
+		this.amount = amount;
+		this.currency = currency;
+	}
+
 	public String getTransactionType() {
 		return transactionType;
 	}

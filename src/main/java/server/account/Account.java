@@ -6,6 +6,7 @@ import server.database.GetObject;
 import server.transaction.Transaction;
 import server.user.Customer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -152,11 +153,11 @@ public class Account {
 		// TODO: create method to close account
 	}
 
-	public void updateStatementSchedule(){
-		// TODO: method for user to choose frequency with which they receive transaction statements
-	}
-
-	public void sendStatement(){
-		// TODO: method to send a summary of transactions for a given period
+	/**
+	 * Method to return the 10 most recent transactions for customer's account
+	 * @return Array of transaction objects
+	 */
+	public ArrayList<Transaction> getRecentTransactions(){
+		return GetObject.getRecentTransactions(this, this.getCurrency(), this.accountNumber);
 	}
 }

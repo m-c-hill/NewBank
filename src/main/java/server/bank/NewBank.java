@@ -401,6 +401,10 @@ public class NewBank {
 
 	/**
 	 * Method to display a customer's recent transactions for their chosen dates
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response (table of transactions if successful)
 	 */
 	private String showMyTransactions(Customer customer, BufferedReader in, PrintWriter out) {
 		ArrayList<Account> customerAccounts = customer.getAccounts();
@@ -415,9 +419,14 @@ public class NewBank {
 			if (accountNumber.equalsIgnoreCase("EXIT")) {
 				return "Exit request is taken, going back to the main menu.";
 			} else{
+				out.println("Loading...");
 				Account account = GetObject.getAccount(accountNumber);
-				out.println("Displaying 10 most recent transactions for account: " + accountNumber);
+				assert account != null;
 				ArrayList<Transaction> transactions = account.getRecentTransactions();
+				if (transactions.isEmpty()){
+					return "No recent transactions found for account " + accountNumber;
+				}
+				out.println("Displaying up to 10 most recent transactions for account: " + accountNumber);
 				return OutputProcessor.createTransactionsTable(transactions);
 			}
 		}

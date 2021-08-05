@@ -11,30 +11,36 @@ public class OutputProcessor {
 
     // Loan table format
     private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%-9s|%n";
-    private static final String LOAN_TABLE_HEADER =
+    private static final String LOAN_TABLE_HEADER = String.format(
         "+---------------+-----------------------------------+------+------+---------+---------+---------+%n" +
         "| Customer Name |              Reason               |Amount| ATPB |Checked? |Accepted?|PaidBack?|%n" +
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n";
-    private static final String LOAN_TABLE_ROW_SEPARATOR =
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n";
+        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n"
+    );
+    private static final String LOAN_TABLE_ROW_SEPARATOR = String.format(
+        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n"
+    );
 
     // Accounts table format
     private static final String ACCOUNTS_TABLE_CONTENT_FORMAT = "|%-15s|%-10s|%-8s|%n";
-    private static final String ACCOUNTS_TABLE_HEADER =
+    private static final String ACCOUNTS_TABLE_HEADER = String.format(
         "+---------------+----------+--------+%n" +
         "|Account Number |  Balance |Currency|%n" +
-        "+---------------+----------+--------+%n";
-    private static final String ACCOUNTS_TABLE_ROW_SEPARATOR =
-        "+---------------+----------+--------+%n";
+        "+---------------+----------+--------+%n"
+    );
+    private static final String ACCOUNTS_TABLE_ROW_SEPARATOR = String.format(
+        "+---------------+----------+--------+%n"
+    );
 
     // Transactions table format (statements)
-    private static final String TRANSACTIONS_TABLE_CONTENT_FORMAT = "|%-13s|%-20s|%-13s|%-10s|%n";
-    private static final String TRANSACTIONS_TABLE_HEADER =
-            "+-------------+--------------------+-------------+----------+%n"+
-            "|     Date    |        Payee       |    Amount   | Currency |%n"+
-            "+-------------+--------------------+-------------+----------+%n";
-    private static final String TRANSACTIONS_TABLE_ROW_SEPARATOR =
-            "+-------------+--------------------+-------------+----------+%n";
+    private static final String TRANSACTIONS_TABLE_CONTENT_FORMAT = "|%-23s|%-20s|%-13s|%-10s|%n";
+    private static final String TRANSACTIONS_TABLE_HEADER = String.format(
+            "+-----------------------+--------------------+-------------+----------+%n"+
+            "|          Date         |        Payee       |    Amount   | Currency |%n"+
+            "+-----------------------+--------------------+-------------+----------+%n"
+    );
+    private static final String TRANSACTIONS_TABLE_ROW_SEPARATOR = String.format(
+            "+-----------------------+--------------------+-------------+----------+%n"
+    );
 
     // Loans table creator
     public static String createLoansTable(ArrayList<BankLoan> loansList) {
@@ -63,7 +69,6 @@ public class OutputProcessor {
                     account.getCurrency().getName().toUpperCase());
             accountsTable += ACCOUNTS_TABLE_ROW_SEPARATOR;
         }
-
         return accountsTable;
     }
 
