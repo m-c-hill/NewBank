@@ -55,6 +55,7 @@ public class NewBank {
 			case "4":
 				return createAccount(customer, in, out);
 			// "RLOAN" command
+			//TODO: combine all loans options to a new loans menu
 			case "5":
 				return requestLoan(customer, in, out);
 			// "SHOWMYLOANSTATUS" command

@@ -35,7 +35,30 @@ public class Transaction {
 		this.currency = currency;
 
 		int transactionTypeId = TransactionType.getTransactionTypeId(transactionType);
-
 		DbUtils.storeTransaction(this.account, transactionTypeId, this.timestamp, this.payee, this.amount, this.currency);
+	}
+
+	public String getTransactionType() {
+		return transactionType;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public String getPayee() {
+		return payee;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public Currency getCurrency() {
+		return currency;
 	}
 }

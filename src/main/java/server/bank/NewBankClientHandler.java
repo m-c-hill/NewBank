@@ -98,13 +98,14 @@ public class NewBankClientHandler extends Thread {
 			while (true) {
 				// A welcome screen offering one option to login and another to register
 				// TODO: add account recovery method for forgotten passwords
-				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
+				out.println("\nPlease choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
 						Object[] authCustomer = login();
 
 						if ((boolean)authCustomer[1]) {
 							out.println("Login successful");
+							out.println("Loading...");
 							if ((boolean)authCustomer[2]) {
 								customerMenu((int)authCustomer[0]);
 							} else {
@@ -163,7 +164,7 @@ public class NewBankClientHandler extends Thread {
 					+ "\n6. View my loan status"
 					+ "\n7. Pay back my loan"
 					+ "\n8. Reset my password"
-					+ "\n9. Go back to the main menu");
+					+ "\n9. Logout");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
