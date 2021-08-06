@@ -34,8 +34,8 @@ public class OutputProcessor {
             loansTable = loansTable + String.format(LOAN_TABLE_CONTENT_FORMAT,
                     bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(),
                     bankLoan.getReason(), Double.toString(bankLoan.getAmount()),
-                    Double.toString(bankLoan.getPayBackAmount()), Boolean.toString(bankLoan.isChecked()),
-                    Boolean.toString(bankLoan.isAccepted()), Boolean.toString(bankLoan.isPaidBack()));
+                    bankLoan.getOutstandingPayments(), bankLoan.isChecked(),
+                    bankLoan.isAccepted(), bankLoan.isPaidBack());
             loansTable = loansTable + loanTableRowSeparator;
         }
 

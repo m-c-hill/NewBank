@@ -4,6 +4,7 @@ import server.account.Account;
 import server.account.Currency;
 import server.bank.Address;
 import server.bank.Bank;
+import server.bank.BankLoan;
 import server.user.Admin;
 import server.user.AdminRole;
 import server.user.Customer;
@@ -265,6 +266,50 @@ public class GetObject {
 				return new Password(userId, login);
 			}
 		} catch(SQLException exception){
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+
+	// TODO: COMPLETE THESE TWO METHODS
+	/**
+	 * Method to retrieve all bank loan requests belonging to a specific Customer
+	 * @param customerId Customer ID
+	 * @return Array of Bank Loans
+	 */
+	public static ArrayList<BankLoan> getLoanList(int customerId){
+		ArrayList<BankLoan> loanList = new ArrayList<BankLoan>();
+		String query = "SELECT * FROM loans WHERE customer_id = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, customerId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				//
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Method to retrieve a single loan request from the database by loan ID
+	 * @param loanId Loan ID
+	 * @return Bank Loan
+	 */
+	public static BankLoan getLoan(int loanId){
+		String query = "SELECT * FROM admin_role_type WHERE loan_id = 1";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, adminRoleId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+			}
+		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 		return null;

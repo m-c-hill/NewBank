@@ -9,16 +9,23 @@ import server.user.Customer;
  * Class to represent a loan provided to a customer through NewBank
  */
 public class BankLoan {
+    // Customer and account
     private final Customer customer;
     private final Account recipientAccount;
+
+    // Loan balance and payments
     private final double amountLoaned;
-    private final double payBackAmount;
+    private double outstandingPayments;
+    private double amountPaidBack;
+
+    // Further loan information
     private final double interestRate;
     private final Currency currency;
     private final String reason;
-    private boolean accepted;
-    private boolean approvalStatus = false;
-    private boolean transferStatus = false;
+
+    // Status
+    private String approvalStatus = "pending"; // Loan must be approved by admin - can be pending, approved or declined
+    private boolean transferStatus = false; // True if loan has been transferred to user's account
 
     /**
      * Constructor to initialise a new bank loan request and store the request in the database
@@ -33,15 +40,16 @@ public class BankLoan {
         this.amountLoaned = amount;
         this.currency = account.getCurrency();
         this.interestRate = 5; // Default interest rate is 5%, loan managers will have the option to update this
-        this.payBackAmount = this.amountLoaned * (1 + interestRate/100.00);
+        this.outstandingPayments = this.amountLoaned * (1 + interestRate/100.00);
         this.reason = reason;
+        this.amountPaidBack = 0;
 
-        //TODO: write storeLoan method in DbUtils
+        // Store new loan request in the database for loan managers to view and approve
         DbUtils.storeLoan(
                 this.customer,
                 this.recipientAccount,
                 this.amountLoaned,
-                this.payBackAmount,
+                this.outstandingPayments,
                 this.currency,
                 this.reason,
                 this.interestRate,
@@ -51,29 +59,21 @@ public class BankLoan {
     }
 
     /**
-     * Constructor to
-     * @return
+     * Constructor to create a loan instance from data retrieved from the database
      */
+    /*
+    public BankLoan(){
+        //TODO
+    }
+    */
 
-
-    public String getReason() {
-        return this.reason;
+    public void makePayment(double amount) {
+        this.outstandingPayments -= amount;
+        // TODO: update outstandingPayment
     }
 
-    public double getAmount() {
-        return amountLoaned;
-    }
-
-    public double getPayBackAmount() {
-        return payBackAmount;
-    }
-
-    public boolean isAccepted(){
-        return this.accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    private void updateLoan() {
+        // PASS
     }
 
     /*
@@ -91,5 +91,27 @@ public class BankLoan {
 
     public Account getAccount() {
         return recipientAccount;
+    }
+
+    public String getReason() {
+        return this.reason;
+    }
+
+    public double getAmount() {
+        return amountLoaned;
+    }
+
+    public double getOutstandingPayments() {
+        return outstandingPayments;
+    }
+
+    public boolean isAccepted(){
+        if (this.approvalStatus == "accepted"){
+            return true;
+        } return false;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }

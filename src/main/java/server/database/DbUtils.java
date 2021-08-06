@@ -328,10 +328,10 @@ public class DbUtils {
      * Method to store a new loan request in the database
      */
     public static void storeLoan(Customer customer, Account recipientAccount, double amountLoaned, double payBackAmount,
-                                 Currency currency, String reason, Double interestRate, boolean approvalStatus,
+                                 Currency currency, String reason, Double interestRate, String approvalStatus,
                                  boolean transferStatus){
         String query = "INSERT INTO newbank.loans(customer_id, account_number, amount_loaned, currency_id, " +
-                "approval_status, transfer_status, reason, interest_rate, amount_due) " +
+                "approval_status, transfer_status, reason, interest_rate, outstanding_payment, checked) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);

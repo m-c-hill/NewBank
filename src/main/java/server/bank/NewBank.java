@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class NewBank {
@@ -24,8 +23,6 @@ public class NewBank {
 	private static final NewBank bank = new NewBank();
 	// TODO: move loan limit to customer class
 	private static final double LOAN_LIMIT = 2500;
-	ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
-	HashMap<String, Customer> customers = new HashMap<String, Customer>();
 
 	public static NewBank getBank() {
 		return bank;
@@ -231,7 +228,7 @@ public class NewBank {
 	}
 
 	/**
-	 * Method to allow customers to request loans
+	 * Method to allow customers to submit loan requests for a specific account
 	 * @param customer Customer
 	 * @param in Input
 	 * @param out Output
@@ -251,38 +248,30 @@ public class NewBank {
 
 				if (accountNumber.equalsIgnoreCase("EXIT")) {
 					return "Going back to the main menu";
-				} else {
-					for (int i = 0; i < customerAccounts.size(); i++) {
-						if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
-							Account customerAccount = customerAccounts.get(i);
-
-							out.println("Enter the amount you want to request:");
-							double amount = InputProcessor.takeValidLoanAmountInput(LOAN_LIMIT, in, out);
-
-							out.println("Please provide a justification for requesting a loan:");
-							String jStatement = InputProcessor.takeValidRegularInput(in, out);
-
-							BankLoan bankLoan = new BankLoan(customer, customerAccount, jStatement, amount, INTEREST_RATE);
-							this.loansList.add(bankLoan);
-
-							customer.setAllowedToRequestLoan(false);
-
-							String notification = String.format("Your loan request has been submitted."
-									+ "\nYou will receive a confirmation SMS once your request is reviewed by the bank."
-									+ "\nYou can also check for the updates on the loan status from the menu");
-
-							Sms.sendText(notification);
-
-							return notification;
-						}
-					}
-					return "Interrupted.";
 				}
 
+				Account account = GetObject.getAccount(accountNumber);
+
+				out.println("Enter the amount you want to request: ");
+				double amount = InputProcessor.takeValidLoanAmountInput(LOAN_LIMIT, in, out);
+				out.println("Please provide a justification for requesting a loan: ");
+				String loanReason = InputProcessor.takeValidRegularInput(in, out);
+				assert account != null;
+				BankLoan bankLoan = new BankLoan(customer, account, amount, loanReason);
+				customer.setAllowedToRequestLoan(false);
+				// TODO: add 'allowedToRequestLoan' variable to database schema
+				// TODO: update allowedToRequestLoan in database once added
+
+				String notification = "Your loan request has been submitted." +
+						"\nYou will receive a confirmation SMS once your request is reviewed by the bank." +
+						"\nYou can also check for the updates on the loan status from the menu";
+
+				//Sms.sendText(notification);
+
+				return notification;
 			}
-		} else {
-			return "You are not eligible to request a new loan until you complete the payment for the first loan.";
 		}
+		return "You are not eligible to request a new loan until you complete the payment for the first loan.";
 	}
 
 	/**
@@ -332,13 +321,12 @@ public class NewBank {
 		for (BankLoan bankLoan : loansList) {
 			if (bankLoan.getCustomer().getFirstName().equals(customer.getFirstName()) && bankLoan.isAccepted()) {
 				out.println("Which account would you like to use in order to pay back the loan?" + "\n" + showMyAccounts(customer));
-				String accountName = InputProcessor.takeValidInput(customerAccounts, bankLoan.getPayBackAmount(), in, out);
+				String accountName = InputProcessor.takeValidInput(customerAccounts, bankLoan.getOutstandingPayments(), in, out);
 
 				for (int i = 0; i < customerAccounts.size(); i++) {
 					if (customerAccounts.get(i).getAccountNumber().equalsIgnoreCase(accountName)) {
-						customerAccounts.get(i).payBackLoan(bankLoan.getPayBackAmount());
+						customerAccounts.get(i).payBackLoan(bankLoan.getOutstandingPayments());
 						customer.setAllowedToRequestLoan(true);
-						bankLoan.setPaidBack(true);
 
 						String notification = "Loan was successfully paid back.";
 

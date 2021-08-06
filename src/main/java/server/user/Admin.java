@@ -85,7 +85,6 @@ public class Admin extends User {
         return "Going back to the main menu.";
     }
 
-    // Utility
     // Loan request acceptor method
     private void acceptLoanRequest(BankLoan bankLoan){
         // Add the loan amount to the account balance
