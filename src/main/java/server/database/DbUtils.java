@@ -334,13 +334,13 @@ public class DbUtils {
      * @return User ID if details match a user in the database, else returns -1
      */
     public static int accountRecovery(String firstName, String lastName, String dateOfBirth, String postcode){
-        String query = "SELECT user_id" +
-                "FROM user u" +
-                "LEFT JOIN address a" +
-                "ON a.address_id = u.address_id" +
-                "WHERE u.first_names = ?" +
-                "AND u.last_name = ?" +
-                "AND u.date_of_birth = ?" +
+        String query = "SELECT user_id " +
+                "FROM user u " +
+                "LEFT JOIN address a " +
+                "ON a.address_id = u.address_id " +
+                "WHERE u.first_names = ? " +
+                "AND u.last_name = ? " +
+                "AND u.date_of_birth = ? " +
                 "AND a.postcode = ?";
         try {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);

@@ -118,7 +118,7 @@ public class NewBankClientHandler extends Thread {
 						"1. Login as Customer\n" +
 						"2. Register for a New Customer Account\n" +
 						"3. Login as Admin\n" +
-						"4. Recover account\n"
+						"4. Recover Account\n"
 				);
 				switch (in.readLine()) {
 					case "1":
@@ -363,9 +363,10 @@ public class NewBankClientHandler extends Thread {
 			String lastName = in.readLine();
 			out.println("Postcode (format EN8 9HG): ");
 			String postcode = in.readLine();
-			out.println("dateOfBirth (format YYYY-MM-DD)");
+			out.println("Date of Birth (format YYYY-MM-DD): ");
 			String dateOfBirth = in.readLine();
-			return DbUtils.accountRecovery(firstName, lastName, postcode, dateOfBirth);
+			out.println("Checking your details...");
+			return DbUtils.accountRecovery(firstName, lastName, dateOfBirth, postcode);
 
 		} catch(IOException e){
 			e.printStackTrace();
