@@ -96,13 +96,13 @@ public class NewBankClientHandler extends Thread {
 	 */
 	private void printNewBankLogo() {
 		String logo =
-				"//============================================\\\\\n" +
-						" | \\ | |             |  _ \\            | |   \n" +
-						" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
-						" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
-						" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
-						" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
-						"//============================================\\\\\n";
+			"//============================================\\\\\n" +
+			" | \\ | |             |  _ \\            | |   \n" +
+			" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
+			" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
+			" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
+			" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
+			"//============================================\\\\\n";
 		out.println(logo);
 	}
 
@@ -311,7 +311,7 @@ public class NewBankClientHandler extends Thread {
 		if (userId == -1) {
 			out.println("The details you have entered do not match any user in our system.");
 		} else {
-			out.println("Thanks you for verifying your identity.\n");
+			out.println("Thank you for verifying your identity.\n");
 			out.println("Your user id is: " + Password.getUserLogin(userId));
 		}
 	}
@@ -371,10 +371,6 @@ public class NewBankClientHandler extends Thread {
 		} catch(IOException e){
 			e.printStackTrace();
 		}
-		// Get input for the above, store and pass into lookUserUp method
-		// Create a SQL method (SELECT * FROM user WHERE first_name = ..."
-		// If this returns no results, return -1
-		// If this returns a results, then return user_id
 		return -1;
 	}
 }
