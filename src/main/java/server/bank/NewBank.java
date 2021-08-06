@@ -1,5 +1,6 @@
 package server.bank;
 
+import com.twilio.twiml.voice.Pay;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
@@ -292,6 +293,7 @@ public class NewBank {
 		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
 		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
+		assert bankLoan != null;
 		String loanStatus = bankLoan.getApprovalStatus();
 
 		switch(loanStatus){
@@ -320,27 +322,39 @@ public class NewBank {
 	 * @return
 	 */
 	private String payBackLoan(Customer customer, BufferedReader in, PrintWriter out) {
-		ArrayList<Account> customerAccounts = customer.getAccounts();
+		// Retrieves all loans currently associated with this customer
+		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
+		ArrayList<Account> accountList = GetObject.getAccounts(customer.getUserID());
 
-		for (BankLoan bankLoan : loansList) {
-			if (bankLoan.getCustomer().getFirstName().equals(customer.getFirstName()) && bankLoan.isAccepted()) {
-				out.println("Which account would you like to use in order to pay back the loan?" + "\n" + showMyAccounts(customer));
-				String accountName = InputProcessor.takeValidInput(customerAccounts, bankLoan.getOutstandingPayments(), in, out);
+		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
+		out.println("Please enter the ID of the loan you would like to pay back: ");
+		// TODO: Print loans table here from loansList
+		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
-				for (int i = 0; i < customerAccounts.size(); i++) {
-					if (customerAccounts.get(i).getAccountNumber().equalsIgnoreCase(accountName)) {
-						customerAccounts.get(i).payBackLoan(bankLoan.getOutstandingPayments());
-						customer.setAllowedToRequestLoan(true);
+		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
 
-						String notification = "Loan was successfully paid back.";
+		assert bankLoan != null;
+		// If the loan has been transferred to the user's account
+		if (bankLoan.getTransferStatus()){
+			out.println("How much of the loan do you want to pay off?");
+			double amount = InputProcessor.takeValidDoubleInput(in, out);
 
-						Sms.sendText(notification);
+			// If the requested amount to pay off is greater that the outstanding payments due, then set equal to outstanding payment
+			if (amount > bankLoan.getOutstandingPayments()){ amount = bankLoan.getOutstandingPayments();}
 
-						return notification;
-					}
-				}
-			}
+			out.println("Choose the account you want to use to pay back the loan: ");
+			out.println(OutputProcessor.createsAccountsTable(accountList));
+			Account account = InputProcessor.takeValidInput(accountList, bankLoan.getCurrency(), in, out);
+
+			account.payBackLoan();
+
 		}
+
+		String notification = "Loan was successfully paid back.";
+
+		Sms.sendText(notification);
+
+		return notification;
 		return "You have not submitted any loan requests.";
 	}
 

@@ -1,13 +1,16 @@
 package server.support;
 
 import server.account.Account;
+import server.account.Currency;
 import server.bank.BankLoan;
+import server.database.GetObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +30,6 @@ public class InputProcessor{
         "valid phone numbers", "^0[\\d]{7,12}$",
         "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$"
         );
-
 
     /**
      * Method to take an input from the user and validate it
@@ -90,6 +92,36 @@ public class InputProcessor{
         }
         out.println("Account selected: " + account);
         return account;
+    }
+
+    /**
+     * Method to take an account number input from the user, account must have same currency as loan to be paid back
+     * @param accountsList List of accounts belonging to a customer
+     * @param currency Currecny of loan to pay back
+     * @param in Input
+     * @param out Output
+     * @return Account number
+     */
+    public static Account takeValidInput(ArrayList<Account> accountsList, Currency currency, BufferedReader in, PrintWriter out) {
+        String accountNumber = null;
+        try {
+            while (true) {
+                accountNumber = in.readLine();
+                if (accountExists(accountNumber, accountsList)) {
+                    Account account = GetObject.getAccount(accountNumber);
+                    assert account != null;
+                    if (!Objects.equals(account.getCurrency().getName(), currency.getName())){
+                        out.println("Please choose an account with the same currency as your loan payment. \nTry again: ");
+                    } break;
+                } else {
+                    out.println("Please enter a valid account number. \nTry again: ");
+                }
+            }
+        } catch (IOException e) {
+            out.println("Input error");
+        }
+        out.println("Account selected: " + accountNumber);
+        return null;
     }
 
     // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
@@ -330,5 +362,21 @@ public class InputProcessor{
 
         // Return true if there's a match and false if there isn't
         return m.matches();
+    }
+
+    public static double takeValidDoubleInput(BufferedReader in, PrintWriter out){
+        double amount = 0;
+        boolean validated = false;
+
+        while (!validated) {
+            try {
+                String request = in.readLine();
+                amount = Double.parseDouble(request);
+                validated = true;
+            } catch (Exception e) {
+                out.println("Cannot process non-numerical characters. Please enter a valid amount: ");
+            }
+        }
+        return amount;
     }
 }

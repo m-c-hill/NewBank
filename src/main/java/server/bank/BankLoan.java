@@ -118,4 +118,12 @@ public class BankLoan {
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }
+
+    public boolean getTransferStatus() {
+        return this.transferStatus;
+    }
+
+    public Currency getCurrency() {
+        return this.currency;
+    }
 }
