@@ -5,6 +5,7 @@ import server.bank.Address;
 import server.bank.BankLoan;
 import server.database.GetObject;
 import server.support.InputProcessor;
+import server.support.InvalidLoanException;
 import server.support.OutputProcessor;
 
 import java.io.BufferedReader;
@@ -55,39 +56,52 @@ public class Admin extends User {
 	 */
     public String handleLoanRequest(BufferedReader in, PrintWriter out) {
         if (this.checkPermission("grantLoan")) {
-            // Display only the loans that are pending
-            ArrayList<BankLoan> pendingLoansList = GetObject.getPendingLoanList();
-            if (!pendingLoansList.isEmpty()) {
-                out.println(OutputProcessor.createLoansTable(pendingLoansList));
+			// Display only the loans that are pending
+			ArrayList<BankLoan> pendingLoansList = GetObject.getPendingLoanList();
+			if (!pendingLoansList.isEmpty()) {
+				out.println(OutputProcessor.createPendingLoansTable());
 
-                // Verifying that the name (Customer firstName) exists in the list before accepting/rejecting
-                out.println("Enter the first name of the customer you wish to handle a request for:");
-                String customerName = InputProcessor.takeValidCustomerNameInput(pendingLoansList, in, out);
+				out.println("Enter the ID of the loan you wish to handle a request for: ");
 
-                // Automatically select/extract relevant bank loan
-                BankLoan bankLoan = selectLoanRequest(customerName, pendingLoansList);
+				boolean loanSelected = false;
+				while(!loanSelected) {
+					int loanId = InputProcessor.takeValidIntegerInput(in, out);
+					try {
+						BankLoan bankLoan = selectLoanRequest(loanId, pendingLoansList);
+					} catch (InvalidLoanException e){
+						out.println("The loan ID you have requested is invalid, please enter a valid loan id: ");
+					}
+				}
 
-                // Choose whether to accept or reject
-                out.println(
-                        "Please enter ACCEPT to accept or REJECT to reject the loan request from the given customer (this is case insensitive):");
-                String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
+				// Choose whether to accept or reject
+				out.println(
+						"Please enter ACCEPT to accept or REJECT to reject the selected loan: ");
+				String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
 
-                // Handle either decision
-                if (decision.equalsIgnoreCase("ACCEPT")) {
-                    this.acceptLoanRequest(bankLoan);
-                    out.println("Process completed successfully. Loan request was accepted.");
-                } else {
-                    this.rejectLoanRequest(bankLoan);
-                    out.println("Process completed successfully. Loan request was rejected.");
-                } //TODO This should also handle user input is not ACCEPT or REJECT
-            } else {
-                out.println("There are no pending requests at the moment.");
-            }
-        } else {
-            return "You're not authorized to perform this action";
-        }
-        return "Going back to the main menu.";
+				// Handle either decision
+				if (decision.equalsIgnoreCase("ACCEPT")) {
+					this.acceptLoanRequest(bankLoan);
+					return "Process completed successfully. Loan request was accepted.";
+				} else {
+					this.rejectLoanRequest(bankLoan);
+					return "Process completed successfully. Loan request was rejected.";
+				}
+			} else {
+				return "There are no pending requests at the moment.";
+			}
+		}
+		return "You're not authorized to perform this action";
     }
+
+	/**
+	 * Method to select a valid loan request
+	 * @param loanId Loan ID
+	 * @param pendingLoansList Pending list of Bank Loans
+	 * @return Selected Bank Loan
+	 */
+    private BankLoan selectLoanRequest(int loanId, ArrayList<BankLoan> pendingLoansList){
+
+	}
 
 	/**
 	 * Method to accept loan requests and trigger the account method to transfer the loan to the customre

@@ -298,7 +298,7 @@ public class InputProcessor{
                     break;
                 }
                 else{
-                    out.println("Unknown command. Try again:");
+                    out.println("Unknown command. Try again: ");
                 }
             }
         } catch (Exception e) {
@@ -378,5 +378,21 @@ public class InputProcessor{
             }
         }
         return amount;
+    }
+
+    public static int takeValidIntegerInput(BufferedReader in, PrintWriter out){
+        double value = 0;
+        boolean validated = false;
+
+        while (!validated) {
+            try {
+                String request = in.readLine();
+                value = Integer.parseInt(request);
+                validated = true;
+            } catch (Exception e) {
+                out.println("Cannot process non-integer value. Please enter a valid integer: ");
+            }
+        }
+        return value;
     }
 }
