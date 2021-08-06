@@ -3,6 +3,9 @@ package server.bank;
 import server.account.Account;
 import server.user.Customer;
 
+/**
+ * Class to represent a loan provided to a customer through NewBank
+ */
 public class BankLoan {
     private Customer customer;
     private Account recipientAccount;
