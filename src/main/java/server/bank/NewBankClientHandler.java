@@ -351,11 +351,6 @@ public class NewBankClientHandler extends Thread {
 		// This could be made more secure by asking for national insurance number and recent transactions, but this
 		// is good enough for now as a proof of concept
 
-		String firstName = "";
-		String lastName = "";
-		String postcode = "";
-		String dateOfBirth = "";
-
 		out.println(
 				"To recover your account, we'll need to verify your identity.\n" +
 				"Please enter the following details: "
@@ -363,13 +358,14 @@ public class NewBankClientHandler extends Thread {
 
 		try{
 			out.println("First name: ");
-			firstName = in.readLine();
+			String firstName = in.readLine();
 			out.println("Last name: ");
-			lastName = in.readLine();
+			String lastName = in.readLine();
 			out.println("Postcode (format EN8 9HG): ");
-			postcode = in.readLine();
+			String postcode = in.readLine();
 			out.println("dateOfBirth (format YYYY-MM-DD)");
-			dateOfBirth = in.readLine();
+			String dateOfBirth = in.readLine();
+			return DbUtils.accountRecovery(firstName, lastName, postcode, dateOfBirth);
 
 		} catch(IOException e){
 			e.printStackTrace();

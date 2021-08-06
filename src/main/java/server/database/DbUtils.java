@@ -327,8 +327,13 @@ public class DbUtils {
 
     /**
      * Query for account validation when user is attempting to recover a forgotten login or reset their password.
+     * @param firstName First name
+     * @param lastName Last name
+     * @param dateOfBirth Date of birth
+     * @param postcode Postcode
+     * @return User ID if details match a user in the database, else returns -1
      */
-    public static int accountRecovery(String firstName, String lastName, String postcode, String dateOfBirth){
+    public static int accountRecovery(String firstName, String lastName, String dateOfBirth, String postcode){
         String query = "SELECT user_id" +
                 "FROM user u" +
                 "LEFT JOIN address a" +
@@ -341,8 +346,8 @@ public class DbUtils {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
-            preparedStatement.setString(3, postcode);
-            preparedStatement.setString(4, dateOfBirth);
+            preparedStatement.setString(3, dateOfBirth);
+            preparedStatement.setString(4, postcode);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt("user_id");
