@@ -81,12 +81,11 @@ public class NewBank {
 	 * @return Response
 	 */
 	public synchronized String processAdminRequest(Admin admin, String request, BufferedReader in, PrintWriter out) {
-		// TODO: add a reset password option
 		switch (request) {
 			case "1":
-				return admin.showLoansList(loansList, out);
+				return admin.showLoansList(out);
 			case "2":
-				return admin.handleLoanRequest(loansList, customers, in, out);
+				return admin.handleLoanRequest(in, out);
 			default:
 				break;
 		}
@@ -288,7 +287,6 @@ public class NewBank {
 		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
 
 		out.println("Please choose a loan by ID to view the status: ");
-		// TODO: Print loans table here from loansList
 		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
 		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 

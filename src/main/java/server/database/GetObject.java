@@ -299,6 +299,7 @@ public class GetObject {
 	 * @return Bank Loan
 	 */
 	public static BankLoan getLoan(int loanId){
+
 		String query = "SELECT * FROM admin_role_type WHERE loan_id = 1";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -311,6 +312,6 @@ public class GetObject {
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return null;
+		return null; // KEEP THIS
 	}
 }
