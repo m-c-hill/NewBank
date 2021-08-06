@@ -280,7 +280,6 @@ public class NewBankClientHandler extends Thread {
 		out.println("Please choose an option:\n" +
 				"1. Forgotten account login\n" +
 				"2. Forgotten account password\n");
-		
 
 	}
 

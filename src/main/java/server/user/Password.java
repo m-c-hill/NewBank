@@ -210,4 +210,19 @@ public class Password {
 		}
 		return userId;
 	}
+
+	public static String getUserLogin(int userId){
+		String query = "SELECT login FROM password WHERE user_id = ?";
+		try {
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return rs.getString("login");
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
 }
