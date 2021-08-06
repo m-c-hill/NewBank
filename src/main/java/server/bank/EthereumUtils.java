@@ -1,21 +1,22 @@
 package server.bank;
 
-import org.web3j.crypto.Bip39Wallet;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 import server.user.Customer;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,7 +135,6 @@ public class EthereumUtils {
     public static String transferEther(Customer customer, BufferedReader in, PrintWriter out) {
 
         Credentials credentials = null;
-        Optional<TransactionReceipt> transactionReceipt;
         String response = "";
 
         try {
@@ -176,29 +176,35 @@ public class EthereumUtils {
                 if(new BigDecimal(amountToSend).compareTo(getAddressBalance(senderAddress)) > 0){
                     out.println("You do not have the funds required for this transaction. Please enter an amount that is equal to or less than your current balance of: " + getAddressBalance(senderAddress) + " Eth");
                 }
+
             } while (new BigDecimal(amountToSend).compareTo(getAddressBalance(senderAddress)) > 0);
 
-            transactionReceipt = Optional.ofNullable(Transfer.sendFunds(web3, credentials, recipientAddress, BigDecimal.valueOf(amountToSend), Convert.Unit.ETHER).send());
+            // Get the latest nonce of current account
+            EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(senderAddress, DefaultBlockParameterName.LATEST).send();
+            BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 
-            int count = 0;
-            do { //TODO why is this loop not working??
-                if(transactionReceipt.isPresent()){
-                    out.println("Transaction Successfully Mined");
-                    break;
-                } else {
-                    out.println("Please wait for transaction to be mined...");
-                    count++;
-                    Thread.sleep(3000);
-                }
-            } while (count < 10); // after 30 seconds exit loop
+            // Value to transfer (in wei)
+            BigInteger value = Convert.toWei(String.valueOf(amountToSend), Convert.Unit.ETHER).toBigInteger();
 
-            String transactionHash = transactionReceipt.get().getTransactionHash();
+            // Gas Parameter
+            BigInteger gasLimit = BigInteger.valueOf(21000);
+            BigInteger gasPrice = Convert.toWei("100", Convert.Unit.GWEI).toBigInteger();
 
-            response = "Recipient Address: " + recipientAddress + "\n" +
-                       "Transaction amount: " + String.format("%,.010f", amountToSend) + " Eth" + "\n" +
-                       "Transaction Hash: " + transactionHash + "\n" +
-                       "Transaction Fee: " + transactionReceipt.get().getCumulativeGasUsed().toString() + " gwei" + "\n" +
-                       "To see more transaction details visit: " + "\n" +
+            // Prepare the rawTransaction
+            RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, recipientAddress, value);
+
+            // Sign the transaction
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+            String hexValue = Numeric.toHexString(signedMessage);
+
+            // Send transaction
+            EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
+
+            //get TransactionHash
+            String transactionHash = ethSendTransaction.getTransactionHash();
+
+            response = "Transaction submitted to the network" + "\n" +
+                       "To check the transaction status visit: " + "\n" +
                        "https://goerli.etherscan.io/tx/" + transactionHash + "\n";
 
         } catch (Exception e) {
