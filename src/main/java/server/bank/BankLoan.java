@@ -41,7 +41,7 @@ public class BankLoan {
                 this.customer,
                 this.recipientAccount,
                 this.amountLoaned,
-                this.amountDue,
+                this.payBackAmount,
                 this.currency,
                 this.reason,
                 this.interestRate,

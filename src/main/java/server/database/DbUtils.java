@@ -1,5 +1,7 @@
 package server.database;
 
+import server.account.Account;
+import server.account.Currency;
 import server.bank.Bank;
 import server.transaction.StatementSchedule;
 import server.bank.Address;
@@ -276,6 +278,7 @@ public class DbUtils {
             preparedStatement.setBoolean(6, canCloseAccount);
             preparedStatement.setBoolean(7, canViewLoanRequests);
             preparedStatement.setBoolean(8, canHandleLoanRequests);
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -300,6 +303,7 @@ public class DbUtils {
             preparedStatement.setString(6, statementSchedule);
             preparedStatement.setDouble(7, balance);
             preparedStatement.setString(8, currency);
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -318,5 +322,31 @@ public class DbUtils {
             exception.printStackTrace();
         }
         return -1; // Return -1 if no user found
+    }
+
+    /**
+     * Method to store a new loan request in the database
+     */
+    public static void storeLoan(Customer customer, Account recipientAccount, double amountLoaned, double payBackAmount,
+                                 Currency currency, String reason, Double interestRate, boolean approvalStatus,
+                                 boolean transferStatus){
+        String query = "INSERT INTO newbank.loans(customer_id, account_number, amount_loaned, currency_id, " +
+                "approval_status, transfer_status, reason, interest_rate, amount_due) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setInt(1, getCustomerId(customer.getUserID()));
+            preparedStatement.setString(2, recipientAccount.getAccountNumber());
+            preparedStatement.setDouble(3, amountLoaned);
+            preparedStatement.setDouble(4, payBackAmount);
+            preparedStatement.setString(5, currency.getName());
+            preparedStatement.setString(6, reason);
+            preparedStatement.setDouble(7, interestRate);
+            preparedStatement.setBoolean(8, approvalStatus);
+            preparedStatement.setBoolean(9, transferStatus);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 }
