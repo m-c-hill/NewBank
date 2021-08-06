@@ -284,12 +284,49 @@ public class NewBankClientHandler extends Thread {
 
 	}
 
-	private String forgottenLogin() {
-
+	private void forgottenLogin() {
+		int userId = verifyUserIdentity();
+		if (userId == -1) {
+			out.println("The details you have entered do not match any user in our system.");
+		} else {
+			out.println("Thanks you for verifying your identity.\n");
+			out.println("Your user id is: " + Password.getUserLogin(userId)); // TODO: create this method with SQL statement
+		}
 	}
 
-	private String forgottenPassword() {
+	private void forgottenPassword() {
 
+		out.println("Please enter your Login ID: ");
+		if(!DbUtils.checkLoginExists("asfas")){
+			out.println("This login does not exist. Exiting to main menu.");
+			return;
+		}
+
+		int userId = verifyUserIdentity();
+		if (userId == -1) {
+			out.println("The details you have entered do not match any user in our system.");
+		} else {
+			Password password = new Password(userId, login);
+			out.println("Please enter your new password: ");
+			String passwordAttempt1 = ""; // TODO: input here
+			out.println("Please re-enter your new password");
+			String passwordAttempt2 = ""; // TODO: input here
+
+			if (passwordAttempt1.equals(passwordAttempt2)){
+
+			}
+
+		}
+	}
+
+	private int verifyUserIdentity() {
+		// first name, last name, postcode, date of birth, NI number
+
+		// Get input for the above, store and pass into lookUserUp method
+		// Create a SQL method (SELECT * FROM user WHERE first_name = ..."
+		// If this returns no results, return -1
+		// If this returns a results, then return user_id
+		return -1;
 	}
 
 }
