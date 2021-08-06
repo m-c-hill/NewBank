@@ -113,8 +113,7 @@ public class NewBankClientHandler extends Thread {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
-				// A welcome screen offering one option to login and another to register
-				// TODO: add account recovery method for forgotten passwords
+				// A welcome screen offering options to login, register and recover your account
 				out.println("Please choose an option:\n" +
 						"1. Login as Customer\n" +
 						"2. Register for a New Customer Account\n" +
@@ -281,27 +280,27 @@ public class NewBankClientHandler extends Thread {
 				"1. Forgotten account login\n" +
 				"2. Forgotten account password\n" +
 				"3. Go back");
-		String request = "";
 		try {
-			request = in.readLine();
+			switch (in.readLine()) {
+				case "1":
+					forgottenLogin();
+					break;
+				case "2":
+					try {
+						forgottenPassword();
+					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+						e.printStackTrace();
+					}
+				case "3":
+					break;
+				default:
+					out.println("Invalid input, please try again: ");
+					accountRecoveryMenu();
+					break;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		switch(request){
-			case "1":
-				forgottenLogin();
-				break;
-			case "2":
-				try {
-					forgottenPassword();
-				} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-					e.printStackTrace();
-				}
-			case "3":
-				
-		}
-
 	}
 
 	/**
@@ -346,16 +345,39 @@ public class NewBankClientHandler extends Thread {
 
 	/**
 	 * Method to verify a user's identity, to be used before retrieving a forgotten login or resetting a password
-	 * @return True if user's identity can be verified through a series of questions
+	 * @return User ID if user's identity can be verified through a series of questions (else return -1)
 	 */
 	private int verifyUserIdentity() {
-		// first name, last name, postcode, date of birth, NI number
+		// This could be made more secure by asking for national insurance number and recent transactions, but this
+		// is good enough for now as a proof of concept
 
+		String firstName = "";
+		String lastName = "";
+		String postcode = "";
+		String dateOfBirth = "";
+
+		out.println(
+				"To recover your account, we'll need to verify your identity.\n" +
+				"Please enter the following details: "
+		);
+
+		try{
+			out.println("First name: ");
+			firstName = in.readLine();
+			out.println("Last name: ");
+			lastName = in.readLine();
+			out.println("Postcode (format EN8 9HG): ");
+			postcode = in.readLine();
+			out.println("dateOfBirth (format YYYY-MM-DD)");
+			dateOfBirth = in.readLine();
+
+		} catch(IOException e){
+			e.printStackTrace();
+		}
 		// Get input for the above, store and pass into lookUserUp method
 		// Create a SQL method (SELECT * FROM user WHERE first_name = ..."
 		// If this returns no results, return -1
 		// If this returns a results, then return user_id
 		return -1;
 	}
-
 }

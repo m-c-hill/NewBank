@@ -266,7 +266,7 @@ public class DbUtils {
                 "can_view_user_statement, can_open_account, can_close_account, can_view_loan_requests, " +
                 "can_handle_loan_requests) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try{
+        try {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, description);
@@ -290,7 +290,7 @@ public class DbUtils {
         String query = "INSERT INTO account(account_number, account_name, customer_id, " +
                 "bank_id, account_type_id, statement_schedule, balance, currency_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try{
+        try {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setString(1, accountNumber);
             preparedStatement.setString(2, accountName);
@@ -305,9 +305,14 @@ public class DbUtils {
         }
     }
 
+    /**
+     * Method to return a customer ID from a user ID
+     * @param userId User ID
+     * @return Customer ID if exists, -1 if not
+     */
     public static int getCustomerId(int userId){
         String query = "SELECT * FROM customer WHERE user_id = ?";
-        try{
+        try {
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setInt(1, userId);
             ResultSet rs = preparedStatement.executeQuery();
@@ -318,5 +323,33 @@ public class DbUtils {
             exception.printStackTrace();
         }
         return -1; // Return -1 if no user found
+    }
+
+    /**
+     * Query for account validation when user is attempting to recover a forgotten login or reset their password.
+     */
+    public static int accountRecovery(String firstName, String lastName, String postcode, String dateOfBirth){
+        String query = "SELECT user_id" +
+                "FROM user u" +
+                "LEFT JOIN address a" +
+                "ON a.address_id = u.address_id" +
+                "WHERE u.first_names = ?" +
+                "AND u.last_name = ?" +
+                "AND u.date_of_birth = ?" +
+                "AND a.postcode = ?";
+        try {
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, postcode);
+            preparedStatement.setString(4, dateOfBirth);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return -1;
     }
 }
