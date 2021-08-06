@@ -151,10 +151,15 @@ CREATE TABLE IF NOT EXISTS loans (
     loan_id int PRIMARY KEY AUTO_INCREMENT,
     customer_id int REFERENCES customer(customer_id),
     account_number varchar(8) REFERENCES account(account_number),
-    amount double,
+    amount_loaned DOUBLE,
     currency_id varchar(255) REFERENCES currency(currency_id),
     approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
-    transfer_status ENUM('pending', 'received') DEFAULT 'pending'
+    transfer_status ENUM('pending', 'received') DEFAULT 'pending',
+    reason VARCHAR(255),
+    interest_rate DOUBLE,
+    amount_due DOUBLE,
+    amount_paid DOUBLE DEFAULT 0
 );
+
 
 SHOW TABLES;

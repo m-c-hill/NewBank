@@ -9,7 +9,6 @@ import server.user.Customer;
 public class BankLoan {
     private Customer customer;
     private Account recipientAccount;
-
     private String reason;
 
     private double amount;
