@@ -5,22 +5,25 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 import server.database.DbUtils;
 import server.support.InputProcessor;
 import server.user.Customer;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class providing functionality relating to Ethereum wallet management
+ */
 public class EthereumUtils {
 
     static String pathToWallets = "./ethereum_wallets";
@@ -28,6 +31,13 @@ public class EthereumUtils {
     // connection to Infura API
     static Web3j web3 = Web3j.build(new HttpService("https://goerli.infura.io/v3/b9b8a5c7c40041d5a8bd82b921f378c9"));
 
+    /**
+     * Method to create a new Ethereum Wallet
+     * @param customer The {@link Customer} object representing the customer currently logged in.
+     * @param in {@link BufferedReader} used to receive customer input
+     * @param out {@link PrintWriter} used to output to the console
+     * @return String The result of the wallet creation
+     */
     public static String createEthereumWallet(Customer customer, BufferedReader in, PrintWriter out) {
 
         Credentials credentials = null;
@@ -82,6 +92,13 @@ public class EthereumUtils {
         return "Ethereum wallet successfully created with address: " + address;
     }
 
+    /**
+     * A method to retrieve a customers Ethereum wallet information
+     * @param customer The {@link Customer} object representing the customer currently logged in.
+     * @param in {@link BufferedReader} used to receive customer input
+     * @param out {@link PrintWriter} used to output to the console
+     * @return String containing customer name, user ID, Ethereum address and balance.
+     */
     public static String showEthereumWalletInfo(Customer customer, BufferedReader in, PrintWriter out) {
 
         Credentials credentials = null;
@@ -111,7 +128,7 @@ public class EthereumUtils {
     }
 
     /**
-     * Method to return the balance of an address in the Ethereum network
+     * A helper method to return the balance of an address in the Ethereum network
      * @param address the address to check
      * @return
      */
@@ -179,29 +196,7 @@ public class EthereumUtils {
 
             } while (new BigDecimal(amountToSend).compareTo(getAddressBalance(senderAddress)) > 0);
 
-            // Get the latest nonce of current account
-            EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(senderAddress, DefaultBlockParameterName.LATEST).send();
-            BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-
-            // Value to transfer (in wei)
-            BigInteger value = Convert.toWei(String.valueOf(amountToSend), Convert.Unit.ETHER).toBigInteger();
-
-            // Gas Parameter
-            BigInteger gasLimit = BigInteger.valueOf(21000);
-            BigInteger gasPrice = Convert.toWei("100", Convert.Unit.GWEI).toBigInteger();
-
-            // Prepare the rawTransaction
-            RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, recipientAddress, value);
-
-            // Sign the transaction
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-            String hexValue = Numeric.toHexString(signedMessage);
-
-            // Send transaction
-            EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
-
-            //get TransactionHash
-            String transactionHash = ethSendTransaction.getTransactionHash();
+            String transactionHash = createTransaction(credentials, senderAddress, recipientAddress, amountToSend);
 
             response = "Transaction submitted to the network" + "\n" +
                        "To check the transaction status visit: " + "\n" +
@@ -212,6 +207,42 @@ public class EthereumUtils {
         }
 
         return response;
+    }
+
+    /**
+     * A helper method to create an Ethereum transaction
+     * @param credentials the {@link Credentials} object for the currently logged in user
+     * @param senderAddress the address to send the Ether from
+     * @param recipientAddress the address to send to Ether to
+     * @param amountToSend the amount of Ether to send
+     * @return the hash of the transaction
+     * @throws IOException
+     */
+    private static String createTransaction(Credentials credentials, String senderAddress, String recipientAddress, double amountToSend) throws IOException {
+
+        // Get the latest nonce of current account
+        EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(senderAddress, DefaultBlockParameterName.LATEST).send();
+        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+
+        // Value to transfer (in wei)
+        BigInteger value = Convert.toWei(String.valueOf(amountToSend), Convert.Unit.ETHER).toBigInteger();
+
+        // Gas Parameter
+        BigInteger gasLimit = BigInteger.valueOf(21000);
+        BigInteger gasPrice = Convert.toWei("100", Convert.Unit.GWEI).toBigInteger();
+
+        // Prepare the rawTransaction
+        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, recipientAddress, value);
+
+        // Sign the transaction
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+        String hexValue = Numeric.toHexString(signedMessage);
+
+        // Send transaction
+        EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
+
+        // return TransactionHash
+        return ethSendTransaction.getTransactionHash();
     }
 
 }
