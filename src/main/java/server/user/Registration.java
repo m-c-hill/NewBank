@@ -108,7 +108,7 @@ public class Registration {
 				}
 			}
 			out.println("Please enter a password: ");
-			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			plainTextPassword = InputProcessor.takeValidInput("password", in, out);
 			Password password = new Password(loginId, plainTextPassword);
 			out.println("Password successfully encrypted and stored.");
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){

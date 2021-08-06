@@ -2,6 +2,7 @@ package server.bank;
 
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.support.InputProcessor;
 import server.user.Admin;
 import server.user.Customer;
 import server.user.Password;
@@ -88,6 +89,21 @@ public class NewBankClientHandler extends Thread {
 			e.printStackTrace();
 		}
 		return new Object[]{userId, grantAccess, isCustomer, isAdmin};
+	}
+
+	/**
+	 * Method to print New Bank's logo on start up
+	 */
+	private void printNewBankLogo() {
+		String logo =
+				"//============================================\\\\\n" +
+						" | \\ | |             |  _ \\            | |   \n" +
+						" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
+						" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
+						" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
+						" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
+						"//============================================\\\\\n";
+		out.println(logo);
 	}
 
 	public void run() {
@@ -217,10 +233,6 @@ public class NewBankClientHandler extends Thread {
 		}
 	}
 
-	private void recoverAccount(){
-		// TODO: add account recovery method for forgotten passwords
-	}
-
 	/**
 	 * Method to determine if a user is a customer
 	 * @param userId User ID
@@ -262,62 +274,80 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	/**
-	 * Method to print New Bank's logo on start up
+	 * Method to display the account recovery menu
 	 */
-	private void printNewBankLogo() {
-		String logo =
-				"//============================================\\\\\n" +
-				" | \\ | |             |  _ \\            | |   \n" +
-				" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
-				" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
-				" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
-				" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
-				"//============================================\\\\\n";
-		out.println(logo);
-	}
-
 	private void accountRecoveryMenu() {
 		out.println("Please choose an option:\n" +
 				"1. Forgotten account login\n" +
-				"2. Forgotten account password\n");
+				"2. Forgotten account password\n" +
+				"3. Go back");
+		String request = "";
+		try {
+			request = in.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		switch(request){
+			case "1":
+				forgottenLogin();
+				break;
+			case "2":
+				try {
+					forgottenPassword();
+				} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+					e.printStackTrace();
+				}
+			case "3":
+				
+		}
 
 	}
 
+	/**
+	 * Method to retrieve a user's forgotten login ID
+	 */
 	private void forgottenLogin() {
 		int userId = verifyUserIdentity();
 		if (userId == -1) {
 			out.println("The details you have entered do not match any user in our system.");
 		} else {
 			out.println("Thanks you for verifying your identity.\n");
-			out.println("Your user id is: " + Password.getUserLogin(userId)); // TODO: create this method with SQL statement
+			out.println("Your user id is: " + Password.getUserLogin(userId));
 		}
 	}
 
-	private void forgottenPassword() {
+	/**
+	 * Method to reset the password for a user who has forgotten theirs
+	 */
+	private void forgottenPassword() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
 		out.println("Please enter your Login ID: ");
-		if(!DbUtils.checkLoginExists("asfas")){
+		String loginId = InputProcessor.takeValidInput("letters and numbers", in, out);
+		if(!DbUtils.checkLoginExists(loginId)){
 			out.println("This login does not exist. Exiting to main menu.");
 			return;
 		}
-
 		int userId = verifyUserIdentity();
 		if (userId == -1) {
 			out.println("The details you have entered do not match any user in our system.");
 		} else {
-			Password password = new Password(userId, login);
 			out.println("Please enter your new password: ");
-			String passwordAttempt1 = ""; // TODO: input here
+			String passwordAttempt1 = InputProcessor.takeValidInput("password", in, out);
 			out.println("Please re-enter your new password");
-			String passwordAttempt2 = ""; // TODO: input here
+			String passwordAttempt2 = InputProcessor.takeValidInput("password", in, out);
 
 			if (passwordAttempt1.equals(passwordAttempt2)){
-
+				Password password = new Password(userId, Password.getUserLogin(userId));
+				password.resetPassword(passwordAttempt1);
 			}
-
 		}
 	}
 
+	/**
+	 * Method to verify a user's identity, to be used before retrieving a forgotten login or resetting a password
+	 * @return True if user's identity can be verified through a series of questions
+	 */
 	private int verifyUserIdentity() {
 		// first name, last name, postcode, date of birth, NI number
 

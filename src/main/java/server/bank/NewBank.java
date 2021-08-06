@@ -363,16 +363,15 @@ public class NewBank {
 
 		out.println("Please enter your current password: ");
 		Password password = GetObject.getPassword(customer.getUserID()); // Retrieve password object
-		assert password != null; // TODO: remove this once added to input processor
+		assert password != null;
 		boolean auth = password.authenticate(in.readLine()); // Ask user to enter their plain text password
 		if (auth) {
 			boolean passwordReset = false;
 			while (!passwordReset) {
-				// TODO: authenticate the plain text password with input processor (10+ characters, 1 symbol, 1 upper)
 				out.println("Please enter a new password: ");
-				String passwordAttempt1 = in.readLine();
+				String passwordAttempt1 = InputProcessor.takeValidInput("password", in, out);
 				out.println("Please re-enter your password: ");
-				String passwordAttempt2 = in.readLine();
+				String passwordAttempt2 = InputProcessor.takeValidInput("password", in, out);
 
 				if (Objects.equals(passwordAttempt1, passwordAttempt2)) {
 					password.resetPassword(passwordAttempt1);

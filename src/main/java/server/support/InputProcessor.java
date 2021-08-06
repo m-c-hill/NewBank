@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 // You can call InputProcessor(String key) to take and validate an input value that matches the provided the key and then assigning the return value to a variable
 // For example, InputProcessor("valid dates") will look through the map to get the regex defining the date format  
 public class InputProcessor{
+
     // Mapping each key to its value (regex)
-  
     private static final Map<String, String> InfoRegexMap = Map.of(
         "letters", "^[A-Za-z ]+$",
         "numbers", "^[0-9 ]+$",
@@ -25,9 +25,9 @@ public class InputProcessor{
         "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
         "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
         "valid phone numbers", "^0[\\d]{7,12}$",
-        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$"
-        );
-
+        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$",
+        "password", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+    );
 
     /**
      * Method to take an input from the user and validate it
@@ -48,7 +48,6 @@ public class InputProcessor{
                 } else {
                     // Display a message if the input is invalid. Loop again to take a new input
                     out.println("Invalid entry. This field accepts " + key + " only. \nTry again:");
-                    continue;
                 }
             }
         } catch (IOException e) {
@@ -276,7 +275,7 @@ public class InputProcessor{
     }
 
     /**
-     * Method to validate a deposit inoput
+     * Method to validate a deposit input
      * @param in Input
      * @param out Output
      * @return Validated amount to deposit
