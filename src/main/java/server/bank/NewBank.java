@@ -3,6 +3,7 @@ package server.bank;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
+import server.database.DbUtils;
 import server.database.GetObject;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
@@ -282,30 +283,33 @@ public class NewBank {
 	 * @return Response
 	 */
 	private String showMyLoanStatus(Customer customer, BufferedReader in, PrintWriter out) {
-		for (BankLoan bankLoan : loansList) {
-			if (bankLoan.getCustomer().getFirstName().equals(customer.getFirstName())) {
-				if (!bankLoan.isChecked()) {
-					return "Your loan request has not been checked yet.";
-				} else if (bankLoan.isChecked() && bankLoan.isAccepted()) {
+		// Retrieves all loans currently associated with this customer
+		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
 
-					String notification = String.format("Your loan request has been accepted." + "\nThe requested amount has been added to your "
-							+ bankLoan.getAccount().getAccountNumber() + " account.");
+		out.println("Please choose a loan by ID to view the status: ");
+		// TODO: Print loans table here from loansList
+		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
+		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
-					Sms.sendText(notification);
+		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
+		String loanStatus = bankLoan.getApprovalStatus();
 
-					return notification;
-
-				} else if (bankLoan.isChecked() && !bankLoan.isAccepted()) {
-
-					String notification = "Your loan request has been rejected. You may request a new loan.";
-
-					Sms.sendText(notification);
-
-					return notification;
-				}
-			}
+		switch(loanStatus){
+			case "pending":
+				return "Your loan request has not been checked yet.";
+			case "approved":
+				String notification = "Your loan request has been accepted.\n" +
+						"The requested amount has been added to account: "
+						+ bankLoan.getAccount().getAccountNumber() + ".";
+				//Sms.sendText(notification);
+				return notification;
+			case "declined":
+				notification = "Your loan request has been rejected. You may request a new loan.";
+				//Sms.sendText(notification);
+				return notification;
+			default:
+				return "You have not submitted any loan requests.";
 		}
-		return "You have not submitted any loan requests.";
 	}
 
 	/**

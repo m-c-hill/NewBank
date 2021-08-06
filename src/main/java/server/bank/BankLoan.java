@@ -18,7 +18,7 @@ public class BankLoan {
     private double outstandingPayments;
     private double amountPaidBack;
 
-    // Further loan information
+    // Other loan information
     private final double interestRate;
     private final Currency currency;
     private final String reason;
@@ -66,6 +66,10 @@ public class BankLoan {
         //TODO
     }
     */
+
+    public String getApprovalStatus(){
+        return this.approvalStatus;
+    }
 
     public void makePayment(double amount) {
         this.outstandingPayments -= amount;

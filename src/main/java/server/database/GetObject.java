@@ -271,8 +271,6 @@ public class GetObject {
 		return null;
 	}
 
-
-	// TODO: COMPLETE THESE TWO METHODS
 	/**
 	 * Method to retrieve all bank loan requests belonging to a specific Customer
 	 * @param customerId Customer ID
@@ -294,6 +292,7 @@ public class GetObject {
 		return null;
 	}
 
+	// TODO: complete this
 	/**
 	 * Method to retrieve a single loan request from the database by loan ID
 	 * @param loanId Loan ID
