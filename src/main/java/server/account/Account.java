@@ -95,11 +95,20 @@ public class Account {
 	}
 
 	/**
+	 * Method to accept a loan payment after approval by a loan manager
+	 */
+	public void receiveLoan(double amount){
+		this.balance += amount;
+		// TODO: log as a transaction here once merged with transaction PR
+	}
+
+	/**
 	 * Method to pay a loan back
 	 * @param amount Loan amount due
 	 */
 	public void payBackLoan(double amount){
 		updateBalance(this.balance - amount);
+		// TODO: once transactions PR is merged, add an option to log a paid back loan as a transaction in the database!
 	}
 
 	public void executeTransaction(){
@@ -142,6 +151,7 @@ public class Account {
 		}
 		return newAccountNumber;
 	}
+
 
 	public void closeAccount(){
 		// TODO: create method to close account

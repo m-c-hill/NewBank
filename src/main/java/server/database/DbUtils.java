@@ -342,7 +342,7 @@ public class DbUtils {
             preparedStatement.setString(5, currency.getName());
             preparedStatement.setString(6, reason);
             preparedStatement.setDouble(7, interestRate);
-            preparedStatement.setBoolean(8, approvalStatus);
+            preparedStatement.setString(8, approvalStatus);
             preparedStatement.setBoolean(9, transferStatus);
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {

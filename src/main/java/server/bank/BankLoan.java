@@ -67,15 +67,6 @@ public class BankLoan {
     }
     */
 
-    public String getApprovalStatus(){
-        return this.approvalStatus;
-    }
-
-    public void makePayment(double amount) {
-        this.outstandingPayments -= amount;
-        // TODO: update outstandingPayment
-    }
-
     private void updateLoan() {
         // PASS
     }
@@ -89,6 +80,12 @@ public class BankLoan {
         >
      */
 
+    public void payBackLoan(double amount){
+        this.outstandingPayments -= amount;
+        this.amountPaidBack += amount;
+        updateLoanRecord();
+    }
+
     public Customer getCustomer() {
         return this.customer;
     }
@@ -101,7 +98,7 @@ public class BankLoan {
         return this.reason;
     }
 
-    public double getAmount() {
+    public double getAmountLoaned() {
         return amountLoaned;
     }
 
@@ -109,21 +106,29 @@ public class BankLoan {
         return outstandingPayments;
     }
 
-    public boolean isAccepted(){
-        if (this.approvalStatus == "accepted"){
-            return true;
-        } return false;
+    public Currency getCurrency() {
+        return this.currency;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public String getApprovalStatus(){
+        return this.approvalStatus;
     }
 
     public boolean getTransferStatus() {
         return this.transferStatus;
     }
 
-    public Currency getCurrency() {
-        return this.currency;
+    public void updateApprovalStatus(String status) {
+        this.approvalStatus = status;
+        updateLoanRecord();
+    }
+
+    public void updateTransferStatus(boolean status) {
+        this.transferStatus = status;
+        updateLoanRecord();
+    }
+
+    private void updateLoanRecord(){
+        // Update approval status, transfer status, outstanding payment, amount paid
     }
 }

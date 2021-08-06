@@ -33,7 +33,7 @@ public class OutputProcessor {
         for (BankLoan bankLoan : loansList) {
             loansTable = loansTable + String.format(LOAN_TABLE_CONTENT_FORMAT,
                     bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(),
-                    bankLoan.getReason(), Double.toString(bankLoan.getAmount()),
+                    bankLoan.getReason(), Double.toString(bankLoan.getAmountLoaned()),
                     bankLoan.getOutstandingPayments(), bankLoan.isChecked(),
                     bankLoan.isAccepted(), bankLoan.isPaidBack());
             loansTable = loansTable + loanTableRowSeparator;

@@ -316,15 +316,17 @@ public class NewBank {
 
 	/**
 	 * Method to allow customers to pay back their loans
-	 * @param customer
-	 * @param in
-	 * @param out
-	 * @return
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
 	 */
 	private String payBackLoan(Customer customer, BufferedReader in, PrintWriter out) {
 		// Retrieves all loans currently associated with this customer
 		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
 		ArrayList<Account> accountList = GetObject.getAccounts(customer.getUserID());
+
+		assert loansList != null;
 
 		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
 		out.println("Please enter the ID of the loan you would like to pay back: ");
@@ -332,8 +334,11 @@ public class NewBank {
 		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
 		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
-
 		assert bankLoan != null;
+		if (bankLoan.getOutstandingPayments() == 0){
+			return "Loan has already been paid off in full.";
+		}
+
 		// If the loan has been transferred to the user's account
 		if (bankLoan.getTransferStatus()){
 			out.println("How much of the loan do you want to pay off?");
@@ -346,16 +351,19 @@ public class NewBank {
 			out.println(OutputProcessor.createsAccountsTable(accountList));
 			Account account = InputProcessor.takeValidInput(accountList, bankLoan.getCurrency(), in, out);
 
-			account.payBackLoan();
+			bankLoan.payBackLoan(amount);
 
+			String notification = "";
+			if (bankLoan.getOutstandingPayments() == 0) {
+				notification = "Loan was successfully paid back in full.";
+			} else {
+				notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getName() +
+						"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getName();
+			}
+			//Sms.sendText(notification);
+			return notification;
 		}
-
-		String notification = "Loan was successfully paid back.";
-
-		Sms.sendText(notification);
-
-		return notification;
-		return "You have not submitted any loan requests.";
+		return "Your currently have no loans to pay back.";
 	}
 
 	/**
@@ -368,7 +376,7 @@ public class NewBank {
 
 		out.println("Please enter your current password: ");
 		Password password = GetObject.getPassword(customer.getUserID()); // Retrieve password object
-		assert password != null; // TODO: remove this once added to input processor
+		assert password != null;
 		boolean auth = password.authenticate(in.readLine()); // Ask user to enter their plain text password
 		if (auth) {
 			boolean passwordReset = false;
