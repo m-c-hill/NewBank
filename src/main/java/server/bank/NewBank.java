@@ -22,8 +22,7 @@ import java.util.Objects;
 public class NewBank {
 
 	private static final NewBank bank = new NewBank();
-	// TODO: Move interest rate to the loans class and make the loan limit unique to each customer
-	private static final double INTEREST_RATE = 2.78;
+	// TODO: move loan limit to customer class
 	private static final double LOAN_LIMIT = 2500;
 	ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
 	HashMap<String, Customer> customers = new HashMap<String, Customer>();

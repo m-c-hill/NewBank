@@ -1,35 +1,89 @@
 package server.bank;
 
 import server.account.Account;
+import server.account.Currency;
+import server.database.DbUtils;
 import server.user.Customer;
 
 /**
  * Class to represent a loan provided to a customer through NewBank
  */
 public class BankLoan {
-    private Customer customer;
-    private Account recipientAccount;
-    private String reason;
-
-    private double amount;
-    private double payBackAmount;
-
+    private final Customer customer;
+    private final Account recipientAccount;
+    private final double amountLoaned;
+    private final double payBackAmount;
+    private final double interestRate;
+    private final Currency currency;
+    private final String reason;
     private boolean accepted;
-    private boolean paidBack;
-    private boolean checked;
+    private boolean approvalStatus = false;
+    private boolean transferStatus = false;
 
-    public BankLoan(Customer customer, Account account, String reason, double amount, double interestRate){
+    /**
+     * Constructor to initialise a new bank loan request and store the request in the database
+     * @param customer Customer
+     * @param account Account to transfer loan to
+     * @param reason Reason for loan
+     * @param amount Amount to loan
+     */
+    public BankLoan(Customer customer, Account account, double amount, String reason){
         this.customer = customer;
         this.recipientAccount = account;
+        this.amountLoaned = amount;
+        this.currency = account.getCurrency();
+        this.interestRate = 5; // Default interest rate is 5%, loan managers will have the option to update this
+        this.payBackAmount = this.amountLoaned * (1 + interestRate/100.00);
         this.reason = reason;
-        
-        this.amount = amount;
-        this.payBackAmount = this.amount + (this.amount * interestRate/100.00);
 
-        this.checked = false;
-        this.accepted = false;
-        this.paidBack = false;
+        //TODO: write storeLoan method in DbUtils
+        DbUtils.storeLoan(
+                this.customer,
+                this.recipientAccount,
+                this.amountLoaned,
+                this.amountDue,
+                this.currency,
+                this.reason,
+                this.interestRate,
+                this.approvalStatus,
+                this.transferStatus
+        );
     }
+
+    /**
+     * Constructor to
+     * @return
+     */
+
+
+    public String getReason() {
+        return this.reason;
+    }
+
+    public double getAmount() {
+        return amountLoaned;
+    }
+
+    public double getPayBackAmount() {
+        return payBackAmount;
+    }
+
+    public boolean isAccepted(){
+        return this.accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    /*
+    Method to create:
+        > Get interest rate
+        > Transfer to user account
+        > Update approval status
+        > Update transfer status
+        >
+     */
 
     public Customer getCustomer() {
         return this.customer;
@@ -38,41 +92,4 @@ public class BankLoan {
     public Account getAccount() {
         return recipientAccount;
     }
-
-    public String getReason() {
-        return this.reason;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-    
-    public double getPayBackAmount() {
-        return payBackAmount;
-    }
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public boolean isAccepted(){
-        return this.accepted;
-    }
-
-    public boolean isPaidBack() {
-        return this.paidBack;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
-
-    public void setPaidBack(boolean paidBack) {
-        this.paidBack = paidBack;
-    }
-    
 }

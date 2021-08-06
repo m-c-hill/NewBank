@@ -105,7 +105,6 @@ INSERT INTO newbank.loans(customer_id, account_number, amount_loaned, currency_i
 VALUES
        (1, '08040302', 10000, 'gbp', 'pending', 'pending', 'Car loan', 7.12, 10712, 0);
 
-
 INSERT INTO newbank.transaction_type(name)
 VALUES
        ('withdraw'),
