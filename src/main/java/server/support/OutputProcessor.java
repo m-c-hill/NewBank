@@ -44,7 +44,7 @@ public class OutputProcessor {
     }
 
     // Accounts table creator method
-    public static String createsAccountsTable(ArrayList<Account> accountsList){
+    public static String createAccountsTable(ArrayList<Account> accountsList){
         String accountsTable = ACCOUNTS_TABLE_HEADER;
 
         for (Account account : accountsList) {

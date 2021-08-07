@@ -113,6 +113,10 @@ public class BankLoan {
         updateLoanRecord();
     }
 
+    public int getLoanId() {
+        return this.loanId;
+    }
+
     public Customer getCustomer() {
         return this.customer;
     }

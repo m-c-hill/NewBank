@@ -55,34 +55,28 @@ public class Admin extends User {
 	 * @return Response
 	 */
     public String handleLoanRequest(BufferedReader in, PrintWriter out) {
-    	if (this.checkPermission("grantLoan")) {
-			pendingLoansTable = OutputProcessor.createPendingLoansTable();
-			if (pendingLoansTable == null){
-				return "There are no pending requests at the moment.";
-			} else {
-				out.println(pendingLoansTable);
 
-				out.println("Enter the ID of the loan you wish to handle a request for: ");
+		if (this.checkPermission("grantLoan")) {
+			out.println("Retrieving all pending loans...");
+			ArrayList<BankLoan> pendingLoansList = GetObject.getPendingLoanList();
+			if (!pendingLoansList.isEmpty()) {
+				out.println(OutputProcessor.createLoansTable(pendingLoansList));
 
-				BankLoan bankLoan = null;
-				while(bankLoan == null) {
-					int loanId = InputProcessor.takeValidIntegerInput(in, out);
-					bankLoan = GetObject.getLoan(loanId);
-					if (bankLoan == null) {
-						out.println("The loan ID you have requested is invalid, please enter a valid loan id: ");
+					out.println("Enter the ID of the loan you wish to handle a request for: ");
+					BankLoan bankLoan = InputProcessor.takeValidLoanID(pendingLoansList, in, out);
+
+					out.println("Please enter ACCEPT to accept or REJECT to reject the selected loan: ");
+					String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
+
+					if (decision.equalsIgnoreCase("ACCEPT")) {
+						acceptLoanRequest(bankLoan);
+						return "Process completed successfully. Loan request was accepted.";
+					} else {
+						rejectLoanRequest(bankLoan);
+						return "Process completed successfully. Loan request was rejected.";
 					}
-				}
-
-				out.println("Please enter ACCEPT to accept or REJECT to reject the selected loan: ");
-				String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
-
-				if (decision.equalsIgnoreCase("ACCEPT")) {
-					this.acceptLoanRequest(bankLoan);
-					return "Process completed successfully. Loan request was accepted.";
-				} else {
-					this.rejectLoanRequest(bankLoan);
-					return "Process completed successfully. Loan request was rejected.";
-				}
+			} else {
+				return "There are no pending loans at this time";
 			}
 		}
 		return "You're not authorized to perform this action";
@@ -114,13 +108,15 @@ public class Admin extends User {
     }
 
 	/**
-	 * Method to display the loans table
+	 * Method to display all active loans to admin
 	 * @param out Output
 	 * @return Response
 	 */
     public String showLoansList(PrintWriter out) {
         if (this.checkPermission("viewLoans")) {
-            out.println(OutputProcessor.createLoansTable());
+			out.println("Loading all active loans...");
+			ArrayList<BankLoan> loansList = GetObject.getActiveLoanList();
+            out.println(OutputProcessor.createLoansTable(loansList));
         } else {
             out.println("You're not authorized to access the loans list.");
         }

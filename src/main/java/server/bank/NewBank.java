@@ -3,7 +3,6 @@ package server.bank;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
-import server.database.DbUtils;
 import server.database.GetObject;
 import server.support.InputProcessor;
 import server.support.OutputProcessor;
@@ -101,7 +100,7 @@ public class NewBank {
 		if (customerAccounts.isEmpty()) {
 			return "There is no account found under this customer.";
 		} else {
-			return OutputProcessor.createsAccountsTable(customerAccounts);
+			return OutputProcessor.createAccountsTable(customerAccounts);
 		}
 	}
 
@@ -283,32 +282,29 @@ public class NewBank {
 	 */
 	private String showMyLoanStatus(Customer customer, BufferedReader in, PrintWriter out) {
 		// Retrieves all loans currently associated with this customer
-		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
+		ArrayList<BankLoan> loansList = GetObject.getCustomerLoanList(customer);
+		if (!loansList.isEmpty())
+			out.println("Please choose a loan by ID to view the status: ");
+			OutputProcessor.createLoansTable(loansList);
+			BankLoan bankLoan = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
-		out.println("Please choose a loan by ID to view the status: ");
-		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
-		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
+			String loanStatus = bankLoan.getApprovalStatus();
 
-		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
-		assert bankLoan != null;
-		String loanStatus = bankLoan.getApprovalStatus();
-
-		switch(loanStatus){
-			case "pending":
-				return "Your loan request has not been checked yet.";
-			case "approved":
-				String notification = "Your loan request has been accepted.\n" +
-						"The requested amount has been added to account: "
-						+ bankLoan.getAccount().getAccountNumber() + ".";
-				//Sms.sendText(notification);
-				return notification;
-			case "declined":
-				notification = "Your loan request has been rejected. You may request a new loan.";
-				//Sms.sendText(notification);
-				return notification;
-			default:
-				return "You have not submitted any loan requests.";
-		}
+			switch(loanStatus){
+				case "pending":
+					return "Your loan request has not been checked yet.";
+				case "approved":
+					String notification = "Your loan request has been accepted.\n" +
+							"The requested amount has been added to account: "
+							+ bankLoan.getAccount().getAccountNumber() + ".";
+					//Sms.sendText(notification);
+					return notification;
+				case "declined":
+					notification = "Your loan request has been rejected. You may request a new loan.";
+					//Sms.sendText(notification);
+					return notification;
+			}
+		return "You have not submitted any loan requests.";
 	}
 
 	/**
@@ -320,45 +316,44 @@ public class NewBank {
 	 */
 	private String payBackLoan(Customer customer, BufferedReader in, PrintWriter out) {
 		// Retrieves all loans currently associated with this customer
-		ArrayList<BankLoan> loansList = GetObject.getLoanList(DbUtils.getCustomerId(customer.getUserID()));
-		ArrayList<Account> accountList = GetObject.getAccounts(customer.getUserID());
+		ArrayList<BankLoan> loansList = GetObject.getCustomerLoanList(customer);
+		ArrayList<Account> accountList = customer.getAccounts();
 
-		assert loansList != null;
+		if (!loansList.isEmpty()){
+			OutputProcessor.createLoansTable(loansList);
+			out.println("Please enter the ID of the loan you would like to pay back: ");
+			BankLoan bankLoan = InputProcessor.takeValidLoanID(loansList, in, out);
 
-		OutputProcessor.createSmallLoansTable(loansList); // UPDATE
-		out.println("Please enter the ID of the loan you would like to pay back: ");
-		// TODO: Print loans table here from loansList
-		int loanId = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
-
-		BankLoan bankLoan = GetObject.getLoan(loanId); // UPDATE
-		assert bankLoan != null;
-		if (bankLoan.getOutstandingPayments() == 0){
-			return "Loan has already been paid off in full.";
-		}
-
-		// If the loan has been transferred to the user's account
-		if (bankLoan.getTransferStatus()){
-			out.println("How much of the loan do you want to pay off?");
-			double amount = InputProcessor.takeValidDoubleInput(in, out);
-
-			// If the requested amount to pay off is greater that the outstanding payments due, then set equal to outstanding payment
-			if (amount > bankLoan.getOutstandingPayments()){ amount = bankLoan.getOutstandingPayments();}
-
-			out.println("Choose the account you want to use to pay back the loan: ");
-			out.println(OutputProcessor.createsAccountsTable(accountList));
-			Account account = InputProcessor.takeValidInput(accountList, bankLoan.getCurrency(), in, out);
-
-			bankLoan.payBackLoan(amount);
-
-			String notification = "";
-			if (bankLoan.getOutstandingPayments() == 0) {
-				notification = "Loan was successfully paid back in full.";
-			} else {
-				notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getCurrencyId() +
-						"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getCurrencyId();
+			if (bankLoan.getOutstandingPayments() == 0){
+				return "Loan has already been paid off in full.";
 			}
-			//Sms.sendText(notification);
-			return notification;
+
+			// If the loan has been transferred to the user's account
+			if (bankLoan.getTransferStatus()) {
+				out.println("Choose the account you want to use to pay back the loan: ");
+				out.println(OutputProcessor.createAccountsTable(accountList));
+				Account account = InputProcessor.takeValidInput(accountList, bankLoan.getCurrency(), in, out);
+
+				out.println("How much of the loan do you want to pay off?");
+				double amount = InputProcessor.takeValidDoubleInput(in, out);
+
+				// If the requested amount to pay off is greater that the outstanding payments due, then set equal to outstanding payment
+				amount = Math.min(amount, bankLoan.getOutstandingPayments());
+
+				bankLoan.payBackLoan(amount);
+				assert account != null;
+				account.payBackLoan(amount);
+
+				String notification = "";
+				if (bankLoan.getOutstandingPayments() == 0) {
+					notification = "Loan was successfully paid back in full.";
+				} else {
+					notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getCurrencyId() +
+							"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getCurrencyId();
+				}
+				//Sms.sendText(notification);
+				return notification;
+			}
 		}
 		return "Your currently have no loans to pay back.";
 	}

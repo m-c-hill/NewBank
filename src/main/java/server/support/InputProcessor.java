@@ -284,6 +284,22 @@ public class InputProcessor{
     }
 
     /**
+     * Method to validate a loan ID from the user and return a Bank Loan from a list of loans
+     */
+    public static BankLoan takeValidLoanID(ArrayList<BankLoan> loansList, BufferedReader in, PrintWriter out){
+        while (true) {
+            int loanId = takeValidIntegerInput(in, out);
+            for (BankLoan loan: loansList){
+                if (loanId == loan.getLoanId()){
+                    out.println("Loan ID: " + loanId + " selected.");
+                    return loan;
+                }
+            }
+            out.println("Loan ID is not valid - please enter a valid loan ID. ");
+        }
+    }
+
+    /**
      * Method to take a valid decision for the loan
      * @param in Input
      * @param out Output
@@ -366,13 +382,12 @@ public class InputProcessor{
 
     public static double takeValidDoubleInput(BufferedReader in, PrintWriter out){
         double amount = 0;
-        boolean validated = false;
 
-        while (!validated) {
+        while (true) {
             try {
                 String request = in.readLine();
                 amount = Double.parseDouble(request);
-                validated = true;
+                break;
             } catch (Exception e) {
                 out.println("Cannot process non-numerical characters. Please enter a valid amount: ");
             }
@@ -381,14 +396,13 @@ public class InputProcessor{
     }
 
     public static int takeValidIntegerInput(BufferedReader in, PrintWriter out){
-        double value = 0;
-        boolean validated = false;
+        int value = 0;
 
-        while (!validated) {
+        while (true) {
             try {
                 String request = in.readLine();
                 value = Integer.parseInt(request);
-                validated = true;
+                break;
             } catch (Exception e) {
                 out.println("Cannot process non-integer value. Please enter a valid integer: ");
             }

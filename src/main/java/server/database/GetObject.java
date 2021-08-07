@@ -193,7 +193,7 @@ public class GetObject {
 		// Query will return the details of a single admin from their user_id
 		String query = "SELECT * FROM admin a " +
 				"LEFT JOIN user u " +
-				"ON u.user_id = c.user_id " +
+				"ON u.user_id = a.user_id " +
 				"WHERE u.user_id = ?";
 		try {
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -272,40 +272,6 @@ public class GetObject {
 	}
 
 	/**
-	 * Method to retrieve all bank loan requests belonging to a specific Customer
-	 * @param customerId Customer ID
-	 * @return Array of Bank Loans
-	 */
-	public static ArrayList<BankLoan> getLoanList(int customerId){
-		ArrayList<BankLoan> loanList = new ArrayList<BankLoan>();
-		String query = "SELECT * FROM loans WHERE customer_id = ?";
-		try{
-			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
-			preparedStatement.setInt(1, customerId);
-			ResultSet rs = preparedStatement.executeQuery();
-			int userId = DbUtils.getCustomerId(rs.getInt("customer_id"));
-			Customer customer = getCustomer(userId);
-			while (rs.next()) {
-				int loanId = rs.getInt("loan_id");
-				Account recipientAccount = getAccount(rs.getString("account_number"));
-				double amountLoaned = rs.getDouble("amount_loaned");
-				Currency currency = getCurrency(rs.getString("currency_id"));
-				String approvalStatus = rs.getString("approval_status");
-				boolean transferStatus = rs.getBoolean("transfer_status");
-				String reason = rs.getString("reason");
-				double interestRate = rs.getDouble("interest_rate");
-				double outstandingPayments = rs.getDouble("outstanding_payment");
-				double amountPaidBack = rs.getDouble("amount_paid");
-				loanList.add(new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
-						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack));
-			}
-		} catch (SQLException exception) {
-			exception.printStackTrace();
-		}
-		return loanList;
-	}
-
-	/**
 	 * Method to retrieve a single loan request from the database by loan ID
 	 * @param loanId Loan ID
 	 * @return Bank Loan
@@ -336,6 +302,71 @@ public class GetObject {
 			exception.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Method to retrieve an array of all active Bank Loans (all loans that have outstanding payments)
+	 * @return Array of Bank Loans
+	 */
+	public static ArrayList<BankLoan> getActiveLoanList(){
+		ArrayList<BankLoan> loanList = new ArrayList<BankLoan>();
+		String query = "SELECT * FROM loans WHERE outstanding_payment > 0;";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				int userId = DbUtils.getCustomerId(rs.getInt("customer_id"));
+				Customer customer = getCustomer(userId);
+				int loanId = rs.getInt("loan_id");
+				Account recipientAccount = getAccount(rs.getString("account_number"));
+				double amountLoaned = rs.getDouble("amount_loaned");
+				Currency currency = getCurrency(rs.getString("currency_id"));
+				String approvalStatus = rs.getString("approval_status");
+				boolean transferStatus = rs.getBoolean("transfer_status");
+				String reason = rs.getString("reason");
+				double interestRate = rs.getDouble("interest_rate");
+				double outstandingPayments = rs.getDouble("outstanding_payment");
+				double amountPaidBack = rs.getDouble("amount_paid");
+				loanList.add(new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
+						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack));
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return loanList;
+	}
+
+	/**
+	 * Method to retrieve all bank loan requests belonging to a specific Customer
+	 * @param customer Customer
+	 * @return Array of Bank Loans
+	 */
+	public static ArrayList<BankLoan> getCustomerLoanList(Customer customer){
+		ArrayList<BankLoan> loanList = new ArrayList<BankLoan>();
+		int customerId = DbUtils.getCustomerId(customer.getUserID());
+		String query = "SELECT * FROM loans WHERE customer_id = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, customerId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				int loanId = rs.getInt("loan_id");
+				Account recipientAccount = getAccount(rs.getString("account_number"));
+				double amountLoaned = rs.getDouble("amount_loaned");
+				Currency currency = getCurrency(rs.getString("currency_id"));
+				String approvalStatus = rs.getString("approval_status");
+				boolean transferStatus = rs.getBoolean("transfer_status");
+				String reason = rs.getString("reason");
+				double interestRate = rs.getDouble("interest_rate");
+				double outstandingPayments = rs.getDouble("outstanding_payment");
+				double amountPaidBack = rs.getDouble("amount_paid");
+				loanList.add(new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
+						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack));
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return loanList;
 	}
 
 	/**
