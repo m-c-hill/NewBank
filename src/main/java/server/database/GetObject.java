@@ -194,6 +194,8 @@ public class GetObject {
 		String query = "SELECT * FROM admin a " +
 				"LEFT JOIN user u " +
 				"ON u.user_id = a.user_id " +
+				"LEFT JOIN admin_role ar " +
+				"ON ar.admin_id = a.admin_id " +
 				"WHERE u.user_id = ?";
 		try {
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
@@ -204,7 +206,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				String dateOfBirth = rs.getDate("date_of_birth").toString();
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");
