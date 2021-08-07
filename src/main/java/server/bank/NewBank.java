@@ -54,7 +54,7 @@ public class NewBank {
 			// "CREATE ACCOUNT" command
 			case "4":
 				return createAccount(customer, in, out);
-			// "CREATE ACCOUNT" command
+			// "REMOVE ACCOUNT" command
 			case "5":
 				return removeAccount(customer, in, out);
 			// "RLOAN" command
