@@ -36,41 +36,5 @@ public class Sms {
 
 	     System.out.println(message.getSid());
 	 }
-
-	public static boolean twoFactorAuthentication(/*user? - how to connect these??*/){
-
-		BufferedReader in;
-		PrintWriter out;
-
-		//authorisation false until correct input
-		boolean authentication = false;
-		
-		//getphonenumber
-
-		//String numberOut = User.getPhoneNumber(); - getter needs to be static? I daren't change it! 
-		
-		//generate random 4 digit code - store as String 'expectedCode'
-		Random random = new Random();
-		String expectedCode = String.format("%04d", random.nextInt(10000));
-
-		//sendtophone
-
-		//twilio method - send 'expectedCode' to user with instructions
-
-		System.out.println("Your four digit passcode has been sent to: " /* + phonenumber*/); // add phonenumber
-
-		//askforcodeinput
-		System.out.println("Please enter the four digit code:");
-		String inputCode = InputProcessor.takeCodeInput("four digit code", in, out);
-
-		//ifcodematches, success, else fail
-		if (inputCode == expectedCode){
-			authentication = true;
-		} else {
-			System.out.println("Incorrect code.");
-		}
-
-		return authentication;
-	}
 	
 }
