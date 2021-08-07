@@ -283,16 +283,28 @@ public class GetObject {
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
 			preparedStatement.setInt(1, customerId);
 			ResultSet rs = preparedStatement.executeQuery();
+			int userId = DbUtils.getCustomerId(rs.getInt("customer_id"));
+			Customer customer = getCustomer(userId);
 			while (rs.next()) {
-				//
+				int loanId = rs.getInt("loan_id");
+				Account recipientAccount = getAccount(rs.getString("account_number"));
+				double amountLoaned = rs.getDouble("amount_loaned");
+				Currency currency = getCurrency(rs.getString("currency_id"));
+				String approvalStatus = rs.getString("approval_status");
+				boolean transferStatus = rs.getBoolean("transfer_status");
+				String reason = rs.getString("reason");
+				double interestRate = rs.getDouble("interest_rate");
+				double outstandingPayments = rs.getDouble("outstanding_payment");
+				double amountPaidBack = rs.getDouble("amount_paid");
+				loanList.add(new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
+						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack));
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return null;
+		return loanList;
 	}
 
-	// TODO: complete this
 	/**
 	 * Method to retrieve a single loan request from the database by loan ID
 	 * @param loanId Loan ID
@@ -300,18 +312,63 @@ public class GetObject {
 	 */
 	public static BankLoan getLoan(int loanId){
 
-		String query = "SELECT * FROM admin_role_type WHERE loan_id = 1";
+		String query = "SELECT * FROM loans WHERE loan_id = ?";
 		try{
 			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
-			preparedStatement.setInt(1, adminRoleId);
+			preparedStatement.setInt(1, loanId);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
-				String name = rs.getString("name");
-				String description = rs.getString("description");
+				int userId = DbUtils.getCustomerId(rs.getInt("customer_id"));
+				Customer customer = getCustomer(userId);
+				Account recipientAccount = getAccount(rs.getString("account_number"));
+				double amountLoaned = rs.getDouble("amount_loaned");
+				Currency currency = getCurrency(rs.getString("currency_id"));
+				String approvalStatus = rs.getString("approval_status");
+				boolean transferStatus = rs.getBoolean("transfer_status");
+				String reason = rs.getString("reason");
+				double interestRate = rs.getDouble("interest_rate");
+				double outstandingPayments = rs.getDouble("outstanding_payment");
+				double amountPaidBack = rs.getDouble("amount_paid");
+				return new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
+						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack);
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return null; // KEEP THIS
+		return null;
 	}
+
+	/**
+	 * Method to retrieve an array of pending Bank Loans
+	 * @return Array of Bank Loans
+	 */
+	public static ArrayList<BankLoan> getPendingLoanList(){
+		ArrayList<BankLoan> loanList = new ArrayList<BankLoan>();
+		String query = "SELECT * FROM loans WHERE approval_status = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setString(1, "pending");
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				int userId = DbUtils.getCustomerId(rs.getInt("customer_id"));
+				Customer customer = getCustomer(userId);
+				int loanId = rs.getInt("loan_id");
+				Account recipientAccount = getAccount(rs.getString("account_number"));
+				double amountLoaned = rs.getDouble("amount_loaned");
+				Currency currency = getCurrency(rs.getString("currency_id"));
+				String approvalStatus = rs.getString("approval_status");
+				boolean transferStatus = rs.getBoolean("transfer_status");
+				String reason = rs.getString("reason");
+				double interestRate = rs.getDouble("interest_rate");
+				double outstandingPayments = rs.getDouble("outstanding_payment");
+				double amountPaidBack = rs.getDouble("amount_paid");
+				loanList.add(new BankLoan(loanId, customer, recipientAccount, amountLoaned, currency, approvalStatus,
+						transferStatus, reason, interestRate, outstandingPayments, amountPaidBack));
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return loanList;
+	}
+
 }

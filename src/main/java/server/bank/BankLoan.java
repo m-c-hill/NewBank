@@ -9,6 +9,7 @@ import static server.database.Connection.getDBConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * Class to represent a loan provided to a customer through NewBank
@@ -124,6 +125,10 @@ public class BankLoan {
         return this.reason;
     }
 
+    public double getInterestRate() {
+        return this.interestRate;
+    }
+
     public double getAmountLoaned() {
         return amountLoaned;
     }
@@ -142,6 +147,18 @@ public class BankLoan {
 
     public boolean getTransferStatus() {
         return this.transferStatus;
+    }
+
+    /**
+     * Method to return a status for the loan table
+     * @return Status
+     */
+    public String getStatus() {
+        if (Objects.equals(this.approvalStatus, "approved")){
+            return (this.transferStatus) ? "approved and transferred" : "approved and awaiting transfer";
+        } else {
+            return this.approvalStatus;
+        }
     }
 
     public void updateApprovalStatus(String status) {

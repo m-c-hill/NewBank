@@ -7,36 +7,37 @@ import java.util.ArrayList;
 
 public class OutputProcessor {
 
-    // Loan table format with spacing for every column
-    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%-9s|%n";
+    // Loan table format for admins
+    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-21s|%-18s|%-32s|%-15s|%-32s|%n";
     private static final String LOAN_TABLE_HEADER = String.format(
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n" +
-        "| Customer Name |              Reason               |Amount| ATPB |Checked? |Accepted?|PaidBack?|%n" +
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
-    private static final String loanTableRowSeparator = String.format(
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
+        "+---------------------+------------------+--------------------------------+---------------+--------------------------------+%n" +
+        "|   Account Number    | Requested Amount |             Reason             | Interest Rate |             Status             |%n" +
+        "+---------------------+------------------+--------------------------------+---------------+--------------------------------+%n");
+    private static final String LOAN_TABLE_ROW_SEPARATOR = String.format(
+        "+---------------------+------------------+--------------------------------+---------------+--------------------------------+%n");
 
     // Accounts table format
-    private static final String accountsTableContentFormat = "|%-15s|%-10s|%-8s|%n";
-    private static final String accountsTableHeader = String.format(
+    private static final String ACCOUNT_TABLE_CONTENT_FORMAT = "|%-15s|%-10s|%-8s|%n";
+    private static final String ACCOUNTS_TABLE_HEADER = String.format(
         "+---------------+----------+--------+%n" +
         "|Account Number |Balanace  |Currency|%n" +
         "+---------------+----------+--------+%n"
     );
-    private static final String accountsTableRowSeparator = String.format(
+    private static final String ACCOUNTS_TABLE_ROW_SEPARATOR = String.format(
         "+---------------+----------+--------+%n");
-    
-    // Loans table creator method for admins
+
+    // Loans table for Admins
     public static String createLoansTable(ArrayList<BankLoan> loansList) {
         String loansTable = LOAN_TABLE_HEADER;
 
         for (BankLoan bankLoan : loansList) {
-            loansTable = loansTable + String.format(LOAN_TABLE_CONTENT_FORMAT,
-                    bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(),
-                    bankLoan.getReason(), Double.toString(bankLoan.getAmountLoaned()),
-                    bankLoan.getOutstandingPayments(), bankLoan.isChecked(),
-                    bankLoan.isAccepted(), bankLoan.isPaidBack());
-            loansTable = loansTable + loanTableRowSeparator;
+            loansTable += String.format(LOAN_TABLE_CONTENT_FORMAT,
+                                        bankLoan.getAccount().getAccountNumber(),
+                                        bankLoan.getAmountLoaned(),
+                                        bankLoan.getReason(),
+                                        bankLoan.getInterestRate(),
+                                        bankLoan.getStatus());
+            loansTable += LOAN_TABLE_ROW_SEPARATOR;
         }
 
         return loansTable;
@@ -44,14 +45,14 @@ public class OutputProcessor {
 
     // Accounts table creator method
     public static String createsAccountsTable(ArrayList<Account> accountsList){
-        String accountsTable = accountsTableHeader;
+        String accountsTable = ACCOUNTS_TABLE_HEADER;
 
         for (Account account : accountsList) {
-            accountsTable = accountsTable + String.format(accountsTableContentFormat, 
+            accountsTable = accountsTable + String.format(ACCOUNT_TABLE_CONTENT_FORMAT,
                     account.getAccountNumber(),
                     account.getBalance(),
                     account.getCurrency().getCurrencyId().toUpperCase());
-            accountsTable = accountsTable + accountsTableRowSeparator;
+            accountsTable = accountsTable + ACCOUNTS_TABLE_ROW_SEPARATOR;
         }
 
         return accountsTable;
