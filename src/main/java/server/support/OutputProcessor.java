@@ -50,7 +50,7 @@ public class OutputProcessor {
             accountsTable = accountsTable + String.format(accountsTableContentFormat, 
                     account.getAccountNumber(),
                     account.getBalance(),
-                    account.getCurrency().getName().toUpperCase());
+                    account.getCurrency().getCurrencyId().toUpperCase());
             accountsTable = accountsTable + accountsTableRowSeparator;
         }
 

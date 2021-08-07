@@ -1,6 +1,5 @@
 package server.bank;
 
-import com.twilio.twiml.voice.Pay;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
@@ -138,9 +137,9 @@ public class NewBank {
 				customer.retrieveAccounts(); // Update accounts for customer instance to reflect database changes
 
 				String notification = "Withdrawal successful. You've withdrawn: "
-						+ amount + " " + account.getCurrency().getName()
+						+ amount + " " + account.getCurrency().getCurrencyId()
 						+"\nRemaining balance: "
-						+ account.getBalance() + " " + account.getCurrency().getName();
+						+ account.getBalance() + " " + account.getCurrency().getCurrencyId();
 
 				//Sms.sendText(notification);
 				return notification;
@@ -220,7 +219,7 @@ public class NewBank {
 
 			assert currency != null;
 			String notification = "Process succeeded. You've opened the new account: " + "\n" + accountName + " : "
-					+ Double.toString(openingBalance) + " " + currency.getName();
+					+ Double.toString(openingBalance) + " " + currency.getCurrencyId();
 
 			Sms.sendText(notification);
 
@@ -355,8 +354,8 @@ public class NewBank {
 			if (bankLoan.getOutstandingPayments() == 0) {
 				notification = "Loan was successfully paid back in full.";
 			} else {
-				notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getName() +
-						"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getName();
+				notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getCurrencyId() +
+						"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getCurrencyId();
 			}
 			//Sms.sendText(notification);
 			return notification;

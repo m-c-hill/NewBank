@@ -110,7 +110,7 @@ public class InputProcessor{
                 if (accountExists(accountNumber, accountsList)) {
                     Account account = GetObject.getAccount(accountNumber);
                     assert account != null;
-                    if (!Objects.equals(account.getCurrency().getName(), currency.getName())){
+                    if (!Objects.equals(account.getCurrency().getCurrencyId(), currency.getCurrencyId())){
                         out.println("Please choose an account with the same currency as your loan payment. \nTry again: ");
                     } break;
                 } else {

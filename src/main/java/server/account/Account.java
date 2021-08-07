@@ -33,7 +33,7 @@ public class Account {
 				1,
 				this.statementSchedule,
 				this.balance,
-				this.currency.getName());
+				this.currency.getCurrencyId());
 	}
 
 	// Separate constructor method for creating an object from data in the database
@@ -75,7 +75,7 @@ public class Account {
 	 * @return String containing the account number, balance and currency type
 	 */
 	public String toString() {
-		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getName());
+		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getCurrencyId());
 	}
 
 	/**

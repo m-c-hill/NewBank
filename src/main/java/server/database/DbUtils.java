@@ -2,7 +2,6 @@ package server.database;
 
 import server.account.Account;
 import server.account.Currency;
-import server.bank.Bank;
 import server.transaction.StatementSchedule;
 import server.bank.Address;
 import server.user.Customer;
@@ -339,7 +338,7 @@ public class DbUtils {
             preparedStatement.setString(2, recipientAccount.getAccountNumber());
             preparedStatement.setDouble(3, amountLoaned);
             preparedStatement.setDouble(4, payBackAmount);
-            preparedStatement.setString(5, currency.getName());
+            preparedStatement.setString(5, currency.getCurrencyId());
             preparedStatement.setString(6, reason);
             preparedStatement.setDouble(7, interestRate);
             preparedStatement.setString(8, approvalStatus);

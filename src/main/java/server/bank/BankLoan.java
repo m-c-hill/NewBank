@@ -4,12 +4,18 @@ import server.account.Account;
 import server.account.Currency;
 import server.database.DbUtils;
 import server.user.Customer;
+import static server.database.Connection.getDBConnection;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Class to represent a loan provided to a customer through NewBank
  */
 public class BankLoan {
     // Customer and account
+    private final int loanId;
     private final Customer customer;
     private final Account recipientAccount;
 
@@ -35,6 +41,7 @@ public class BankLoan {
      * @param amount Amount to loan
      */
     public BankLoan(Customer customer, Account account, double amount, String reason){
+        this.loanId = getLatestLoanId();
         this.customer = customer;
         this.recipientAccount = account;
         this.amountLoaned = amount;
@@ -61,25 +68,44 @@ public class BankLoan {
     /**
      * Constructor to create a loan instance from data retrieved from the database
      */
-    /*
-    public BankLoan(){
-        //TODO
+    public BankLoan(int loanId, Customer customer, Account account, double amount, Currency currency,
+                    String approvalStatus, boolean transferStatus, String reason, double interestRate,
+                    double outstandingPayments, double amountPaidBack){
+        this.loanId = loanId;
+        this.customer = customer;
+        this.recipientAccount = account;
+        this.amountLoaned = amount;
+        this.currency = currency;
+        this.approvalStatus = approvalStatus;
+        this.transferStatus = transferStatus;
+        this.reason = reason;
+        this.interestRate = interestRate;
+        this.outstandingPayments = outstandingPayments;
+        this.amountPaidBack = amountPaidBack;
     }
-    */
 
-    private void updateLoan() {
-        // PASS
-    }
-
-    /*
-    Method to create:
-        > Get interest rate
-        > Transfer to user account
-        > Update approval status
-        > Update transfer status
-        >
+    /**
+     * Method to return the latest loan ID from the database, used as the primary key
+     * @return Loan ID
      */
+    private int getLatestLoanId() {
+        String query = "SELECT loan_id FROM loans ORDER BY loan_id DESC";
+        try {
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("loan_id");
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return 1;
+    }
 
+    /**
+     * Method to pay back a set amount of a user's loan
+     * @param amount Amount to pay back
+     */
     public void payBackLoan(double amount){
         this.outstandingPayments -= amount;
         this.amountPaidBack += amount;
