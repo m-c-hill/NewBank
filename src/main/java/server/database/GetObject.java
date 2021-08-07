@@ -9,6 +9,7 @@ import server.user.AdminRole;
 import server.user.Customer;
 import server.user.Password;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("date_of_birth").toString();
+				Date dateOfBirth = rs.getDate("date_of_birth");
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");
@@ -203,7 +204,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				Date dateOfBirth = rs.getDate("dateOfBirth");
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");

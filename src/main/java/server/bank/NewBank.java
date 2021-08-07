@@ -25,6 +25,7 @@ public class NewBank {
 	// TODO: Move interest rate to the loans class and make the loan limit unique to each customer
 	private static final double INTEREST_RATE = 2.78;
 	private static final double LOAN_LIMIT = 2500;
+
 	ArrayList<BankLoan> loansList = new ArrayList<BankLoan>();
 	HashMap<String, Customer> customers = new HashMap<String, Customer>();
 
@@ -63,7 +64,16 @@ public class NewBank {
 			// "PAYBACKLOAN" command
 			case "7":
 				return payBackLoan(customer, in, out);
+			// "CREATE_ETHEREUM_WALLET" command
 			case "8":
+				return EthereumUtils.createEthereumWallet(customer, in, out);
+			// "SHOW_ETHEREUM_WALLET" command
+			case "9":
+				return EthereumUtils.showEthereumWalletInfo(customer, in, out);
+			// "TRANSFER_ETHER" command
+			case "10":
+				return EthereumUtils.transferEther(customer, in, out);
+			case "11":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
