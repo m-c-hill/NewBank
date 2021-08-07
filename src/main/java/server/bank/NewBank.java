@@ -54,16 +54,19 @@ public class NewBank {
 			// "CREATE ACCOUNT" command
 			case "4":
 				return createAccount(customer, in, out);
-			// "RLOAN" command
+			// "CREATE ACCOUNT" command
 			case "5":
+				return removeAccount(customer, in, out);
+			// "RLOAN" command
+			case "6":
 				return requestLoan(customer, in, out);
 			// "SHOWMYLOANSTATUS" command
-			case "6":
+			case "7":
 				return showMyLoanStatus(customer, in, out);
 			// "PAYBACKLOAN" command
-			case "7":
-				return payBackLoan(customer, in, out);
 			case "8":
+				return payBackLoan(customer, in, out);
+			case "9":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -184,7 +187,6 @@ public class NewBank {
 						+ amount + " to " + accountNumber
 						+ "\nUpdated balance: "
 						+ account.getBalance();
-				out.println(notification); // Update accounts for customer instance to reflect database changes
 
 				Sms.sendText(notification);
 
@@ -258,7 +260,8 @@ public class NewBank {
 		 else {
 				for (int i = 0; i < customerAccounts.size(); i++) {
 					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
-						Double currentBalance = customerAccounts.get(i).getBalance();
+						Account customerAccount = customerAccounts.get(i);
+						Double currentBalance = customerAccount.getBalance();
 						if(currentBalance!=0) {
 							return String.format("Process failed. The outstanding balance is not 0.");
 							}
