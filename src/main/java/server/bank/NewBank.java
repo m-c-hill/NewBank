@@ -263,7 +263,7 @@ public class NewBank {
 						Account customerAccount = customerAccounts.get(i);
 						Double currentBalance = customerAccount.getBalance();
 						if(currentBalance!=0) {
-							return String.format("Process failed. The outstanding balance is not 0.");
+							return "Account removal failed. The outstanding balance is not 0.00.";
 							}
 						else if (currentBalance == 0)  {
 							customer.removeAccount(customerAccounts.get(i));

@@ -59,7 +59,7 @@ public class Customer extends User {
 	
 	public void removeAccount(Account account) {
 		accounts.remove(account);
-		int accountNum = Integer. parseInt(account.getAccountNumber());
+		int accountNum = Integer.parseInt(account.getAccountNumber());
 		DbUtils.removeAccount(accountNum);
 	}
 
