@@ -1,5 +1,6 @@
 package server.user;
 
+import server.database.DbUtils;
 import server.account.Account;
 import server.bank.Address;
 import server.database.GetObject;
@@ -55,6 +56,12 @@ public class Customer extends User {
 	public void addAccount(Account account) {
 		accounts.add(account);
 		// TODO: save new account details to the database
+	}
+	
+	public void removeAccount(Account account) {
+		accounts.remove(account);
+		int accountNum = Integer.parseInt(account.getAccountNumber());
+		DbUtils.removeAccount(accountNum);
 	}
 
 }

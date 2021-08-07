@@ -87,7 +87,7 @@ public class InputProcessor{
                 account = in.readLine();
                 
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                    break;
                 }
                 
@@ -220,7 +220,7 @@ public class InputProcessor{
             while (true) {
                 account = in.readLine();
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                     break;
                 }
 

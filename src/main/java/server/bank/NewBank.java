@@ -55,25 +55,28 @@ public class NewBank {
 			// "CREATE ACCOUNT" command
 			case "4":
 				return createAccount(customer, in, out);
-			// "RLOAN" command
+			// "REMOVE ACCOUNT" command
 			case "5":
+				return removeAccount(customer, in, out);
+			// "RLOAN" command	
+			case "6":
 				return requestLoan(customer, in, out);
 			// "SHOWMYLOANSTATUS" command
-			case "6":
+			case "7":
 				return showMyLoanStatus(customer, in, out);
 			// "PAYBACKLOAN" command
-			case "7":
+			case "8":
 				return payBackLoan(customer, in, out);
 			// "CREATE_ETHEREUM_WALLET" command
-			case "8":
+			case "9":
 				return EthereumUtils.createEthereumWallet(customer, in, out);
 			// "SHOW_ETHEREUM_WALLET" command
-			case "9":
+			case "10":
 				return EthereumUtils.showEthereumWalletInfo(customer, in, out);
 			// "TRANSFER_ETHER" command
-			case "10":
-				return EthereumUtils.transferEther(customer, in, out);
 			case "11":
+				return EthereumUtils.transferEther(customer, in, out);
+			case "12":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -155,7 +158,7 @@ public class NewBank {
 						+"\nRemaining balance: "
 						+ account.getBalance() + " " + account.getCurrency().getName();
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
 				return notification;
 			}
 		}
@@ -194,9 +197,8 @@ public class NewBank {
 						+ amount + " to " + accountNumber
 						+ "\nUpdated balance: "
 						+ account.getBalance();
-				out.println(notification); // Update accounts for customer instance to reflect database changes
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
 
 				return notification;
 			}
@@ -240,7 +242,52 @@ public class NewBank {
 			return notification;
 		}
 	}
+	
+	/**
+	 * Method for a customer to remove an account once the balance is 0.00
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
+	public String removeAccount(Customer customer, BufferedReader in, PrintWriter out) {
 
+		ArrayList<Account> customerAccounts = customer.getAccounts();
+
+		out.println("Please enter the name of the account you want to remove" 
+				+ " (choose from the list below):" + "\nPlease enter EXIT to go back to the main menu.");
+		
+		// Display Customer-related accounts as visual aid for providing a choice	
+		out.println(showMyAccounts(customer));
+					
+		String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
+
+		//If the user enters Exit go back to main menu message appears
+		 if(accountNumber.equalsIgnoreCase("Exit")){
+			return "Exit request is taken, going back to the main menu.";
+			}
+			
+		 else {
+				for (int i = 0; i < customerAccounts.size(); i++) {
+					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
+						Account customerAccount = customerAccounts.get(i);
+						Double currentBalance = customerAccount.getBalance();
+						if(currentBalance!=0) {
+							return "Account removal failed. The outstanding balance is not 0.00.";
+							}
+						else if (currentBalance == 0)  {
+							customer.removeAccount(customerAccounts.get(i));
+							String notification = String.format("Process succeeded. The account " 
+															+ accountNumber + " is removed.");
+							Sms.sendText(notification);
+							return notification;
+							}
+						}			
+					}			
+				}
+				return String.format("The list of accounts is here: "+ "\n"+showMyAccounts(customer));
+		}
+	
 	/**
 	 * Method to allow customers to request loans
 	 * @param customer Customer
