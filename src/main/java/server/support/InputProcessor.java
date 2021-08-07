@@ -362,4 +362,22 @@ public class InputProcessor{
         }
         return null;
     }
+
+    public static String takeValidEthereumAddress(BufferedReader in, PrintWriter out) throws IOException {
+        String recipientAddress;
+        out.println("Please enter the address you would like to send Ether to");
+
+        Pattern validEthereumAddress = Pattern.compile("(^0x[0-9a-fA-F]{40}$)");
+        Matcher m;
+
+        do {
+            recipientAddress = in.readLine();
+            m = validEthereumAddress.matcher(recipientAddress);
+
+            if(!m.matches()) {
+                out.println("Not a valid Ethereum Address, please re-enter");
+            }
+        } while (!m.matches());
+        return recipientAddress;
+    }
 }

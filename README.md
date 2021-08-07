@@ -63,7 +63,7 @@ hash, which can be viewed using a block explorer as described below.
 
 You can copy any wallet address or transaction hash and paste it into the test networks block explorer: <br>
 https://goerli.etherscan.io/ <br>
-This will allow you to view information relating to specific transactions and address and prives that the application is communicating with the real external network.
+This will allow you to view information relating to specific transactions and address and proves that the application is communicating with the real external network.
 
 For example these are the addresses of our two test users:
  - Jack Ryan - https://goerli.etherscan.io/address/0xfbdefb7dde102721efba7570572b6c12b6df887a

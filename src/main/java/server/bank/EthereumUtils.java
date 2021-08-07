@@ -1,5 +1,6 @@
 package server.bank;
 
+import org.jetbrains.annotations.NotNull;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -56,7 +57,7 @@ public class EthereumUtils {
         try {
 
             while(!success) {
-                out.println("Create a separate password for your Ethereum Wallet");
+                out.println("Create a new password for your Ethereum Wallet");
                 String password1 = in.readLine();
                 out.println("Re-enter password");
                 String password2 = in.readLine();
@@ -82,7 +83,7 @@ public class EthereumUtils {
                     success = true;
                 } else {
                     // passwords do not match try again
-                    out.println("Passwords do not match, please re-enter");
+                    out.println("Passwords do not match. Try again.");
                 }
             }
         } catch (IOException | CipherException e) {
@@ -167,21 +168,8 @@ public class EthereumUtils {
 
         String senderAddress = credentials.getAddress();
 
-        String recipientAddress = null;
         try {
-            out.println("Please enter the address you would like to send Ether to send");
-
-            Pattern validEthereumAddress = Pattern.compile("([a-zA-Z0-9]{42})");
-            Matcher m;
-
-            do {
-                recipientAddress = in.readLine();
-                m = validEthereumAddress.matcher(recipientAddress);
-
-                if(!m.matches()) {
-                    out.println("Not a valid Ethereum Address, please re-enter");
-                }
-            } while (!m.matches());
+            String recipientAddress = InputProcessor.takeValidEthereumAddress(in, out);
 
             out.println("Please enter the amount you would like to send (in Ether) Your current balance is: " + getAddressBalance(senderAddress) + " Eth");
             double amountToSend = 0.0;
