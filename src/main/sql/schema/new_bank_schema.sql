@@ -157,4 +157,13 @@ CREATE TABLE IF NOT EXISTS loans (
     transfer_status ENUM('pending', 'received') DEFAULT 'pending'
 );
 
+-- Create ethereum_wallet table
+-- Description: store ethereum wallet contents for users.
+CREATE TABLE IF NOT EXISTS ethereum_wallet (
+   userId int NOT NULL,
+   wallet_contents varchar(2000) DEFAULT NULL,
+   PRIMARY KEY (userId)
+);
+
+
 SHOW TABLES;
