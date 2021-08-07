@@ -145,7 +145,7 @@ public class NewBank {
 						+"\nRemaining balance: "
 						+ account.getBalance() + " " + account.getCurrency().getName();
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
 				return notification;
 			}
 		}
@@ -186,7 +186,7 @@ public class NewBank {
 						+ account.getBalance();
 				out.println(notification); // Update accounts for customer instance to reflect database changes
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
 
 				return notification;
 			}
@@ -230,7 +230,51 @@ public class NewBank {
 			return notification;
 		}
 	}
+	
+	/**
+	 * Method for a customer to remove an account once the balance is 0.00
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
+	public String removeAccount(Customer customer, BufferedReader in, PrintWriter out) {
 
+		ArrayList<Account> customerAccounts = customer.getAccounts();
+
+		out.println("Please enter the name of the account you want to remove" 
+				+ " (choose from the list below):" + "\nPlease enter EXIT to go back to the main menu.");
+		
+		// Display Customer-related accounts as visual aid for providing a choice	
+		out.println(showMyAccounts(customer));
+					
+		String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
+
+		//If the user enters Exit go back to main menu message appears
+		 if(accountNumber.equalsIgnoreCase("Exit")){
+			return "Exit request is taken, going back to the main menu.";
+			}
+			
+		 else {
+				for (int i = 0; i < customerAccounts.size(); i++) {
+					if (customerAccounts.get(i).getAccountNumber().equals(accountNumber)) {
+						Double currentBalance = customerAccounts.get(i).getBalance();
+						if(currentBalance!=0) {
+							return String.format("Process failed. The outstanding balance is not 0.");
+							}
+						else if (currentBalance == 0)  {
+							customer.removeAccount(customerAccounts.get(i));
+							String notification = String.format("Process succeeded. The account " 
+															+ accountNumber + " is removed.");
+							Sms.sendText(notification);
+							return notification;
+							}
+						}			
+					}			
+				}
+				return String.format("The list of accounts is here: "+ "\n"+showMyAccounts(customer));
+		}
+	
 	/**
 	 * Method to allow customers to request loans
 	 * @param customer Customer
