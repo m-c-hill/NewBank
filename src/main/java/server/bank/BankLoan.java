@@ -175,7 +175,20 @@ public class BankLoan {
         updateLoanRecord();
     }
 
+    /**
+     * Method to update the loan record in the database
+     */
     private void updateLoanRecord(){
-        // Update approval status, transfer status, outstanding payment, amount paid
+        String query = "UPDATE loans SET approval_status = ?, transfer_status = ?, outstanding_payment = ?, amount_paid = ?";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, this.approvalStatus);
+            preparedStatement.setBoolean(2, this.transferStatus);
+            preparedStatement.setDouble(3, this.outstandingPayments);
+            preparedStatement.setDouble(4, this.amountPaidBack);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 }
