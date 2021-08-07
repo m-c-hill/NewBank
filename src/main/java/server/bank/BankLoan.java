@@ -57,12 +57,12 @@ public class BankLoan {
                 this.customer,
                 this.recipientAccount,
                 this.amountLoaned,
-                this.outstandingPayments,
                 this.currency,
+                this.approvalStatus,
+                this.transferStatus,
                 this.reason,
                 this.interestRate,
-                this.approvalStatus,
-                this.transferStatus
+                this.outstandingPayments
         );
     }
 

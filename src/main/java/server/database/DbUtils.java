@@ -326,23 +326,23 @@ public class DbUtils {
     /**
      * Method to store a new loan request in the database
      */
-    public static void storeLoan(Customer customer, Account recipientAccount, double amountLoaned, double payBackAmount,
-                                 Currency currency, String reason, Double interestRate, String approvalStatus,
-                                 boolean transferStatus){
-        String query = "INSERT INTO newbank.loans(customer_id, account_number, amount_loaned, currency_id, " +
-                "approval_status, transfer_status, reason, interest_rate, outstanding_payment, checked) " +
+    public static void storeLoan(Customer customer, Account recipientAccount, double amountLoaned, Currency currency,
+                                 String approvalStatus, boolean transferStatus, String reason, Double interestRate,
+                                 double outstandingPayment){
+        String query = "INSERT INTO loans(customer_id, account_number, amount_loaned, currency_id, " +
+                "approval_status, transfer_status, reason, interest_rate, outstanding_payment) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
             preparedStatement.setInt(1, getCustomerId(customer.getUserID()));
             preparedStatement.setString(2, recipientAccount.getAccountNumber());
             preparedStatement.setDouble(3, amountLoaned);
-            preparedStatement.setDouble(4, payBackAmount);
-            preparedStatement.setString(5, currency.getCurrencyId());
-            preparedStatement.setString(6, reason);
-            preparedStatement.setDouble(7, interestRate);
-            preparedStatement.setString(8, approvalStatus);
-            preparedStatement.setBoolean(9, transferStatus);
+            preparedStatement.setString(4, currency.getCurrencyId());
+            preparedStatement.setString(5, approvalStatus);
+            preparedStatement.setBoolean(6, transferStatus);
+            preparedStatement.setString(7, reason);
+            preparedStatement.setDouble(8, interestRate);
+            preparedStatement.setDouble(9, outstandingPayment);
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class OutputProcessor {
 
     // Loan table format for admins
-    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-9s|%-21s|%-18s|%-32s|%-15s|%-32s|%n";
+    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-9s|%-22s|%-18s|%-32s|%-15s|%-32s|%n";
     private static final String LOAN_TABLE_HEADER = String.format(
         "+---------+----------------------+------------------+--------------------------------+---------------+--------------------------------+%n" +
         "| Loan ID |    Account Number    | Requested Amount |             Reason             | Interest Rate |             Status             |%n" +

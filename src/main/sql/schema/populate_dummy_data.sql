@@ -103,7 +103,7 @@ VALUES
 INSERT INTO newbank.loans(customer_id, account_number, amount_loaned, currency_id, approval_status,
                           transfer_status, reason, interest_rate, outstanding_payment, amount_paid)
 VALUES
-       (1, '08040302', 10000, 'gbp', 'pending', false, 'Car loan', 7.12, 10712, 0);
+       (2, '08040302', 10000, 'gbp', 'pending', false, 'Car loan', 7.12, 10712, 0);
 
 INSERT INTO newbank.transaction_type(name)
 VALUES

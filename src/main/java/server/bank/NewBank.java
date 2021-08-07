@@ -240,7 +240,7 @@ public class NewBank {
 			if (customerAccounts.isEmpty()) {
 				return "There is no account found for this customer.";
 			} else {
-				out.println("Please, enter the name of the account you wish to add the loan to"
+				out.println("Please, enter the account number of the account you wish to request a loan for"
 						+ " (choose from the list below):" + "\nPlease type EXIT to go back to the main menu:" + "\n"
 						+ showMyAccounts(customer));
 				String accountNumber = InputProcessor.takeValidInput(customerAccounts, in, out);
@@ -285,7 +285,7 @@ public class NewBank {
 		ArrayList<BankLoan> loansList = GetObject.getCustomerLoanList(customer);
 		if (!loansList.isEmpty())
 			out.println("Please choose a loan by ID to view the status: ");
-			OutputProcessor.createLoansTable(loansList);
+			out.println(OutputProcessor.createLoansTable(loansList));
 			BankLoan bankLoan = InputProcessor.takeValidLoanID(loansList, in, out); // UPDATE
 
 			String loanStatus = bankLoan.getApprovalStatus();
