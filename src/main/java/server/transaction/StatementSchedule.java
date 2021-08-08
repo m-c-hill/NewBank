@@ -1,4 +1,4 @@
-package server;
+package server.transaction;
 
 public enum StatementSchedule {
     WEEKLY,

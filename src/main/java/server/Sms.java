@@ -1,13 +1,7 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.util.Random;
-
-//TWILIO library imports for the SMS Server 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
 
 public class Sms {
 
@@ -33,8 +27,7 @@ public class Sms {
 	             new com.twilio.type.PhoneNumber(TRIAL_NUMBER),
 	             notification)
 	         .create();
-
 	     System.out.println(message.getSid());
 	 }
-	
 }
+

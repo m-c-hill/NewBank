@@ -1,9 +1,15 @@
-package server;
+package server.support;
+
+import server.account.Account;
+import server.bank.BankLoan;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +32,14 @@ public class InputProcessor{
         "four digit codes", "^[0-9]{4}$"
         );
 
-    
-    // Method to take and validate input
+
+    /**
+     * Method to take an input from the user and validate it
+     * @param key Regex key
+     * @param in Input
+     * @param out Output
+     * @return User input
+     */
     public static String takeValidInput(String key, BufferedReader in, PrintWriter out) {
         String info = null;
         try {
@@ -43,15 +55,32 @@ public class InputProcessor{
                     continue;
                 }
             }
-
         } catch (IOException e) {
             out.println("Input error");
         }
-
         return info;
     }
 
+    public static Date takeValidDate(BufferedReader in, PrintWriter out){
+        try {
+            String stringDate = in.readLine();
+            // convert to Date object
+            return dateFromString(stringDate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     // Method overload for capturing the correct account name
+    /**
+     * Method to take an account number input from the user
+     * @param accountsList List of accounts belonging to a customer
+     * @param in Input
+     * @param out Output
+     * @return Account number
+     */
     public static String takeValidInput(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){
         String account = null;
         try {
@@ -59,42 +88,56 @@ public class InputProcessor{
                 account = in.readLine();
                 
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                    break;
                 }
                 
-                // Check if the provided account name matches one of the accounts belonging to the Customer
-                // Upon matching, break and return the given input
+                // Break if the provided account number matches one of the accounts belonging to the Customer
                 else if (accountExists(account, accountsList)) {
                     break;
                 }
                 
                 else{
                     // Display a message when no match is found
-                    out.println("Please enter a valid account name. \nTry again:");
+                    out.println("Please enter a valid account number. \nTry again: ");
                 }
             }
-
         } catch (IOException e) {
             out.println("Input error");
         }
-
+        out.println("Account selected: " + account);
         return account;
     }
 
-    // Method to take the account name with sufficient funds to pay back the loan
+    // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
+    private static boolean accountExists(String accountNumber, ArrayList<Account> accountsList){
+        for (Account account: accountsList) {
+            if (accountNumber.equalsIgnoreCase(account.getAccountNumber())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method to take the account number with sufficient funds to pay back the loan
+     * @param accountsList List of accounts belonging to a customer
+     * @param amountToPayBack Amount to payback
+     * @param in Input
+     * @param out Output
+     * @return Account number
+     */
     public static String takeValidInput(ArrayList<Account> accountsList, double amountToPayBack, BufferedReader in, PrintWriter out){
-        String accountName = null;
+        String accountNumber = null;
         try {
             while(true){
-                accountName = in.readLine();
-                if (accountExists(accountName, accountsList)) {
-                    if (hasSufficientFunds(accountName, accountsList, amountToPayBack)) {
+                accountNumber = in.readLine();
+                if (accountExists(accountNumber, accountsList)) {
+                    if (hasSufficientFunds(accountNumber, accountsList, amountToPayBack)) {
                         break;
                     }
                     else{
-                        out.println("Insufficient funds. Choose a different account or make a new deposit:");
-                        continue;
+                        out.println("Insufficient funds. Choose a different account or make a new deposit: ");
                     }
                 }
                 else{
@@ -104,10 +147,16 @@ public class InputProcessor{
         } catch (Exception e) {
             out.println("Input error.");
         }
-        return accountName;
+        return accountNumber;
     }
 
-    // Method to take and validate the requested amount to withdraw
+    /**
+     * Method to take and validate the requested amount to withdraw
+     * @param balance Balance of the customer's account
+     * @param in Input
+     * @param out Output
+     * @return Requested amount to withdraw
+     */
     public static double takeValidDoubleInput(double balance, BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
 
@@ -120,16 +169,24 @@ public class InputProcessor{
                     break;
                 }
                 else{
-                    out.println("The requested amount should be less than or equal to the available balance. Try again:");
+                    out.println("You currently have insufficient funds to withdraw " + requestedAmount +
+                            "\nYour current balance is " + balance +
+                            "\nPlease try again: ");
                 }
             } catch (Exception e) {
-                out.println("Can't process non-numerical characters. Try again:");
+                out.println("Cannot process non-numerical characters. Try again: ");
             }
         }
-
         return requestedAmount;
     }
 
+    /**
+     * Method to validate a loan amount input from the user
+     * @param loanLimit Customer's loan limit
+     * @param in Input
+     * @param out Output
+     * @return Loan request amount
+     */
     public static double takeValidLoanAmountInput(double loanLimit, BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
 
@@ -148,81 +205,100 @@ public class InputProcessor{
                 out.println("Can't process non-numerical characters. Try again:");
             }
         }
-
         return requestedAmount;
     }
-    
- // Method to take and validate a new account name when creating a new Account
-    public static String createValidAccountName(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out){
+
+    /**
+     * Method to take and validate a new account name when creating a new Account
+     * @param accountsList Customer's accounts
+     * @param in Input
+     * @param out Output
+     * @return Account name
+     */
+    public static String createValidAccountName(ArrayList<Account> accountsList, BufferedReader in, PrintWriter out) {
         String account = null;
         try {
             while (true) {
                 account = in.readLine();
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                     break;
                 }
-                
+
                 // Check if the provided account name matches one of the accounts belonging to the Customer
                 // If the name is not used before then accept it
                 if (!accountExists(account, accountsList)) {
                     break;
-                }
-                else{
+                } else {
                     // Display a message that the name is already used
                     out.println("This name exists. Please enter a new valid account name. ");
                 }
             }
-
         } catch (IOException e) {
             out.println("Input error");
         }
-
         return account;
-     }
+    }
 
-     // Method to take a valid name for the Customer
-     public static String takeValidCustomerNameInput(ArrayList<BankLoan> loansList, BufferedReader in, PrintWriter out){
-         String customerName = null;
-         try {
-             w:while(true){
-                 customerName = in.readLine();
-                 // Go through the loans' list and check if the the customer exists
-                 for (BankLoan bankLoan : loansList) {
-                     if (bankLoan.getCustomer().getFirstName().equalsIgnoreCase(customerName)) {
-                         break w;
-                     }
-                     else{
-                         out.println("There are no loan requests belonging to this customer. Try again:");
-                     }
-                 }
-             }
-         } catch (Exception e) {
-             out.println("Input error.");
-         }
-         return customerName;
-     }
+    /**
+     * Method to take a valid name for the Customer
+     * @param loansList List of loans
+     * @param in Input
+     * @param out Output
+     * @return Valid customer name
+     */
+    public static String takeValidCustomerNameInput(ArrayList<BankLoan> loansList, BufferedReader in, PrintWriter out){
+        String customerName = null;
+        try {
+            w:while(true){
+                customerName = in.readLine();
+                // Go through the loans list and check if the the customer exists
+                for (BankLoan bankLoan : loansList) {
+                    if (bankLoan.getCustomer().getFirstName().equalsIgnoreCase(customerName)) {
+                        break w;
+                    }
+                    else{
+                        out.println("There are no loan request belonging to this customer. Try again: ");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            out.println("Input error.");
+        }
+        return customerName;
+    }
 
-     // Method to take a valid decision for the loan
-     public static String takeValidLoanDecisionInput(BufferedReader in, PrintWriter out){
-         String decision = null;
-         try {
-             while (true) {
-                 decision = in.readLine();
-                 if (decision.equalsIgnoreCase("ACCEPT") || decision.equalsIgnoreCase("REJECT")) {
-                     break;
-                 }
-                 else{
-                     out.println("Unknown command. Try again:");
-                 }
-             }
-         } catch (Exception e) {
-             out.println("Input error.");
-         }
-         return decision;
-     }
- // Method to take and validate the requested amount to deposit
-    public static double takeValidDepositInput(double balance, BufferedReader in, PrintWriter out){
+    /**
+     * Method to take a valid decision for the loan
+     * @param in Input
+     * @param out Output
+     * @return Validated loan decision
+     */
+    public static String takeValidLoanDecisionInput(BufferedReader in, PrintWriter out){
+        String decision = null;
+        try {
+            while (true) {
+                decision = in.readLine();
+                if (decision.equalsIgnoreCase("ACCEPT") || decision.equalsIgnoreCase("REJECT")) {
+                    break;
+                }
+                else{
+                    out.println("Unknown command. Try again:");
+                }
+            }
+        } catch (Exception e) {
+            out.println("Input error.");
+        }
+        return decision;
+    }
+
+    /**
+     * Method to validate a deposit inoput
+     * @param in Input
+     * @param out Output
+     * @return Validated amount to deposit
+     */
+    public static double takeValidDepositInput(BufferedReader in, PrintWriter out){
         double requestedAmount = 0;
 
         while (true) {
@@ -235,10 +311,9 @@ public class InputProcessor{
                 out.println("Can't process non-numerical characters. Try again:");
             }
         }
-
         return requestedAmount;
     }
-    
+
     public static String takeValidRegularInput(BufferedReader in, PrintWriter out) {
         String info = null;
         try {
@@ -250,32 +325,18 @@ public class InputProcessor{
 
         return info;
     }
-  
-
-    // Helper method that iterates through the Customer accounts ArrayList and checks if a given account belongs to it
-    private static boolean accountExists(String account, ArrayList<Account> accountsList){
-        for (int i = 0; i < accountsList.size(); i++) {
-            if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     // Helper method that iterates through the Customer accounts ArrayList, find the selected account and checks if the funds are sufficient
     private static boolean hasSufficientFunds(String account, ArrayList<Account> accountsList, double payBackAmount){
-        for (int i = 0; i < accountsList.size(); i++) {
-            if (account.equalsIgnoreCase(accountsList.get(i).getAccountNumber())) {
-                if (accountsList.get(i).getPrimaryBalance().getBalance() >= payBackAmount) {
+        for (Account value : accountsList) {
+            if (account.equalsIgnoreCase(value.getAccountNumber())) {
+                if (value.getBalance() >= payBackAmount) {
                     return true;
                 }
             }
         }
         return false;
     }
-
-    // Method Overload
-    // public static String takeValidInput(String key, String oldPass)
 
     // Input validation method
     private static boolean isValid(String input, String regex){
@@ -312,5 +373,38 @@ public class InputProcessor{
         }
 
         return inputCode;
+    }
+
+    public static boolean doPasswordsMatch(String password1, String password2){
+        // do passwords match?
+        return password1.equals(password2);
+    }
+
+    public static Date dateFromString(String stringDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        try {
+            return sdf.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String takeValidEthereumAddress(BufferedReader in, PrintWriter out) throws IOException {
+        String recipientAddress;
+        out.println("Please enter the address you would like to send Ether to");
+
+        Pattern validEthereumAddress = Pattern.compile("(^0x[0-9a-fA-F]{40}$)");
+        Matcher m;
+
+        do {
+            recipientAddress = in.readLine();
+            m = validEthereumAddress.matcher(recipientAddress);
+
+            if(!m.matches()) {
+                out.println("Not a valid Ethereum Address, please re-enter");
+            }
+        } while (!m.matches());
+        return recipientAddress;
     }
 }

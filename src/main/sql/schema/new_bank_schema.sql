@@ -1,4 +1,3 @@
--- Warning: only run this for a hard reset of the production database.
 DROP SCHEMA IF EXISTS newbank;
 CREATE SCHEMA IF NOT EXISTS newbank;
 
@@ -15,16 +14,14 @@ CREATE TABLE IF NOT EXISTS user (
     date_of_birth datetime,
     email_address varchar(255),
     phone_number varchar(255),
-    national_insurance_number varchar(255),
-    login_id varchar(255)
+    national_insurance_number varchar(255)
 );
 
 -- Create customer table
--- Description: bank customer information - each customer can has one account associated with them
+-- Description: bank customer information
 CREATE TABLE IF NOT EXISTS customer (
     customer_id int PRIMARY KEY AUTO_INCREMENT,
-    user_id int REFERENCES user(user_id),
-    account_number varchar(8) REFERENCES account(account_number)
+    user_id int REFERENCES user(user_id)
 );
 
 -- Create password table
@@ -32,17 +29,21 @@ CREATE TABLE IF NOT EXISTS customer (
 CREATE TABLE IF NOT EXISTS password (
     user_id int REFERENCES user(user_id),
     login varchar(255),
-    pw_salt varchar(255),
-    pw_hash varchar(255)
+    pw_salt varbinary(300),
+    pw_hash varbinary(300)
 );
 
 -- Create account table
 -- Description: account information, linked to a specific bank and given an account type
 CREATE TABLE IF NOT EXISTS account (
-    account_number int(8) PRIMARY KEY AUTO_INCREMENT,
+    account_number varchar(8) UNIQUE PRIMARY KEY,
+    account_name varchar(255),
+    customer_id int REFERENCES customer(customer_id),
     bank_id int REFERENCES bank(bank_id),
-    account_type_id int REFERENCES account_type(account_type_id),
-    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly'
+    account_type_id int DEFAULT 1 REFERENCES account_type(account_type_id),
+    statement_schedule ENUM('weekly', 'biweekly', 'monthly') DEFAULT 'monthly',
+    balance double,
+    currency_id varchar(255) REFERENCES currency(currency_id)
 );
 
 -- Create account types table
@@ -78,7 +79,8 @@ CREATE TABLE IF NOT EXISTS admin_role_type (
   can_view_user_statement boolean DEFAULT false,
   can_open_account boolean DEFAULT false,
   can_close_account boolean DEFAULT false,
-  can_grant_loan boolean DEFAULT false
+  can_view_loan_requests boolean DEFAULT false,
+  can_handle_loan_requests boolean DEFAULT false
 );
 
 -- Create bank table
@@ -104,25 +106,12 @@ CREATE TABLE IF NOT EXISTS currency (
 -- Description: address information
 CREATE TABLE IF NOT EXISTS address (
     address_id int PRIMARY KEY AUTO_INCREMENT,
-    address_num varchar(10),
     address_line_1 varchar(255),
     address_line_2 varchar(255),
     city varchar(255),
     region varchar(255),
     postcode varchar(255),
     country varchar(255)
-);
-
--- Create balance table
--- Description: balance object - each account can have several "balances" associated with it. This enables accounts
--- to store multiple currencies in different 'pots'. All transactions will take place on the default balance (determined
--- by the primary_balance boolean), unless otherwise specified.
-CREATE TABLE IF NOT EXISTS balance (
-    balance_id int PRIMARY KEY AUTO_INCREMENT,
-    account_number varchar(8) REFERENCES account(account_number),
-    currency_id varchar(255) REFERENCES currency(currency_id),
-    amount double,
-    primary_balance boolean
 );
 
 -- Create transaction types table
@@ -161,11 +150,20 @@ CREATE TABLE IF NOT EXISTS transfer (
 CREATE TABLE IF NOT EXISTS loans (
     loan_id int PRIMARY KEY AUTO_INCREMENT,
     customer_id int REFERENCES customer(customer_id),
-    account_number int REFERENCES account(account_number),
+    account_number varchar(8) REFERENCES account(account_number),
     amount double,
     currency_id varchar(255) REFERENCES currency(currency_id),
     approval_status ENUM('pending', 'approved', 'declined') DEFAULT 'pending',
     transfer_status ENUM('pending', 'received') DEFAULT 'pending'
 );
+
+-- Create ethereum_wallet table
+-- Description: store ethereum wallet contents for users.
+CREATE TABLE IF NOT EXISTS ethereum_wallet (
+   userId int NOT NULL,
+   wallet_contents varchar(2000) DEFAULT NULL,
+   PRIMARY KEY (userId)
+);
+
 
 SHOW TABLES;

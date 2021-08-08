@@ -1,5 +1,8 @@
-package server;
+package server.bank;
 
+/**
+ * Class to represent a user's address
+ */
 public class Address {
 	private int addressID;
 	private String addressLine1;
@@ -28,14 +31,6 @@ public class Address {
 
 	public void setAddressID(int addressID) {
 		this.addressID = addressID;
-	}
-
-	public String getAddressNumber() {
-		return addressNumber;
-	}
-
-	public void setAddressNumber(String addressNumber) {
-		this.addressNumber = addressNumber;
 	}
 
 	public String getAddressLine1() {

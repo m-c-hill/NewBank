@@ -1,4 +1,9 @@
-package server;
+package server.user;
+
+import server.bank.Address;
+
+import java.util.Date;
+
 
 public abstract class User {
 
@@ -7,31 +12,13 @@ public abstract class User {
     private String firstName;
     private String lastName;
     private String nationalInsuranceNumber;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private Address address;
     private String emailAddress;
     private String phoneNumber;
-    private Password password;
 
-    // Constructor overload
     public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
-                String dateOfBirth, String emailAddress, String phoneNumber, Address address, Password password){
-        this.userID = userID;
-        this.prefix = prefix;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nationalInsuranceNumber = nationalInsuranceNumber;
-        this.dateOfBirth = dateOfBirth;
-        this.emailAddress = emailAddress;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.password = password;
-    }
-
-    // Constructor overload - Without the password
-    // Remove after testing
-    public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
-                String dateOfBirth, String emailAddress, String phoneNumber, Address address){
+                Date dateOfBirth, String emailAddress, String phoneNumber, Address address){
         this.userID = userID;
         this.prefix = prefix;
         this.firstName = firstName;
@@ -43,10 +30,10 @@ public abstract class User {
         this.address = address;
     }
 
-    public User() {
-    }
+	public User() {
+	}
 
-    public int getUserID() {
+	public int getUserID() {
         return userID;
     }
 
@@ -86,11 +73,11 @@ public abstract class User {
         this.nationalInsuranceNumber = nationalInsuranceNumber;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -118,13 +105,4 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Password getPassword() {
-        return password;
-    }
-
-    public void setPassword(Password password) {
-        this.password = password;
-
-    }
-    
 }
