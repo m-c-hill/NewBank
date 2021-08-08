@@ -35,7 +35,7 @@ public class Account {
 				1,
 				this.statementSchedule,
 				this.balance,
-				this.currency.getName());
+				this.currency.getCurrencyId());
 	}
 
 	// Separate constructor method for creating an object from data in the database
@@ -77,7 +77,7 @@ public class Account {
 	 * @return String containing the account number, balance and currency type
 	 */
 	public String toString() {
-		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getName());
+		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getCurrencyId());
 	}
 
 	/**
@@ -99,21 +99,25 @@ public class Account {
 	}
 
 	/**
+	 * Method to accept a loan payment after approval by a loan manager
+	 */
+	public void receiveLoan(double amount){
+		this.balance += amount;
+		executeTransaction("payment", "NewBank", amount);
+	}
+
+	/**
 	 * Method to pay a loan back
 	 * @param amount Loan amount due
 	 */
 	public void payBackLoan(double amount){
 		updateBalance(this.balance - amount);
-		// TODO: log transaction here
+		executeTransaction("payment", "NewBank", -amount);
 	}
 
 	public void executeTransaction(String transactionTypeName, String payee, Double amount){
 		Transaction transaction = new Transaction(transactionTypeName, payee, this, amount, this.getCurrency());
 		System.out.println("Transaction logged successfully");
-	}
-
-	public void executeTransfer(){
-		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 
 	/**
@@ -149,15 +153,15 @@ public class Account {
 		return newAccountNumber;
 	}
 
-	public void closeAccount(){
-		// TODO: create method to close account
-	}
-
 	/**
 	 * Method to return the 10 most recent transactions for customer's account
 	 * @return Array of transaction objects
 	 */
 	public ArrayList<Transaction> getRecentTransactions(){
 		return GetObject.getRecentTransactions(this, this.getCurrency(), this.accountNumber);
+	}
+
+	public void executeTransfer(){
+		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 }

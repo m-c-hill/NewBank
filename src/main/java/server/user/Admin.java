@@ -5,6 +5,7 @@ import server.bank.Address;
 import server.bank.BankLoan;
 import server.database.GetObject;
 import server.support.InputProcessor;
+import server.support.InvalidLoanException;
 import server.support.OutputProcessor;
 
 import java.io.BufferedReader;
@@ -48,93 +49,74 @@ public class Admin extends User {
 		}
 	}
 
-    // Accepting or rejecting a loan request
-    public String handleLoanRequest(ArrayList<BankLoan> loansList, HashMap<String, Customer> customers,
-									BufferedReader in, PrintWriter out) {
-        if (this.checkPermission("grantLoan")) {
-            // Display only the loans that are pending
-            ArrayList<BankLoan> pendingLoansList = this.createPendingLoansList(loansList);
-            if (!pendingLoansList.isEmpty()) {
-                out.println(OutputProcessor.createLoansTable(pendingLoansList));
+	/**
+	 * Method to handle loan requests
+	 * @param in Input
+	 * @param out Output
+	 * @return Response
+	 */
+    public String handleLoanRequest(BufferedReader in, PrintWriter out) {
 
-                // Verifying that the name (Customer firstName) exists in the list before accepting/rejecting
-                out.println("Enter the first name of the customer you wish to handle a request for:");
-                String customerName = InputProcessor.takeValidCustomerNameInput(pendingLoansList, in, out);
+		if (this.checkPermission("grantLoan")) {
+			out.println("Retrieving all pending loans...");
+			ArrayList<BankLoan> pendingLoansList = GetObject.getPendingLoanList();
+			if (!pendingLoansList.isEmpty()) {
+				out.println(OutputProcessor.createLoansTable(pendingLoansList));
 
-                // Automatically select/extract relevant bank loan
-                BankLoan bankLoan = selectLoanRequest(customerName, pendingLoansList);
+					out.println("Enter the ID of the loan you wish to handle a request for: ");
+					BankLoan bankLoan = InputProcessor.takeValidLoanID(pendingLoansList, in, out);
 
-                // Choose whether to accept or reject
-                out.println(
-                        "Please enter ACCEPT to accept or REJECT to reject the loan request from the given customer (this is case insensitive):");
-                String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
+					out.println("Please enter ACCEPT to accept or REJECT to reject the selected loan: ");
+					String decision = InputProcessor.takeValidLoanDecisionInput(in, out);
 
-                // Handle either decision
-                if (decision.equalsIgnoreCase("ACCEPT")) {
-                    this.acceptLoanRequest(bankLoan);
-                    out.println("Process completed successfully. Loan request was accepted.");
-                } else {
-                    this.rejectLoanRequest(bankLoan);
-                    out.println("Process completed successfully. Loan request was rejected.");
-                } //TODO This should also handle user input is not ACCEPT or REJECT
-            } else {
-                out.println("There are no pending requests at the moment.");
-            }
-        } else {
-            return "You're not authorized to perform this action";
-        }
-        return "Going back to the main menu.";
+					if (decision.equalsIgnoreCase("ACCEPT")) {
+						acceptLoanRequest(bankLoan);
+						return "Process completed successfully. Loan request was accepted.";
+					} else {
+						rejectLoanRequest(bankLoan);
+						return "Process completed successfully. Loan request was rejected.";
+					}
+			} else {
+				return "There are no pending loans at this time";
+			}
+		}
+		return "You're not authorized to perform this action";
     }
 
-    // Utility
-    // Loan request acceptor method
-    private void acceptLoanRequest(BankLoan bankLoan){
+	/**
+	 * Method to accept loan requests and trigger the account method to transfer the loan to the customre
+	 * @param bankLoan Bank Loan
+	 */
+	private void acceptLoanRequest(BankLoan bankLoan){
         // Add the loan amount to the account balance
         Account customerAccount = bankLoan.getAccount();
-        double newAccountBalance = customerAccount.getBalance() + bankLoan.getAmount();
-        customerAccount.updateBalance(newAccountBalance);
 
         // Change the loan request status in the loans list
-        bankLoan.setChecked(true);
-        bankLoan.setAccepted(true);
+        bankLoan.updateApprovalStatus("approved");
+
+        // Transfer the loan to the user's account
+		customerAccount.receiveLoan(bankLoan.getAmountLoaned());
+        bankLoan.updateTransferStatus(true);
     }
 
-    // Utility
-    // Loan request rejector method
-    private void rejectLoanRequest(BankLoan bankLoan){
-        // You only need to change the checked status to true while leaving every other boolean to its default value (false)
-        bankLoan.setChecked(true);
+	/**
+	 * Method to reject a loan
+	 * @param bankLoan Bank Loan
+	 */
+	private void rejectLoanRequest(BankLoan bankLoan){
+		bankLoan.updateApprovalStatus("declined");
         bankLoan.getCustomer().setAllowedToRequestLoan(true);
     }
 
-    // Utility
-    // Loan request selector method
-    private BankLoan selectLoanRequest(String customerName, ArrayList<BankLoan> loansList){
-        for (BankLoan bankLoan : loansList) {
-            if (bankLoan.getCustomer().getFirstName().equals(customerName)) {
-                return bankLoan;
-            }
-        }
-        return null;
-    }
-
-    // Pending loans list creator method
-    private ArrayList<BankLoan> createPendingLoansList(ArrayList<BankLoan> loansList) {
-        ArrayList<BankLoan> pendingLoansList = new ArrayList<>();
-
-        // Filter out the requests that have already been checked
-        for (BankLoan bankLoan : loansList) {
-            if (!bankLoan.isChecked()) {
-                pendingLoansList.add(bankLoan);
-            }
-        }
-        return pendingLoansList;
-    }
-
-    // Showing the loans list
-    // This contains all the loan requests: accepted, rejected, paid back, and non-paid back
-    public String showLoansList(ArrayList<BankLoan> loansList, PrintWriter out) {
+	/**
+	 * Method to display all active loans to admin
+	 * @param out Output
+	 * @return Response
+	 */
+    public String showLoansList(PrintWriter out) {
         if (this.checkPermission("viewLoans")) {
+			out.println("Loading all active loans...");
+			ArrayList<BankLoan> loansList = GetObject.getActiveLoanList();
             out.println(OutputProcessor.createLoansTable(loansList));
         } else {
             out.println("You're not authorized to access the loans list.");
@@ -142,6 +124,7 @@ public class Admin extends User {
         return "Success";
     }
 
+	//TODO: complete admin features such as view user info, view statements and close/open accounts
 	private void viewUserInfo(int userID){
 		//TODO: create method to allow admin to view user information
 		if(checkPermission("viewUserInfo")) {
@@ -166,15 +149,7 @@ public class Admin extends User {
 	private void closeAccount(String accountNumber){
 		if(checkPermission("closeAccount")) {
 			Account accountToClose = GetObject.getAccount(accountNumber);
-			accountToClose.closeAccount();
+			//accountToClose.closeAccount();
 		}
 	}
-
-	private void grantLoan(){
-		// TODO: create method that shows unapproved loans and enables the admin to reject or approve them
-		if(checkPermission("grantLoan")) {
-			// code here
-		}
-	}
-
 }

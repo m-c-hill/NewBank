@@ -3,9 +3,6 @@ package server.transaction;
 import server.account.Account;
 import server.account.Currency;
 import server.database.DbUtils;
-import server.database.GetObject;
-
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 
