@@ -1,5 +1,7 @@
 package server;
 
+import server.support.InputProcessor;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,8 +18,7 @@ public class TwoFactorAuth {
     public static String generateCode() {
 
         Random random = new Random();
-        String expectedCode = String.format("%04d", random.nextInt(10000));
-        return expectedCode;
+        return String.format("%04d", random.nextInt(10000));
     }
 
     public static void codeInput(Socket socket) throws IOException {
