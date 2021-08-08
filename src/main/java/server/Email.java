@@ -20,7 +20,7 @@ public class Email {
 
 	public static void sendEmail(String receiver, String subject, String body) {
 
-        // We are sending email from through gmails smtp
+        // Send email from through gmail smtp
         String host = "smtp.gmail.com";
 
         // Get system properties
