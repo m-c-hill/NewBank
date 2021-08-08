@@ -17,8 +17,7 @@ public class Email {
 	
 	public static final String sender =  System.getenv("SENDER_EMAIL");
 	public static final String password = System.getenv("SENDER_PASSWORD");
-	
-	
+		
 	/**
 	 * This method allows to send an email to the receiver using JavaMail API
 	 * The SENDER_EMAIL and SENDER_PASSWORD is stored as environment variables.

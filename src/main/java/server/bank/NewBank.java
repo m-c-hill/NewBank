@@ -427,10 +427,33 @@ public class NewBank {
 							+ bankLoan.getAccount().getAccountNumber() + ".";
 					Sms.sendText(notification);
 					
+					out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+					String answer1 = InputProcessor.takeValidInput("letters", in, out);
+					
+					if(answer1.equalsIgnoreCase("YES")){
+						out.println("Please enter the email address you would like to receive the statement at: ");
+						String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+						String emailBody = notification;
+						String emailSubject = "Loan Request Accepted";
+						Email.sendEmail(email, emailSubject, emailBody);
+					}
+					
 					return notification;
+					
 				case "declined":
 					notification = "Your loan request has been rejected. You may request a new loan.";
 					Sms.sendText(notification);
+					
+					out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+					String answer2 = InputProcessor.takeValidInput("letters", in, out);
+					
+					if(answer2.equalsIgnoreCase("YES")){
+						out.println("Please enter the email address you would like to receive the statement at: ");
+						String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+						String emailBody = notification;
+						String emailSubject = "Loan Request Rejected";
+						Email.sendEmail(email, emailSubject, emailBody);
+					}
 					
 					return notification;
 			}
