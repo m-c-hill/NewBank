@@ -2,59 +2,87 @@ package server.support;
 
 import server.account.Account;
 import server.bank.BankLoan;
+import server.transaction.Transaction;
 
 import java.util.ArrayList;
 
 public class OutputProcessor {
 
-    // Loan table format with spacing for every column
-    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-15s|%-35s|%-6s|%-6s|%-9s|%-9s|%-9s|%n";
+    // Loan table format
+    private static final String LOAN_TABLE_CONTENT_FORMAT = "|%-9s|%-22s|%-18s|%-32s|%-15s|%-32s|%n";
     private static final String LOAN_TABLE_HEADER = String.format(
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n" +
-        "| Customer Name |              Reason               |Amount| ATPB |Checked? |Accepted?|PaidBack?|%n" +
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
-    private static final String loanTableRowSeparator = String.format(
-        "+---------------+-----------------------------------+------+------+---------+---------+---------+%n");
+        "+---------+----------------------+------------------+--------------------------------+---------------+--------------------------------+%n" +
+        "| Loan ID |    Account Number    | Requested Amount |             Reason             | Interest Rate |             Status             |%n" +
+        "+---------+----------------------+------------------+--------------------------------+---------------+--------------------------------+%n");
+    private static final String LOAN_TABLE_ROW_SEPARATOR = String.format(
+        "+---------+----------------------+------------------+--------------------------------+---------------+--------------------------------+%n");
 
     // Accounts table format
-    private static final String accountsTableContentFormat = "|%-15s|%-10s|%-8s|%n";
-    private static final String accountsTableHeader = String.format(
+    private static final String ACCOUNT_TABLE_CONTENT_FORMAT = "|%-15s|%-10s|%-8s|%n";
+    private static final String ACCOUNTS_TABLE_HEADER = String.format(
         "+---------------+----------+--------+%n" +
-        "|Account Number |Balanace  |Currency|%n" +
+        "|Account Number |Balance   |Currency|%n" +
         "+---------------+----------+--------+%n"
     );
-    private static final String accountsTableRowSeparator = String.format(
+    private static final String ACCOUNTS_TABLE_ROW_SEPARATOR = String.format(
         "+---------------+----------+--------+%n");
-    
-    // Loans table creator method for admins
+
+    // Transactions table format (statements)
+    private static final String TRANSACTIONS_TABLE_CONTENT_FORMAT = "|%-23s|%-20s|%-13s|%-10s|%n";
+    private static final String TRANSACTIONS_TABLE_HEADER = String.format(
+            "+-----------------------+--------------------+-------------+----------+%n"+
+            "|          Date         |        Payee       |    Amount   | Currency |%n"+
+            "+-----------------------+--------------------+-------------+----------+%n"
+    );
+    private static final String TRANSACTIONS_TABLE_ROW_SEPARATOR = String.format(
+            "+-----------------------+--------------------+-------------+----------+%n"
+    );
+
+    // Create loans table
     public static String createLoansTable(ArrayList<BankLoan> loansList) {
         String loansTable = LOAN_TABLE_HEADER;
 
         for (BankLoan bankLoan : loansList) {
-            loansTable = loansTable + String.format(LOAN_TABLE_CONTENT_FORMAT,
-                    bankLoan.getCustomer().getFirstName() + " " + bankLoan.getCustomer().getLastName(),
-                    bankLoan.getReason(), Double.toString(bankLoan.getAmount()),
-                    Double.toString(bankLoan.getPayBackAmount()), Boolean.toString(bankLoan.isChecked()),
-                    Boolean.toString(bankLoan.isAccepted()), Boolean.toString(bankLoan.isPaidBack()));
-            loansTable = loansTable + loanTableRowSeparator;
+            loansTable += String.format(LOAN_TABLE_CONTENT_FORMAT,
+                                        bankLoan.getLoanId(),
+                                        bankLoan.getAccount().getAccountNumber(),
+                                        bankLoan.getAmountLoaned() + " " + bankLoan.getCurrency().getCurrencyId(),
+                                        bankLoan.getReason(),
+                                        bankLoan.getInterestRate() + "%",
+                                        bankLoan.getStatus());
+            loansTable += LOAN_TABLE_ROW_SEPARATOR;
         }
 
         return loansTable;
     }
 
-    // Accounts table creator method
-    public static String createsAccountsTable(ArrayList<Account> accountsList){
-        String accountsTable = accountsTableHeader;
+    // Accounts table
+    public static String createAccountsTable(ArrayList<Account> accountsList){
+        String accountsTable = ACCOUNTS_TABLE_HEADER;
 
         for (Account account : accountsList) {
-            accountsTable = accountsTable + String.format(accountsTableContentFormat, 
+            accountsTable = accountsTable + String.format(ACCOUNT_TABLE_CONTENT_FORMAT,
                     account.getAccountNumber(),
                     account.getBalance(),
-                    account.getCurrency().getName().toUpperCase());
-            accountsTable = accountsTable + accountsTableRowSeparator;
+                    account.getCurrency().getCurrencyId().toUpperCase());
+            accountsTable = accountsTable + ACCOUNTS_TABLE_ROW_SEPARATOR;
         }
-
         return accountsTable;
+    }
+
+    // Transactions table
+    public static String createTransactionsTable(ArrayList<Transaction> transactions) {
+        String transactionsTable = TRANSACTIONS_TABLE_HEADER;
+
+        for(Transaction transaction: transactions){
+            transactionsTable += String.format(TRANSACTIONS_TABLE_CONTENT_FORMAT,
+                    transaction.getTimestamp().toString(),
+                    transaction.getPayee(),
+                    transaction.getAmount(),
+                    transaction.getCurrency().getCurrencyId().toUpperCase());
+            transactionsTable += TRANSACTIONS_TABLE_ROW_SEPARATOR;
+        }
+        return transactionsTable;
     }
 
 }

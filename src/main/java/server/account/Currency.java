@@ -21,7 +21,7 @@ public class Currency {
 		return 0.00;
 	}
 
-	public String getName(){
+	public String getCurrencyId(){
 		return this.currencyID;
 	}
 

@@ -1,13 +1,14 @@
 package server;
 
+import server.account.Account;
 import server.database.GetObject;
 import server.user.Customer;
 import server.user.Password;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -26,9 +27,11 @@ public class Main {
 	 * Method to test out various SQL pieces
 	 */
 	private static void testSQL(){
-		Customer customer = GetObject.getCustomer(1);
-		System.out.println(customer.getFirstName());
-		System.out.println(customer.toString());
+		//Customer customer = GetObject.getCustomer(1);
+		//ArrayList<Account> account = GetObject.getAccount('77');
+		//account
+
+		//System.out.println(customer.toString());
 	}
 
 	/**

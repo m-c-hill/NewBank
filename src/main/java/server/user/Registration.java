@@ -109,8 +109,9 @@ public class Registration {
 					loginValid = true;
 				}
 			}
-			out.println("Please enter a password: ");
-			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			out.println("Please enter a password.");
+      out.println("A valid password must contain at least one upper, one lower, one number and one special character, and be at least 8 characters long: ");
+			plainTextPassword = InputProcessor.takeValidInput("password", in, out);
 			out.println("Please wait...");
 			Password password = new Password(loginId, plainTextPassword);
 			out.println("Password successfully encrypted and stored.");

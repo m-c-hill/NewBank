@@ -3,8 +3,10 @@ package server.account;
 import server.bank.Bank;
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.transaction.Transaction;
 import server.user.Customer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -33,7 +35,7 @@ public class Account {
 				1,
 				this.statementSchedule,
 				this.balance,
-				this.currency.getName());
+				this.currency.getCurrencyId());
 	}
 
 	// Separate constructor method for creating an object from data in the database
@@ -75,7 +77,7 @@ public class Account {
 	 * @return String containing the account number, balance and currency type
 	 */
 	public String toString() {
-		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getName());
+		return (this.accountNumber + ": " + getBalance() + " " + getCurrency().getCurrencyId());
 	}
 
 	/**
@@ -84,6 +86,7 @@ public class Account {
 	 */
 	public void withdrawAmount(double amount){
 		updateBalance(this.balance - amount);
+		executeTransaction("withdraw", "Withdraw", -amount);
 	}
 
 	/**
@@ -92,6 +95,15 @@ public class Account {
 	 */
 	public void makeDeposit(double amount) {
 		updateBalance(this.balance + amount);
+		executeTransaction("deposit", "Deposit", amount);
+	}
+
+	/**
+	 * Method to accept a loan payment after approval by a loan manager
+	 */
+	public void receiveLoan(double amount){
+		this.balance += amount;
+		executeTransaction("payment", "NewBank", amount);
 	}
 
 	/**
@@ -100,14 +112,12 @@ public class Account {
 	 */
 	public void payBackLoan(double amount){
 		updateBalance(this.balance - amount);
+		executeTransaction("payment", "NewBank", -amount);
 	}
 
-	public void executeTransaction(){
-		// TODO: create transactions and log them in the database
-	}
-
-	public void executeTransfer(){
-		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
+	public void executeTransaction(String transactionTypeName, String payee, Double amount){
+		Transaction transaction = new Transaction(transactionTypeName, payee, this, amount, this.getCurrency());
+		System.out.println("Transaction logged successfully");
 	}
 
 	/**
@@ -143,15 +153,15 @@ public class Account {
 		return newAccountNumber;
 	}
 
-	public void closeAccount(){
-		// TODO: create method to close account
+	/**
+	 * Method to return the 10 most recent transactions for customer's account
+	 * @return Array of transaction objects
+	 */
+	public ArrayList<Transaction> getRecentTransactions(){
+		return GetObject.getRecentTransactions(this, this.getCurrency(), this.accountNumber);
 	}
 
-	public void updateStatementSchedule(){
-		// TODO: method for user to choose frequency with which they receive transaction statements
-	}
-
-	public void sendStatement(){
-		// TODO: method to send a summary of transactions for a given period
+	public void executeTransfer(){
+		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 }
