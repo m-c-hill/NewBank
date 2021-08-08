@@ -1,5 +1,6 @@
 package server.bank;
 
+import server.Email;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
@@ -328,7 +329,7 @@ public class NewBank {
 						"\nYou will receive a confirmation SMS once your request is reviewed by the bank." +
 						"\nYou can also check for the updates on the loan status from the menu";
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
 
 				return notification;
 			}
@@ -488,4 +489,21 @@ public class NewBank {
 			}
 		}
 	}
+	
+	/**
+	 * Method to send an email listing customer's recent transactions for their chosen dates
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response (table of transactions if successful)
+	 */
+	private String emailRecentTransactions(Customer customer, BufferedReader in, PrintWriter out) {
+		out.println("Please enter the email address you would like to receive the statement at: ");
+		String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+		String emailBody = showMyTransactions(customer, in, out);
+		String emailSubject = "Recent Transactions";
+		Email.sendEmail(email, emailSubject, emailBody);
+		return String.format("The email is sent to: " + email);
+	}
+	
 }
