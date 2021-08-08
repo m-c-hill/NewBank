@@ -25,6 +25,15 @@ public class InputProcessor {
 
     // Mapping each key to its value (regex)
     private static final Map<String, String> InfoRegexMap = Map.of(
+        "letters", "^[A-Za-z ]+$",
+        "numbers", "^[0-9 ]+$",
+        "letters and numbers", "^[A-Za-z0-9 ]+$",
+        "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
+        "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
+        "valid phone numbers", "^0[\\d]{7,12}$",
+        "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$",
+        "four digit codes", "^[0-9]{4}$"
+        );
             "letters", "^[A-Za-z ]+$",
             "numbers", "^[0-9 ]+$",
             "letters and numbers", "^[A-Za-z0-9 ]+$",
@@ -399,6 +408,31 @@ public class InputProcessor {
 
         // Return true if there's a match and false if there isn't
         return m.matches();
+    }
+
+    //2FA input
+    public static String takeCodeInput(String key, BufferedReader in, PrintWriter out) {
+        String inputCode = null;
+
+        try {
+            while (true) {
+                inputCode = in.readLine();
+                // Check if the provided input is valid by comparing its format with the
+                // relevant regex
+                // Upon matching, break and return the given input
+                if (isValid(inputCode, InfoRegexMap.get(key))) {
+                    break;
+                } else {
+                    // Display a message if the input is invalid. Loop again to take a new input
+                    out.println("Invalid entry. This field accepts " + key + " only. \nTry again:");
+                    continue;
+                }
+            }
+
+        } catch (IOException e) {
+            out.println("Input error");
+        }
+        return inputCode;
     }
 
     public static double takeValidDoubleInput(BufferedReader in, PrintWriter out) {

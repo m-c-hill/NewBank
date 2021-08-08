@@ -1,10 +1,7 @@
 package server;
 
-//TWILIO library imports for the SMS Server 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-
 
 public class Sms {
 
@@ -33,3 +30,4 @@ public class Sms {
 	     System.out.println(message.getSid());
 	 }
 }
+
