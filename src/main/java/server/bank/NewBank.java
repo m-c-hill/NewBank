@@ -62,9 +62,10 @@ public class NewBank {
 			// "SHOWMYLOANSTATUS" command
 			case "7":
 				return showMyLoanStatus(customer, in, out);
-			// "PAYBACKLOAN" command
+			// "SHOWMYTRANSACTIONS" command
 			case "8":
 				return showMyTransactions(customer, in, out);
+			// "PAYBACKLOAN" command
 			case "9":
 				return payBackLoan(customer, in, out);
 			// "CREATE_ETHEREUM_WALLET" command
@@ -76,7 +77,10 @@ public class NewBank {
 			// "TRANSFER_ETHER" command
 			case "12":
 				return EthereumUtils.transferEther(customer, in, out);
+			// "EMAILMYTRANSACTIONS" command
 			case "13":
+				return emailRecentTransactions(customer, in, out);
+			case "14":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
