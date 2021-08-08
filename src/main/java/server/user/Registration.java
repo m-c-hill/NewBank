@@ -1,5 +1,7 @@
 package server.user;
 
+import com.amazonaws.services.servicediscovery.model.transform.InstanceJsonUnmarshaller;
+import okhttp3.internal.cache.CacheInterceptor;
 import server.bank.Address;
 import server.database.DbUtils;
 import server.support.InputProcessor;
@@ -11,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
 
 import static server.database.Connection.getDBConnection;
 
@@ -43,14 +46,12 @@ public class Registration {
 
 	private String takeNationalInsuranceNumber(){
 		out.println("Please enter your National Insurance/Social Security Number: ");
-		String nationalInsuranceNumber = InputProcessor.takeValidInput("letters and numbers", in, out);
-		return nationalInsuranceNumber;
+		return InputProcessor.takeValidInput("letters and numbers", in, out);
 	}
 
-	private String takeDateOfBirth(){
+	private Date takeDateOfBirth(){
 		out.println("Please enter your date of birth in DDMMYYYY format: ");
-		String dateOfBirth = InputProcessor.takeValidInput("valid dates", in, out);
-		return dateOfBirth;
+		return InputProcessor.takeValidDate(in, out);
 	}
 
 	private Address takeAddress(){
@@ -100,6 +101,7 @@ public class Registration {
 			while(!loginValid) {
 				out.println("Please enter a new login ID: ");
 				loginId = in.readLine();  //TODO: validate user login in input processor (ie. no spaces, invalid characters)
+				out.println("Please wait...");
 				if (DbUtils.checkLoginExists(loginId)) {
 					out.println("This login has already been taken, please try again.");
 				}
@@ -107,8 +109,10 @@ public class Registration {
 					loginValid = true;
 				}
 			}
-			out.println("Please enter a password: ");
-			plainTextPassword = in.readLine();  //TODO: validate user password in input processor
+			out.println("Please enter a password.");
+      out.println("A valid password must contain at least one upper, one lower, one number and one special character, and be at least 8 characters long: ");
+			plainTextPassword = InputProcessor.takeValidInput("password", in, out);
+			out.println("Please wait...");
 			Password password = new Password(loginId, plainTextPassword);
 			out.println("Password successfully encrypted and stored.");
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e){

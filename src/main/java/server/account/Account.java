@@ -3,8 +3,10 @@ package server.account;
 import server.bank.Bank;
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.transaction.Transaction;
 import server.user.Customer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -84,6 +86,7 @@ public class Account {
 	 */
 	public void withdrawAmount(double amount){
 		updateBalance(this.balance - amount);
+		executeTransaction("withdraw", "Withdraw", -amount);
 	}
 
 	/**
@@ -92,6 +95,7 @@ public class Account {
 	 */
 	public void makeDeposit(double amount) {
 		updateBalance(this.balance + amount);
+		executeTransaction("deposit", "Deposit", amount);
 	}
 
 	/**
@@ -99,7 +103,7 @@ public class Account {
 	 */
 	public void receiveLoan(double amount){
 		this.balance += amount;
-		// TODO: log as a transaction here once merged with transaction PR
+		executeTransaction("payment", "NewBank", amount);
 	}
 
 	/**
@@ -108,15 +112,12 @@ public class Account {
 	 */
 	public void payBackLoan(double amount){
 		updateBalance(this.balance - amount);
-		// TODO: once transactions PR is merged, add an option to log a paid back loan as a transaction in the database!
+		executeTransaction("payment", "NewBank", -amount);
 	}
 
-	public void executeTransaction(){
-		// TODO: create transactions and log them in the database
-	}
-
-	public void executeTransfer(){
-		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
+	public void executeTransaction(String transactionTypeName, String payee, Double amount){
+		Transaction transaction = new Transaction(transactionTypeName, payee, this, amount, this.getCurrency());
+		System.out.println("Transaction logged successfully");
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class Account {
 	 * Generates a random string of 8 digits and checks if the number exists in the database
 	 * @return New unique account number
 	 */
-	private String generateNewAccountNumber(){
+	public static String generateNewAccountNumber(){
 		boolean accountNumberUnique = false;
 		String newAccountNumber = "";
 		Random r = new Random();
@@ -152,16 +153,15 @@ public class Account {
 		return newAccountNumber;
 	}
 
-
-	public void closeAccount(){
-		// TODO: create method to close account
+	/**
+	 * Method to return the 10 most recent transactions for customer's account
+	 * @return Array of transaction objects
+	 */
+	public ArrayList<Transaction> getRecentTransactions(){
+		return GetObject.getRecentTransactions(this, this.getCurrency(), this.accountNumber);
 	}
 
-	public void updateStatementSchedule(){
-		// TODO: method for user to choose frequency with which they receive transaction statements
-	}
-
-	public void sendStatement(){
-		// TODO: method to send a summary of transactions for a given period
+	public void executeTransfer(){
+		// TODO: create method and accompanying class to carry out transfers between accounts and log them in the database
 	}
 }

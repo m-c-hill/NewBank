@@ -11,13 +11,14 @@ import server.support.OutputProcessor;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Admin extends User {
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
+				 Date dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.role = role;
 	}
@@ -123,6 +124,7 @@ public class Admin extends User {
         return "Success";
     }
 
+	//TODO: complete admin features such as view user info, view statements and close/open accounts
 	private void viewUserInfo(int userID){
 		//TODO: create method to allow admin to view user information
 		if(checkPermission("viewUserInfo")) {
@@ -147,8 +149,7 @@ public class Admin extends User {
 	private void closeAccount(String accountNumber){
 		if(checkPermission("closeAccount")) {
 			Account accountToClose = GetObject.getAccount(accountNumber);
-			accountToClose.closeAccount();
+			//accountToClose.closeAccount();
 		}
 	}
-
 }

@@ -2,6 +2,7 @@ package server.bank;
 
 import server.database.DbUtils;
 import server.database.GetObject;
+import server.support.InputProcessor;
 import server.user.Admin;
 import server.user.Customer;
 import server.user.Password;
@@ -22,10 +23,10 @@ import static server.database.Connection.getDBConnection;
 
 public class NewBankClientHandler extends Thread {
 
-	private NewBank bank;
-	private BufferedReader in;
-	private PrintWriter out;
-	private Socket socket;
+	private final NewBank bank;
+	private final BufferedReader in;
+	private final PrintWriter out;
+	private final Socket socket;
 
 	private final static java.sql.Connection con = getDBConnection();
 
@@ -57,6 +58,7 @@ public class NewBankClientHandler extends Thread {
 			while (!validLogin) {
 				out.println("Please enter your login ID: ");
 				login = in.readLine();
+				out.println("Please wait...");
 				if (!DbUtils.checkLoginExists(login)) {
 					out.println("This login is invalid, please try again.");
 				} else {
@@ -69,6 +71,7 @@ public class NewBankClientHandler extends Thread {
 			while (count < 3) {
 				out.println("Please enter your password: ");
 				password = in.readLine();
+				out.println("Please wait...");
 				Password credentials = new Password(login, password);
 				grantAccess = credentials.authenticate(password);
 
@@ -90,21 +93,43 @@ public class NewBankClientHandler extends Thread {
 		return new Object[]{userId, grantAccess, isCustomer, isAdmin};
 	}
 
+	/**
+	 * Method to print New Bank's logo on start up
+	 */
+	private void printNewBankLogo() {
+		String logo =
+			"//============================================\\\\\n" +
+			" | \\ | |             |  _ \\            | |   \n" +
+			" |  \\| | _____      _| |_) | __ _ _ __ | | __\n" +
+			" | . ` |/ _ \\ \\ /\\ / /  _ < / _` | '_ \\| |/ /\n" +
+			" | |\\  |  __/\\ V  V /| |_) | (_| | | | |   <\n" +
+			" |_| \\_|\\___| \\_/\\_/ |____/ \\__,_|_| |_|_|\\_\\\n" +
+			"//============================================\\\\\n";
+		out.println(logo);
+	}
+
 	public void run() {
 		// keep getting requests from the client and processing them
+		printNewBankLogo();
 		try {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
-				// A welcome screen offering one option to login and another to register
-				// TODO: add account recovery method for forgotten passwords
-				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
+				// A welcome screen offering options to login, register and recover your account
+				out.println("Please choose an option:\n" +
+						"1. Login as Customer\n" +
+						"2. Register for a New Customer Account\n" +
+						"3. Login as Admin\n" +
+						"4. Recover Account\n"
+				);
 				switch (in.readLine()) {
 					case "1":
+						// Customer login option
 						Object[] authCustomer = login();
 
 						if ((boolean)authCustomer[1]) {
 							out.println("Login successful");
+							out.println("Loading...");
 							if ((boolean)authCustomer[2]) {
 								customerMenu((int)authCustomer[0]);
 							} else {
@@ -114,11 +139,13 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
+						out.println("Please wait...");
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
 
 					case "3":
+						// Admin login option
 						Object[] authAdmin = login();
 						if ((boolean)authAdmin[1]) {
 							out.println("Login successful");
@@ -128,6 +155,11 @@ public class NewBankClientHandler extends Thread {
 								out.println("You do not have permission to access the admin menu.");
 							}
 						}
+						break;
+
+					case "4":
+						// Account recovery option
+						accountRecoveryMenu();
 						break;
 				}
 			}
@@ -159,17 +191,23 @@ public class NewBankClientHandler extends Thread {
 					+ "\n2. Withdraw amount"
 					+ "\n3. Deposit amount"
 					+ "\n4. Create a new account"
-					+ "\n5. Request a loan"
-					+ "\n6. View my loan status"
-					+ "\n7. Pay back my loan"
-					+ "\n8. Reset my password"
-					+ "\n9. Go back to the main menu");
+          + "\n5. Remove an account"
+					+ "\n6. Request a loan"
+					+ "\n7. View my loan status"
+					+ "\n8. Pay back my loan"
+					+ "\n9. Show my recent transactions"
+          + "\n10. Create Ethereum Wallet"
+					+ "\n11. Show Ethereum Wallet"
+					+ "\n12. Transfer Ether"
+					+ "\n13. Reset my password"
+					+ "\n14. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("9")) {
+      
+			if (request.equals("14")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);
@@ -203,10 +241,6 @@ public class NewBankClientHandler extends Thread {
 		}
 	}
 
-	private void recoverAccount(){
-		// TODO: add account recovery method for forgotten passwords
-	}
-
 	/**
 	 * Method to determine if a user is a customer
 	 * @param userId User ID
@@ -218,7 +252,7 @@ public class NewBankClientHandler extends Thread {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, userId);
 			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.isBeforeFirst() ){
+			if (rs.next()){
 				return true;
 			}
 		} catch (SQLException e) {
@@ -245,5 +279,107 @@ public class NewBankClientHandler extends Thread {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	/**
+	 * Method to display the account recovery menu
+	 */
+	private void accountRecoveryMenu() {
+		out.println("Please choose an option:\n" +
+				"1. Forgotten account login\n" +
+				"2. Forgotten account password\n" +
+				"3. Go back");
+		try {
+			switch (in.readLine()) {
+				case "1":
+					forgottenLogin();
+					break;
+				case "2":
+					try {
+						forgottenPassword();
+					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+						e.printStackTrace();
+					}
+				case "3":
+					break;
+				default:
+					out.println("Invalid input, please try again: ");
+					accountRecoveryMenu();
+					break;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Method to retrieve a user's forgotten login ID
+	 */
+	private void forgottenLogin() {
+		int userId = verifyUserIdentity();
+		if (userId == -1) {
+			out.println("The details you have entered do not match any user in our system.");
+		} else {
+			out.println("Thank you for verifying your identity.\n");
+			out.println("Your user id is: " + Password.getUserLogin(userId));
+		}
+	}
+
+	/**
+	 * Method to reset the password for a user who has forgotten theirs
+	 */
+	private void forgottenPassword() throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+		out.println("Please enter your Login ID: ");
+		String loginId = InputProcessor.takeValidInput("letters and numbers", in, out);
+		if(!DbUtils.checkLoginExists(loginId)){
+			out.println("This login does not exist. Exiting to main menu.");
+			return;
+		}
+		int userId = verifyUserIdentity();
+		if (userId == -1) {
+			out.println("The details you have entered do not match any user in our system.");
+		} else {
+			out.println("Please enter your new password: ");
+			String passwordAttempt1 = InputProcessor.takeValidInput("password", in, out);
+			out.println("Please re-enter your new password");
+			String passwordAttempt2 = InputProcessor.takeValidInput("password", in, out);
+
+			if (passwordAttempt1.equals(passwordAttempt2)){
+				Password password = new Password(userId, Password.getUserLogin(userId));
+				password.resetPassword(passwordAttempt1);
+			}
+		}
+	}
+
+	/**
+	 * Method to verify a user's identity, to be used before retrieving a forgotten login or resetting a password
+	 * @return User ID if user's identity can be verified through a series of questions (else return -1)
+	 */
+	private int verifyUserIdentity() {
+		// This could be made more secure by asking for national insurance number and recent transactions, but this
+		// is good enough for now as a proof of concept
+
+		out.println(
+				"To recover your account, we'll need to verify your identity.\n" +
+				"Please enter the following details: "
+		);
+
+		try{
+			out.println("First name: ");
+			String firstName = in.readLine();
+			out.println("Last name: ");
+			String lastName = in.readLine();
+			out.println("Postcode (format EN8 9HG): ");
+			String postcode = in.readLine();
+			out.println("Date of Birth (format YYYY-MM-DD): ");
+			String dateOfBirth = in.readLine();
+			out.println("Checking your details...");
+			return DbUtils.accountRecovery(firstName, lastName, dateOfBirth, postcode);
+
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }

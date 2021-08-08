@@ -161,4 +161,13 @@ CREATE TABLE IF NOT EXISTS loans (
     amount_paid DOUBLE DEFAULT 0
 );
 
+-- Create ethereum_wallet table
+-- Description: store ethereum wallet contents for users.
+CREATE TABLE IF NOT EXISTS ethereum_wallet (
+   userId int NOT NULL,
+   wallet_contents varchar(2000) DEFAULT NULL,
+   PRIMARY KEY (userId)
+);
+
+
 SHOW TABLES;
