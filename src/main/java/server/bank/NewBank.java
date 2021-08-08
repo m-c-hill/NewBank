@@ -320,6 +320,18 @@ public class NewBank {
 						 String notification = "Process succeeded. The account "
 								 + accountNumber + " is removed.";
 						 Sms.sendText(notification);
+						 
+						 out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+							String answer = InputProcessor.takeValidInput("letters", in, out);
+							
+							if(answer.equalsIgnoreCase("YES")){
+								out.println("Please enter the email address you would like to receive the statement at: ");
+								String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+								String emailBody = notification;
+								String emailSubject = "Account Removed";
+								Email.sendEmail(email, emailSubject, emailBody);
+							}
+
 						 return notification;
 					 }
 				 }
@@ -369,6 +381,17 @@ public class NewBank {
 						"\nYou can also check for the updates on the loan status from the menu";
 
 				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Loan Request Submitted";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
 
 				return notification;
 			}
@@ -402,11 +425,13 @@ public class NewBank {
 					String notification = "Your loan request has been accepted.\n" +
 							"The requested amount has been added to account: "
 							+ bankLoan.getAccount().getAccountNumber() + ".";
-					//Sms.sendText(notification);
+					Sms.sendText(notification);
+					
 					return notification;
 				case "declined":
 					notification = "Your loan request has been rejected. You may request a new loan.";
-					//Sms.sendText(notification);
+					Sms.sendText(notification);
+					
 					return notification;
 			}
 		return "You have not submitted any loan requests.";
@@ -457,7 +482,19 @@ public class NewBank {
 					notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getCurrencyId() +
 							"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getCurrencyId();
 				}
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Loan Paid Back";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
+
 				return notification;
 			}
 		}
