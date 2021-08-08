@@ -100,13 +100,14 @@ public class NewBankClientHandler extends Thread {
 			while (true) {
 				// A welcome screen offering one option to login and another to register
 				// TODO: add account recovery method for forgotten passwords
-				out.println("Please choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
+				out.println("\nPlease choose an option:\n1. Login as Customer\n2. Register for a New Customer Account\n3. Login as Admin");
 				switch (in.readLine()) {
 					case "1":
 						Object[] authCustomer = login();
 
 						if ((boolean)authCustomer[1]) {
-							out.println("Login successful, please wait...");
+							out.println("Login successful");
+							out.println("Loading...");
 							if ((boolean)authCustomer[2]) {
 								customerMenu((int)authCustomer[0]);
 							} else {
@@ -162,21 +163,23 @@ public class NewBankClientHandler extends Thread {
 					+ "\n2. Withdraw amount"
 					+ "\n3. Deposit amount"
 					+ "\n4. Create a new account"
-					+ "\n5. Remove an account"
+          + "\n5. Remove an account"
 					+ "\n6. Request a loan"
 					+ "\n7. View my loan status"
 					+ "\n8. Pay back my loan"
-					+ "\n9. Create Ethereum Wallet"
-					+ "\n10. Show Ethereum Wallet"
-					+ "\n11. Transfer Ether"
-					+ "\n12. Reset my password"
-					+ "\n13. Go back to the main menu");
+					+ "\n9. Show my recent transactions"
+          + "\n10. Create Ethereum Wallet"
+					+ "\n11. Show Ethereum Wallet"
+					+ "\n12. Transfer Ether"
+					+ "\n13. Reset my password"
+					+ "\n14. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("13")) {
+      
+			if (request.equals("14")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);
@@ -211,7 +214,7 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	private void recoverAccount(){
-		// TODO: add account recovery method for forgotten passwords
+		// TODO: add account recovery method for forgotten passwords (user not logged in)
 	}
 
 	/**

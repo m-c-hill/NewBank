@@ -1,13 +1,15 @@
 package server.database;
 
-
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import server.account.Account;
+import server.account.Currency;
+import server.bank.Bank;
 import server.transaction.StatementSchedule;
 import server.bank.Address;
+import server.transaction.TransactionType;
 import server.user.Customer;
 
 import java.io.BufferedReader;
@@ -383,11 +385,37 @@ public class DbUtils {
             preparedStatement.setString(6, statementSchedule);
             preparedStatement.setDouble(7, balance);
             preparedStatement.setString(8, currency);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+    /**
+     * Method to store a new transaction in the database
+     */
+    public static void storeTransaction(Account account, int transactionTypeId, Timestamp date, String payee,
+                                        double amount, Currency currency){
+        String query = "INSERT INTO transaction(account_number, transaction_type_id, date, payee, amount, currency_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+            preparedStatement.setString(1, account.getAccountNumber());
+            preparedStatement.setInt(2, transactionTypeId);
+            preparedStatement.setTimestamp(3, date);
+            preparedStatement.setString(4, payee);
+            preparedStatement.setDouble(5, amount);
+            preparedStatement.setString(6, currency.getName());
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
     }
 
+    /**
+     * Method to retrieve the customer ID based on a user ID
+     * @param userId User ID
+     * @return Customer ID
+     */
     public static int getCustomerId(int userId){
         String query = "SELECT * FROM customer WHERE user_id = ?";
         try{
@@ -400,6 +428,6 @@ public class DbUtils {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        return -1; // Return -1 if no user found
+        return -1; // Return -1 if no customer found
     }
 }
