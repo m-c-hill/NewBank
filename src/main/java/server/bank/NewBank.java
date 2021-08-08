@@ -164,6 +164,19 @@ public class NewBank {
 						+"\nRemaining balance: "
 						+ account.getBalance() + " " + account.getCurrency().getCurrencyId();
 				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Withdraw Succesful";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
+				
+				
 				return notification;
 			}
 		}
@@ -205,6 +218,17 @@ public class NewBank {
 						+ account.getBalance();
 
 				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Deposit Succesful";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
 
 				return notification;
 			}
@@ -245,6 +269,17 @@ public class NewBank {
 					+ Double.toString(openingBalance) + " " + currency.getCurrencyId();
 
 			Sms.sendText(notification);
+			
+			out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+			String answer = InputProcessor.takeValidInput("letters", in, out);
+			
+			if(answer.equalsIgnoreCase("YES")){
+				out.println("Please enter the email address you would like to receive the statement at: ");
+				String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+				String emailBody = notification;
+				String emailSubject = "New Account Created";
+				Email.sendEmail(email, emailSubject, emailBody);
+			}
 
 			return notification;
 		}
@@ -495,7 +530,7 @@ public class NewBank {
 	}
 	
 	/**
-	 * Method to send an email listing customer's recent transactions for their chosen dates
+	 * Method to send an email listing the customer's recent transactions
 	 * @param customer Customer
 	 * @param in Input
 	 * @param out Output
