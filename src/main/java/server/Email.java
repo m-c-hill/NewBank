@@ -17,7 +17,16 @@ public class Email {
 	
 	public static final String sender =  System.getenv("SENDER_EMAIL");
 	public static final String password = System.getenv("SENDER_PASSWORD");
-
+	
+	
+	/**
+	 * This method allows to send an email to the receiver using JavaMail API
+	 * The SENDER_EMAIL and SENDER_PASSWORD is stored as environment variables.
+	 * They are used to login to the email account and to send an email.
+	 * @param receiver String
+	 * @param subject String
+	 * @param body String
+	 **/
 	public static void sendEmail(String receiver, String subject, String body) {
 
         // Send email from through gmail smtp
