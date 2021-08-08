@@ -43,7 +43,7 @@ public class Password {
 
 	/**
 	 * WARNING: This method exists purely for testing purposes and should be deleted before releasing the final version.
-	 * It's purpose is to link with the Main class to generate the logins and passwords for the dummy data in the database.
+	 * Its purpose is to link with the Main class to generate the logins and passwords for the dummy data in the database.
 	 */
 	public Password(int userId, String login, String plainTextPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		this.login = login;
@@ -53,8 +53,9 @@ public class Password {
 		storeSaltAndHash(salt, hash);
 	}
 
-	// Constructor for creating a Password object when retrieving data from database
-	// TODO: review this method, may not be needed anymore
+	/**
+	 * Constructor for creating a Password object for existing user when retrieving data from database
+ 	 */
 	public Password(int userId, String login){
 		this.userId = userId;
 		this.login = login;
@@ -208,5 +209,25 @@ public class Password {
 			e.printStackTrace();
 		}
 		return userId;
+	}
+
+	/**
+	 * Method to return an existing user's login from their user ID
+	 * @param userId User ID
+	 * @return User login
+	 */
+	public static String getUserLogin(int userId){
+		String query = "SELECT login FROM password WHERE user_id = ?";
+		try {
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return rs.getString("login");
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return null;
 	}
 }
