@@ -32,18 +32,10 @@ public class InputProcessor {
         "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
         "valid phone numbers", "^0[\\d]{7,12}$",
         "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$",
-        "four digit codes", "^[0-9]{4}$"
+        "four digit codes", "^[0-9]{4}$",
+        "password", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
         );
-            "letters", "^[A-Za-z ]+$",
-            "numbers", "^[0-9 ]+$",
-            "letters and numbers", "^[A-Za-z0-9 ]+$",
-            "valid email addresses", "^(.+)@(.+)[\\.]{1}(\\D+)$",
-            "valid dates", "^(0[1-9]|[12][0-9]|3[01])[-/. ]?([0][1-9]|[1][012])[-/. ]?(19|20)\\d\\d$",
-            "valid phone numbers", "^0[\\d]{7,12}$",
-            "valid postcodes/zipcodes", "^[a-zA-Z0-9 ]{3,10}$",
-            "password", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
-    );
-
+    
     /**
      * Method to take an input from the user and validate it
      *
