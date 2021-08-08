@@ -2,6 +2,9 @@ package server.user;
 
 import server.bank.Address;
 
+import java.util.Date;
+
+
 public abstract class User {
 
     private int userID;
@@ -9,13 +12,13 @@ public abstract class User {
     private String firstName;
     private String lastName;
     private String nationalInsuranceNumber;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private Address address;
     private String emailAddress;
     private String phoneNumber;
 
     public User(int userID, String prefix, String firstName, String lastName, String nationalInsuranceNumber,
-                String dateOfBirth, String emailAddress, String phoneNumber, Address address){
+                Date dateOfBirth, String emailAddress, String phoneNumber, Address address){
         this.userID = userID;
         this.prefix = prefix;
         this.firstName = firstName;
@@ -70,11 +73,11 @@ public abstract class User {
         this.nationalInsuranceNumber = nationalInsuranceNumber;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

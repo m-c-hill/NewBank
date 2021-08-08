@@ -130,7 +130,7 @@ public class Account {
 	 * Generates a random string of 8 digits and checks if the number exists in the database
 	 * @return New unique account number
 	 */
-	private String generateNewAccountNumber(){
+	public static String generateNewAccountNumber(){
 		boolean accountNumberUnique = false;
 		String newAccountNumber = "";
 		Random r = new Random();
