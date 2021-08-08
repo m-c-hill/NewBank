@@ -10,13 +10,14 @@ import server.support.OutputProcessor;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Admin extends User {
 	AdminRole role;
 
 	public Admin(int userID, String prefix, String fName, String lName, String nationalInsuranceNumber,
-				 String dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
+				 Date dateOfBirth, String emailAddress, String phoneNumber, Address address, AdminRole role) {
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.role = role;
 	}

@@ -58,6 +58,7 @@ public class NewBankClientHandler extends Thread {
 			while (!validLogin) {
 				out.println("Please enter your login ID: ");
 				login = in.readLine();
+				out.println("Please wait...");
 				if (!DbUtils.checkLoginExists(login)) {
 					out.println("This login is invalid, please try again.");
 				} else {
@@ -70,6 +71,7 @@ public class NewBankClientHandler extends Thread {
 			while (count < 3) {
 				out.println("Please enter your password: ");
 				password = in.readLine();
+				out.println("Please wait...");
 				Password credentials = new Password(login, password);
 				grantAccess = credentials.authenticate(password);
 
@@ -127,6 +129,7 @@ public class NewBankClientHandler extends Thread {
 
 						if ((boolean)authCustomer[1]) {
 							out.println("Login successful");
+							out.println("Loading...");
 							if ((boolean)authCustomer[2]) {
 								customerMenu((int)authCustomer[0]);
 							} else {
@@ -136,7 +139,7 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
-						// Customer registration option
+						out.println("Please wait...");
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
 						break;
@@ -188,17 +191,23 @@ public class NewBankClientHandler extends Thread {
 					+ "\n2. Withdraw amount"
 					+ "\n3. Deposit amount"
 					+ "\n4. Create a new account"
-					+ "\n5. Request a loan"
-					+ "\n6. View my loan status"
-					+ "\n7. Pay back my loan"
-					+ "\n8. Reset my password"
-					+ "\n9. Go back to the main menu");
+          + "\n5. Remove an account"
+					+ "\n6. Request a loan"
+					+ "\n7. View my loan status"
+					+ "\n8. Pay back my loan"
+					+ "\n9. Show my recent transactions"
+          + "\n10. Create Ethereum Wallet"
+					+ "\n11. Show Ethereum Wallet"
+					+ "\n12. Transfer Ether"
+					+ "\n13. Reset my password"
+					+ "\n14. Go back to the main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("9")) {
+      
+			if (request.equals("14")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);
@@ -243,7 +252,7 @@ public class NewBankClientHandler extends Thread {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, userId);
 			ResultSet rs = preparedStatement.executeQuery();
-			if (rs.isBeforeFirst() ){
+			if (rs.next()){
 				return true;
 			}
 		} catch (SQLException e) {

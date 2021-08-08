@@ -4,11 +4,13 @@ import server.account.Account;
 import server.account.Currency;
 import server.bank.Address;
 import server.bank.Bank;
+import server.transaction.Transaction;
 import server.user.Admin;
 import server.user.AdminRole;
 import server.user.Customer;
 import server.user.Password;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +45,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("date_of_birth").toString();
+				Date dateOfBirth = rs.getDate("date_of_birth");
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");
@@ -203,7 +205,7 @@ public class GetObject {
 				String firstName = rs.getString("first_names");
 				String lastName = rs.getString("last_name");
 				String nationalInsuranceNumber = rs.getString("national_insurance_number");
-				String dateOfBirth = rs.getDate("dateOfBirth").toString();
+				Date dateOfBirth = rs.getDate("dateOfBirth");
 				String emailAddress = rs.getString("email_address");
 				String phoneNumber = rs.getString("phone_number");
 				int addressId = rs.getInt("address_id");
@@ -265,6 +267,40 @@ public class GetObject {
 				return new Password(userId, login);
 			}
 		} catch(SQLException exception){
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	public static ArrayList<Transaction> getRecentTransactions(Account account, Currency currency, String accountNumber){
+		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+		String query = "SELECT transaction_id FROM transaction WHERE account_number = ? ORDER BY transaction_id DESC LIMIT 10";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setString(1, accountNumber);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				transactionList.add(getTransaction(account, currency, rs.getInt("transaction_id")));
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return transactionList;
+	}
+
+	public static Transaction getTransaction(Account account, Currency currency, int transaction_id){
+		String query = "SELECT * FROM transaction WHERE transaction_id = ?";
+		try{
+			PreparedStatement preparedStatement = getDBConnection().prepareStatement(query);
+			preparedStatement.setInt(1, transaction_id);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				Timestamp timestamp = rs.getTimestamp("date");
+				String payee = rs.getString("payee");
+				double amount = rs.getDouble("amount");
+				return new Transaction(timestamp, payee, account, amount, currency);
+			}
+		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 		return null;

@@ -6,7 +6,10 @@ import server.bank.BankLoan;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +59,19 @@ public class InputProcessor{
         return info;
     }
 
+    public static Date takeValidDate(BufferedReader in, PrintWriter out){
+        try {
+            String stringDate = in.readLine();
+            // convert to Date object
+            return dateFromString(stringDate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    // Method overload for capturing the correct account name
     /**
      * Method to take an account number input from the user
      * @param accountsList List of accounts belonging to a customer
@@ -70,7 +86,7 @@ public class InputProcessor{
                 account = in.readLine();
                 
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                    break;
                 }
                 
@@ -203,7 +219,7 @@ public class InputProcessor{
             while (true) {
                 account = in.readLine();
                 //if Exit is entered take it as a valid input to go back to main menu
-                if (account.equals("Exit")) {
+                if (account.equalsIgnoreCase("EXIT")) {
                     break;
                 }
 
@@ -329,5 +345,38 @@ public class InputProcessor{
 
         // Return true if there's a match and false if there isn't
         return m.matches();
+    }
+
+    public static boolean doPasswordsMatch(String password1, String password2){
+        // do passwords match?
+        return password1.equals(password2);
+    }
+
+    public static Date dateFromString(String stringDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        try {
+            return sdf.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String takeValidEthereumAddress(BufferedReader in, PrintWriter out) throws IOException {
+        String recipientAddress;
+        out.println("Please enter the address you would like to send Ether to");
+
+        Pattern validEthereumAddress = Pattern.compile("(^0x[0-9a-fA-F]{40}$)");
+        Matcher m;
+
+        do {
+            recipientAddress = in.readLine();
+            m = validEthereumAddress.matcher(recipientAddress);
+
+            if(!m.matches()) {
+                out.println("Not a valid Ethereum Address, please re-enter");
+            }
+        } while (!m.matches());
+        return recipientAddress;
     }
 }
