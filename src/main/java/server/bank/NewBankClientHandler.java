@@ -191,15 +191,16 @@ public class NewBankClientHandler extends Thread {
 					+ "\n2. Withdraw amount"
 					+ "\n3. Deposit amount"
 					+ "\n4. Create a new account"
-          + "\n5. Remove an account"
+					+ "\n5. Remove an account"
 					+ "\n6. Request a loan"
 					+ "\n7. View my loan status"
 					+ "\n8. Pay back my loan"
 					+ "\n9. Show my recent transactions"
-          + "\n10. Create Ethereum Wallet"
+					+ "\n10. Create Ethereum Wallet"
 					+ "\n11. Show Ethereum Wallet"
 					+ "\n12. Transfer Ether"
 					+ "\n13. Reset my password"
+					+ "\n13. Email my recent transactions"
 					+ "\n14. Go back to the main menu");
 			try {
 				request = in.readLine();
@@ -207,7 +208,7 @@ public class NewBankClientHandler extends Thread {
 				e.printStackTrace();
 			}
       
-			if (request.equals("14")) {
+			if (request.equals("15")) {
 				break;
 			}
 			String response = bank.processCustomerRequest(customer, request, in, out);

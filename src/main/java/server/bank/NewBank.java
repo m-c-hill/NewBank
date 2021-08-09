@@ -1,5 +1,6 @@
 package server.bank;
 
+import server.Email;
 import server.Sms;
 import server.account.Account;
 import server.account.Currency;
@@ -61,9 +62,10 @@ public class NewBank {
 			// "SHOWMYLOANSTATUS" command
 			case "7":
 				return showMyLoanStatus(customer, in, out);
-			// "PAYBACKLOAN" command
+			// "SHOWMYTRANSACTIONS" command
 			case "8":
 				return showMyTransactions(customer, in, out);
+			// "PAYBACKLOAN" command
 			case "9":
 				return payBackLoan(customer, in, out);
 			// "CREATE_ETHEREUM_WALLET" command
@@ -75,7 +77,10 @@ public class NewBank {
 			// "TRANSFER_ETHER" command
 			case "12":
 				return EthereumUtils.transferEther(customer, in, out);
+			// "EMAILMYTRANSACTIONS" command
 			case "13":
+				return emailRecentTransactions(customer, in, out);
+			case "14":
 				try {
 					return resetPassword(customer, in, out);
 				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -159,6 +164,19 @@ public class NewBank {
 						+"\nRemaining balance: "
 						+ account.getBalance() + " " + account.getCurrency().getCurrencyId();
 				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Withdraw Succesful";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
+				
+				
 				return notification;
 			}
 		}
@@ -200,6 +218,17 @@ public class NewBank {
 						+ account.getBalance();
 
 				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Deposit Succesful";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
 
 				return notification;
 			}
@@ -240,6 +269,17 @@ public class NewBank {
 					+ Double.toString(openingBalance) + " " + currency.getCurrencyId();
 
 			Sms.sendText(notification);
+			
+			out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+			String answer = InputProcessor.takeValidInput("letters", in, out);
+			
+			if(answer.equalsIgnoreCase("YES")){
+				out.println("Please enter the email address you would like to receive the statement at: ");
+				String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+				String emailBody = notification;
+				String emailSubject = "New Account Created";
+				Email.sendEmail(email, emailSubject, emailBody);
+			}
 
 			return notification;
 		}
@@ -280,6 +320,18 @@ public class NewBank {
 						 String notification = "Process succeeded. The account "
 								 + accountNumber + " is removed.";
 						 Sms.sendText(notification);
+						 
+						 out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+							String answer = InputProcessor.takeValidInput("letters", in, out);
+							
+							if(answer.equalsIgnoreCase("YES")){
+								out.println("Please enter the email address you would like to receive the statement at: ");
+								String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+								String emailBody = notification;
+								String emailSubject = "Account Removed";
+								Email.sendEmail(email, emailSubject, emailBody);
+							}
+
 						 return notification;
 					 }
 				 }
@@ -328,7 +380,18 @@ public class NewBank {
 						"\nYou will receive a confirmation SMS once your request is reviewed by the bank." +
 						"\nYou can also check for the updates on the loan status from the menu";
 
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Loan Request Submitted";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
 
 				return notification;
 			}
@@ -362,11 +425,36 @@ public class NewBank {
 					String notification = "Your loan request has been accepted.\n" +
 							"The requested amount has been added to account: "
 							+ bankLoan.getAccount().getAccountNumber() + ".";
-					//Sms.sendText(notification);
+					Sms.sendText(notification);
+					
+					out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+					String answer1 = InputProcessor.takeValidInput("letters", in, out);
+					
+					if(answer1.equalsIgnoreCase("YES")){
+						out.println("Please enter the email address you would like to receive the statement at: ");
+						String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+						String emailBody = notification;
+						String emailSubject = "Loan Request Accepted";
+						Email.sendEmail(email, emailSubject, emailBody);
+					}
+					
 					return notification;
+					
 				case "declined":
 					notification = "Your loan request has been rejected. You may request a new loan.";
-					//Sms.sendText(notification);
+					Sms.sendText(notification);
+					
+					out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+					String answer2 = InputProcessor.takeValidInput("letters", in, out);
+					
+					if(answer2.equalsIgnoreCase("YES")){
+						out.println("Please enter the email address you would like to receive the statement at: ");
+						String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+						String emailBody = notification;
+						String emailSubject = "Loan Request Rejected";
+						Email.sendEmail(email, emailSubject, emailBody);
+					}
+					
 					return notification;
 			}
 		return "You have not submitted any loan requests.";
@@ -417,7 +505,19 @@ public class NewBank {
 					notification = "You have successfully paid off " + amount + bankLoan.getCurrency().getCurrencyId() +
 							"\nOutstanding payments remaining: " + bankLoan.getOutstandingPayments() + bankLoan.getCurrency().getCurrencyId();
 				}
-				//Sms.sendText(notification);
+				Sms.sendText(notification);
+				
+				out.println("An SMS notification is sent. Would you like to receive an email copy as well? Please enter YES or NO");
+				String answer = InputProcessor.takeValidInput("letters", in, out);
+				
+				if(answer.equalsIgnoreCase("YES")){
+					out.println("Please enter the email address you would like to receive the statement at: ");
+					String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+					String emailBody = notification;
+					String emailSubject = "Loan Paid Back";
+					Email.sendEmail(email, emailSubject, emailBody);
+				}
+
 				return notification;
 			}
 		}
@@ -488,4 +588,21 @@ public class NewBank {
 			}
 		}
 	}
+	
+	/**
+	 * Method to send an email listing the customer's recent transactions
+	 * @param customer Customer
+	 * @param in Input
+	 * @param out Output
+	 * @return Response (table of transactions if successful)
+	 */
+	private String emailRecentTransactions(Customer customer, BufferedReader in, PrintWriter out) {
+		out.println("Please enter the email address you would like to receive the statement at: ");
+		String email = InputProcessor.takeValidInput("valid email addresses", in, out);
+		String emailBody = showMyTransactions(customer, in, out);
+		String emailSubject = "Recent Transactions";
+		Email.sendEmail(email, emailSubject, emailBody);
+		return String.format("The email is sent to: " + email);
+	}
+	
 }
