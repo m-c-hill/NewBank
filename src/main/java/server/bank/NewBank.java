@@ -1,7 +1,7 @@
 package server.bank;
 
-import server.Email;
-import server.Sms;
+import server.communication.Email;
+import server.communication.Sms;
 import server.account.Account;
 import server.account.Currency;
 import server.database.GetObject;
@@ -30,13 +30,7 @@ public class NewBank {
 	}
 
 	/**
-	 * Method to process a customer's request
-	 *
-	 * @param customer Customer
-	 * @param request  Request to process
-	 * @param in       Input BufferedReader
-	 * @param out      Output PrintWriter
-	 * @return Response
+	 * Process customer account request
 	 */
 	public synchronized String processCustomerAccountRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 
@@ -51,12 +45,14 @@ public class NewBank {
 				return createAccount(customer, in, out);
 			case "5":
 				return removeAccount(customer, in, out);
-
 			default:
 				return "FAIL";
 		}
 	}
 
+	/**
+	 * Process customer loan menu request
+	 */
 	public synchronized String processCustomerLoanRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 
 		switch (request) {
@@ -64,11 +60,16 @@ public class NewBank {
 				return requestLoan(customer, in, out);
 			case "2":
 				return showMyLoanStatus(customer, in, out);
+			case "3":
+				return payBackLoan(customer, in, out);
 			default:
 				return "FAIL";
 		}
 	}
 
+	/**
+	 * Process customer statement menu request
+	 */
 	public synchronized String processCustomerStatementRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 
 		switch (request) {
@@ -81,6 +82,9 @@ public class NewBank {
 		}
 	}
 
+	/**
+	 * Process customer ethereum menu request
+	 */
 	public synchronized String processCustomerEthereumRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
 
 		switch (request) {
@@ -97,7 +101,6 @@ public class NewBank {
 
 	/**
 	 * Method to process an admin's request
-	 *
 	 * @param admin   Admin
 	 * @param request Request to process
 	 * @param in      Input

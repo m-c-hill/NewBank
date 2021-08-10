@@ -297,9 +297,10 @@ public class NewBankClientHandler extends Thread {
 			String request = "";
 			out.println("\n Loans Menu"
 					+ "\n+-----------------------+"
-					+ "\n1. View my loan status"
-					+ "\n2. Make loan payment"
-					+ "\n3. Back");
+					+ "\n1. Request a loan"
+					+ "\n2. View my loan status"
+					+ "\n3. Make loan payment"
+					+ "\n4. Back");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {

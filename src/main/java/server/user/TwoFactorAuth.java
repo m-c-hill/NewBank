@@ -1,5 +1,6 @@
-package server;
+package server.user;
 
+import server.communication.Sms;
 import server.support.InputProcessor;
 
 import java.io.BufferedReader;
