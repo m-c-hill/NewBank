@@ -169,5 +169,4 @@ CREATE TABLE IF NOT EXISTS ethereum_wallet (
    PRIMARY KEY (userId)
 );
 
-
 SHOW TABLES;

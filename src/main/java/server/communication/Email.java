@@ -1,4 +1,4 @@
-package server;
+package server.communication;
 
 //reference used :https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html 
 //https://netcorecloud.com/tutorials/send-email-in-java-using-gmail-smtp/
@@ -14,9 +14,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class Email {
-	
-	public static final String sender =  System.getenv("SENDER_EMAIL");
-	public static final String password = System.getenv("SENDER_PASSWORD");
 		
 	/**
 	 * This method allows to send an email to the receiver using JavaMail API
@@ -27,6 +24,13 @@ public class Email {
 	 * @param body String
 	 **/
 	public static void sendEmail(String receiver, String subject, String body) {
+
+		// Retrieve credential from secrets json
+		String[] credentials = TwilioCredentials.getTwilioCredentials();
+
+		// Retrieve the sender email and password from credentials json
+		String sender =  credentials[3];
+		String password = credentials[4];
 
         // Send email from through gmail smtp
         String host = "smtp.gmail.com";
@@ -46,9 +50,7 @@ public class Email {
             protected PasswordAuthentication getPasswordAuthentication() {
 
                 return new PasswordAuthentication(sender, password);
-
             }
-
         });
 
         session.setDebug(true);

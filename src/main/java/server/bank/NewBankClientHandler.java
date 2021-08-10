@@ -21,6 +21,9 @@ import java.sql.SQLException;
 
 import static server.database.Connection.getDBConnection;
 
+/**
+ * Class to handle application menus and login system
+ */
 public class NewBankClientHandler extends Thread {
 
 	private final NewBank bank;
@@ -77,7 +80,7 @@ public class NewBankClientHandler extends Thread {
 
 				// TODO: the logic of users entering an incorrect password a maximum number of times will need thinking through a bit more
 				if (!grantAccess) {
-					out.println("Incorrect password. " + (3 - count) + " attempts left");
+					out.println("Incorrect password. " + (2 - count) + " attempts left");
 					count++;
 				} else {
 					break;
@@ -115,12 +118,13 @@ public class NewBankClientHandler extends Thread {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
-				// A welcome screen offering options to login, register and recover your account
-				out.println("Please choose an option:\n" +
-						"1. Login as Customer\n" +
-						"2. Register for a New Customer Account\n" +
-						"3. Login as Admin\n" +
-						"4. Recover Account\n"
+				// A welcome screen offering options to log in, register and recover your account
+				out.println("\nNewBank - Main Menu" +
+						"\n+-----------------------+" +
+						"\n1. Login as Customer" +
+						"\n2. Register for a New Customer Account" +
+						"\n3. Login as Admin" +
+						"\n4. Recover Account\n"
 				);
 				switch (in.readLine()) {
 					case "1":
@@ -139,6 +143,7 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
+						// Account registration option
 						out.println("Please wait...");
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
@@ -177,42 +182,54 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	/**
-	 * Method to display the options available in the customer menu
+	 * Method to display the options available in the main customer menu
 	 * @param userId User ID
 	 */
 	private void customerMenu(int userId) {
 
 		Customer customer = GetObject.getCustomer(userId);
-
 		while (true) {
 			String request = "";
-			out.println("Please choose an option:"
-					+ "\n1. Show my accounts"
-					+ "\n2. Withdraw amount"
-					+ "\n3. Deposit amount"
-					+ "\n4. Create a new account"
-					+ "\n5. Remove an account"
-					+ "\n6. Request a loan"
-					+ "\n7. View my loan status"
-					+ "\n8. Pay back my loan"
-					+ "\n9. Show my recent transactions"
-					+ "\n10. Create Ethereum Wallet"
-					+ "\n11. Show Ethereum Wallet"
-					+ "\n12. Transfer Ether"
-					+ "\n13. Reset my password"
-					+ "\n13. Email my recent transactions"
-					+ "\n14. Go back to the main menu");
+			out.println("\nCustomer Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. Accounts"
+					+ "\n2. Statements"
+					+ "\n3. Loans"
+					+ "\n4. Ethereum wallet"
+					+ "\n5. Reset my password"
+					+ "\n6. Back to main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-      
-			if (request.equals("15")) {
+
+			if(request.equals("6")){
 				break;
 			}
-			String response = bank.processCustomerRequest(customer, request, in, out);
-			out.println(response);
+
+			switch(request){
+				case "1":
+					out.println(accountsMenu(customer));
+					break;
+				case "2":
+					out.println(statementMenu(customer));
+					break;
+				case "3":
+					out.println(loanMenu(customer));
+					break;
+				case "4":
+					out.println(ethereumMenu(customer));
+					break;
+				case "5":
+					try {
+						assert customer != null;
+						out.println(bank.resetPassword(customer, in, out));
+					} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+						e.printStackTrace();
+					}
+					break;
+			}
 		}
 	}
 
@@ -225,10 +242,11 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("Please choose an option:"
-					+ "\n1. Check loans list"
-					+ "\n2. Accept/Decline a loan request"
-					+ "\n3. Go back to the main menu");
+			out.println("\nAdmin Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. View active loans"
+					+ "\n2. Manage loan requests"
+					+ "\n3. Back to main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
@@ -237,8 +255,115 @@ public class NewBankClientHandler extends Thread {
 			if (request.equals("3")) {
 				break;
 			}
-			String response = bank.processAdminRequest(admin, request, in, out);
-			out.println(response);
+			out.println(bank.processAdminRequest(admin, request, in, out));
+		}
+	}
+
+	/**
+	 * Method to display the options available in the customer accounts submenu
+	 * @param customer Customer
+	 * @return Response
+	 */
+	private String accountsMenu(Customer customer) {
+
+		while (true) {
+			String request = "";
+			out.println("\nAccounts Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. Show my accounts"
+					+ "\n2. Withdraw amount"
+					+ "\n3. Deposit amount"
+					+ "\n4. Create a new account"
+					+ "\n5. Close an account"
+					+ "\n6. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("6")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerAccountRequest(customer, request, in, out);
+		}
+	}
+
+	/**
+	 * Method to display the options available in the customer loans submenu
+	 * @param customer Customer
+	 * @return Response
+	 */
+	private String loanMenu(Customer customer) {
+
+		while (true) {
+			String request = "";
+			out.println("\nLoans Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. Request a loan"
+					+ "\n2. View my loan status"
+					+ "\n3. Make loan payment"
+					+ "\n4. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("4")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerLoanRequest(customer, request, in, out);
+		}
+	}
+
+	/**
+	 * Method to display the options available in the customer ethereum wallet submenu
+	 * @param customer Customer
+	 * @return Response
+	 */
+	private String statementMenu(Customer customer) {
+
+		while (true) {
+			String request = "";
+			out.println("\nStatements Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. View my recent transactions"
+					+ "\n2. Request statement email"
+					+ "\n3. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("3")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerStatementRequest(customer, request, in, out);
+		}
+	}
+
+	/**
+	 * Method to display the options available in the customer statements submenu
+	 * @param customer Customer
+	 * @return Response
+	 */
+	private String ethereumMenu(Customer customer) {
+		while (true) {
+			String request = "";
+			out.println("\n My Ethereum Wallet"
+					+ "\n+-----------------------+"
+					+ "\n1. Create Ethereum wallet"
+					+ "\n2. Show Ethereum wallet"
+					+ "\n3. Transfer Ether"
+					+ "\n4. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("4")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerEthereumRequest(customer, request, in, out);
 		}
 	}
 
@@ -286,7 +411,8 @@ public class NewBankClientHandler extends Thread {
 	 * Method to display the account recovery menu
 	 */
 	private void accountRecoveryMenu() {
-		out.println("Please choose an option:\n" +
+		out.println("\nAccount Recovery \n" +
+				"+------------------------------+\n" +
 				"1. Forgotten account login\n" +
 				"2. Forgotten account password\n" +
 				"3. Go back");
