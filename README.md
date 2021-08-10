@@ -91,13 +91,13 @@ These features allow:
 
 #### **Sending SMS notifications when a user:**
 
-Receives 2 factor authentication passcode, makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
+Receives 2 factor authentication passcode, makes withdraw, makes deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
 
 #### **Sending Email notifications when a user:**
 
 Wants to receive the recent transactions statements
 
-Optionally a user also receives additional notifications when a user makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment. (The console asks for a user if they want to receive an email copy of the transaction notice in addition to the SMS notification)
+Optionally a user also receives additional notifications when a user makes withdraw, makes deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment. (The console asks for a user if they want to receive an email copy of the transaction notice in addition to the SMS notification)
 
 
 Because we are using secret login IDs and passwords that we do not want to share publicly, we are using a secret directory to store those credential variables.
@@ -108,7 +108,7 @@ If you are not an Instructor, all you need to do is:
 
 1-Create a Twilio Account - trial version is fine- and
 
-2-A gmail account. 
+2-A Gmail account. 
 
 These are the following variables which you can use your own credentials in this project if you would like to see. 
 
@@ -163,8 +163,8 @@ Here is an example of SMS messages sent by our system:
 https://www.twilio.com/docs/sms
 
 
-### Using the JavaMail API To Send Emails Using a GMail Account.
-For this project we are using JavaMail API. In our code we are using gmail SMTP setup. 
+### Using the JavaMail API To Send Emails Using a Gmail Account.
+For this project we are using JavaMail API. In our code we are using Gmail SMTP setup. 
 
 The sender email for the bank system is the team gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.(Used in Email.java)
 
@@ -172,7 +172,7 @@ SENDER_EMAIL
 
 SENDER_PASSWORD 
 
-Here is an exaple email sent. The sender needs to be a Gmail with our SMTP setup for the gmail, however, the receiver could be using any emai service. 
+Here is an exaple email sent. The sender needs to be a Gmail with our SMTP setup for the gmail, however, the receiver could be using any email service. 
 
 <img width="344" alt="Screen Shot 2021-08-10 at 14 12 23" src="https://user-images.githubusercontent.com/68951000/128857110-beb38183-d095-4023-ac05-88290cf7b7ad.png">
 
