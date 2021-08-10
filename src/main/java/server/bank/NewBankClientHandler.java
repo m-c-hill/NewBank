@@ -118,12 +118,13 @@ public class NewBankClientHandler extends Thread {
 			// This loop will ensure that the user will always have the option to exit back to the welcome screen
 			// User should execute "MENU" command
 			while (true) {
-				// A welcome screen offering options to login, register and recover your account
-				out.println("Please choose an option:\n" +
+				// A welcome screen offering options to log in, register and recover your account
+				out.println("\nNewBank - Main Menu" +
+						"\n+-----------------------+" +
 						"1. Login as Customer\n" +
 						"2. Register for a New Customer Account\n" +
 						"3. Login as Admin\n" +
-						"4. Recover Account\n"
+						"4. Recover Account"
 				);
 				switch (in.readLine()) {
 					case "1":
@@ -190,7 +191,8 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("\nPlease choose an option:"
+			out.println("\nCustomer Menu"
+					+ "\n+-----------------------+"
 					+ "\n1. Accounts"
 					+ "\n2. Statements"
 					+ "\n3. Loans"
@@ -241,7 +243,8 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("\nPlease choose an option:"
+			out.println("\nAdmin Menu"
+					+ "\n+-----------------------+"
 					+ "\n1. View active loans"
 					+ "\n2. Manage loan requests"
 					+ "\n3. Back to main menu");
@@ -266,7 +269,7 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("\n Accounts Menu"
+			out.println("\nAccounts Menu"
 					+ "\n+-----------------------+"
 					+ "\n1. Show my accounts"
 					+ "\n2. Withdraw amount"
@@ -295,7 +298,7 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("\n Loans Menu"
+			out.println("\nLoans Menu"
 					+ "\n+-----------------------+"
 					+ "\n1. Request a loan"
 					+ "\n2. View my loan status"
@@ -306,7 +309,7 @@ public class NewBankClientHandler extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (request.equals("3")){
+			if (request.equals("4")){
 				return "Returning to customer menu";
 			}
 			return bank.processCustomerLoanRequest(customer, request, in, out);
@@ -322,7 +325,7 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("\n Statements Menu"
+			out.println("\nStatements Menu"
 					+ "\n+-----------------------+"
 					+ "\n1. View my recent transactions"
 					+ "\n2. Request statement email"
@@ -409,7 +412,8 @@ public class NewBankClientHandler extends Thread {
 	 * Method to display the account recovery menu
 	 */
 	private void accountRecoveryMenu() {
-		out.println("Please choose an option:\n" +
+		out.println("\nAccount Recovery \n" +
+				"+------------------------------+" +
 				"1. Forgotten account login\n" +
 				"2. Forgotten account password\n" +
 				"3. Go back");
