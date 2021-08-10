@@ -86,23 +86,31 @@ https://medium.datadriveninvestor.com/blockchain-using-java-part-iii-transaction
 ### **SMS & Email Functionalites:**
 
 For this project we decided to use Twilio SMS hosting service API and JavaMail API. 
-Because we are using secret login IDs and passwords that we do not want to share publicly we are using a secret directory to store those credential variables.
+Because we are using secret login IDs and passwords that we do not want to share publicly, we are using a secret directory to store those credential variables.
 For grading purposes we will provide the credentials to our class instructors only.
 
 If you are not an Instructor, all you need to do is:
+
 1-Create a Twilio Account - trial version is fine- and
+
 2-A gmail account. 
 
 These are the following variables which you can use your own credentials in this project if you would like to see. 
 
 Twilio - SMS feature credentials - used in the SMS.java folder
+
 TWILIO_ACCOUNT_SID
+
 TWILIO_AUTH_TOKEN
+
 TWILIO_TRIAL_NUMBER 
+
 MY_PHONE_NUMBER 
 
 Gmail Account - Email feature credentials - Used in email.java folder 
+
 SENDER_EMAIL 
+
 SENDER_PASSWORD 
 
 ### Using the TWILIO Monitor to see the SMS delivery status and messaging activity log.
