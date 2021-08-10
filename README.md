@@ -166,7 +166,11 @@ https://www.twilio.com/docs/sms
 ### Using the JavaMail API To Send Emails Using a GMail Account.
 For this project we are using JavaMail API. In our code we are using gmail SMTP setup. 
 
-The sender email for the bank system is the team gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.
+The sender email for the bank system is the team gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.(Used in Email.java)
+
+SENDER_EMAIL 
+
+SENDER_PASSWORD 
 
 Here is an exaple email sent. The sender needs to be a Gmail with our SMTP setup for the gmail, however, the receiver could be using any emai service. 
 
