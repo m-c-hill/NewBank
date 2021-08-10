@@ -89,18 +89,20 @@ For this project we decided to use Twilio SMS hosting service API and JavaMail A
 
 These features allow:
 
-Sending SMS notifications when a user:
+#### **Sending SMS notifications when a user: **
 
-receives 2 factor authentication passcode, makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
+Receives 2 factor authentication passcode, makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
 
-Sending Email notifications when a user:
+#### **Sending Email notifications when a user: **
 
-wants to receive the recent transactions statements
+Wants to receive the recent transactions statements
 
-Optionally a user also receives additional notifications when a user makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment.
+Optionally a user also receives additional notifications when a user makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment. (The console asks for a user if they want to receive an email copy of the transaction notice in addition to the SMS notification)
+
 
 Because we are using secret login IDs and passwords that we do not want to share publicly, we are using a secret directory to store those credential variables.
 For grading purposes we will provide the credentials to our class instructors only.
+
 
 If you are not an Instructor, all you need to do is:
 
@@ -151,7 +153,7 @@ Here is an example of SMS messages sent by our system:
 
 <img width="506" alt="Screen Shot 2021-08-10 at 14 19 26" src="https://user-images.githubusercontent.com/68951000/128858217-e223f4f6-3bd9-4f1a-908a-0dac075a5a60.png">
 
-Useful resources:
+#### **Useful resources:**
 
 https://www.twilio.com/docs/sms
 
@@ -165,13 +167,8 @@ Here is an exaple email sent. The sender needs to be a Gmail with our SMTP setup
 
 <img width="344" alt="Screen Shot 2021-08-10 at 14 12 23" src="https://user-images.githubusercontent.com/68951000/128857110-beb38183-d095-4023-ac05-88290cf7b7ad.png">
 
-Useful pages we checked:
+#### **Useful pages we checked:**
 https://docs.sendgrid.com/for-developers/sending-email/api-getting-started
 https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
 https://netcorecloud.com/tutorials/send-email-in-java-using-gmail-smtp/
-
-
-
-
-
 
