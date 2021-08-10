@@ -161,12 +161,15 @@ Here is an example of SMS messages sent by our system:
 #### **Useful resources:**
 
 https://www.twilio.com/docs/sms
+https://www.twilio.com/docs/usage/secure-credentials
+https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html
+https://support.twilio.com/hc/en-us/articles/223133767-International-support-for-Alphanumeric-Sender-ID 
 
 
 ### Using the JavaMail API To Send Emails Using a Gmail Account.
 For this project we are using JavaMail API. In our code we are using Gmail SMTP setup. 
 
-The sender email for the bank system is the team gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.(Used in Email.java)
+The sender email for the bank system is the team Gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.(Used in Email.java)
 
 SENDER_EMAIL 
 
