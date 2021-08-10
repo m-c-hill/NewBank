@@ -243,6 +243,20 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	/**
+	 *
+	 */
+	private void loanMenu() {
+		//TODO:
+	}
+
+	/**
+	 * 
+	 */
+	private void ethereumMenu() {
+		//TODO:
+	}
+
+	/**
 	 * Method to determine if a user is a customer
 	 * @param userId User ID
 	 * @return True if user is a customer
