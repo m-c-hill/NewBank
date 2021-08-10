@@ -90,10 +90,13 @@ For this project we decided to use Twilio SMS hosting service API and JavaMail A
 These features allow:
 
 Sending SMS notifications when a user:
+
 receives 2 factor authentication passcode, makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
 
 Sending Email notifications when a user:
+
 wants to receive the recent transactions statements
+
 Optionally a user also receives additional notifications when a user makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment.
 
 Because we are using secret login IDs and passwords that we do not want to share publicly, we are using a secret directory to store those credential variables.
