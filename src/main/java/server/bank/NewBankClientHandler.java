@@ -80,7 +80,7 @@ public class NewBankClientHandler extends Thread {
 
 				// TODO: the logic of users entering an incorrect password a maximum number of times will need thinking through a bit more
 				if (!grantAccess) {
-					out.println("Incorrect password. " + (3 - count) + " attempts left");
+					out.println("Incorrect password. " + (2 - count) + " attempts left");
 					count++;
 				} else {
 					break;
@@ -121,10 +121,10 @@ public class NewBankClientHandler extends Thread {
 				// A welcome screen offering options to log in, register and recover your account
 				out.println("\nNewBank - Main Menu" +
 						"\n+-----------------------+" +
-						"1. Login as Customer\n" +
-						"2. Register for a New Customer Account\n" +
-						"3. Login as Admin\n" +
-						"4. Recover Account"
+						"\n1. Login as Customer" +
+						"\n2. Register for a New Customer Account" +
+						"\n3. Login as Admin" +
+						"\n4. Recover Account\n"
 				);
 				switch (in.readLine()) {
 					case "1":
