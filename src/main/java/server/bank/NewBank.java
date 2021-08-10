@@ -39,7 +39,6 @@ public class NewBank {
 	 * @return Response
 	 */
 	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
-		// TODO: add a reset password option
 		switch (request) {
 			case "1":
 				return showMyAccounts(customer);
@@ -52,7 +51,6 @@ public class NewBank {
 			// "CREATE ACCOUNT" command
 			case "4":
 				return createAccount(customer, in, out);
-			//TODO: combine all loans options to a new loans menu
 			// "REMOVE ACCOUNT" command
 			case "5":
 				return removeAccount(customer, in, out);
@@ -90,6 +88,7 @@ public class NewBank {
 				return "FAIL";
 		}
 	}
+
 
 	/**
 	 * Method to process an admin's request

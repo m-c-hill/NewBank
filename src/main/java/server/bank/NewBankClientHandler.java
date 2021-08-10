@@ -21,6 +21,9 @@ import java.sql.SQLException;
 
 import static server.database.Connection.getDBConnection;
 
+/**
+ * Class to handle application menus and login system
+ */
 public class NewBankClientHandler extends Thread {
 
 	private final NewBank bank;
@@ -139,6 +142,7 @@ public class NewBankClientHandler extends Thread {
 						break;
 
 					case "2":
+						// Account registration option
 						out.println("Please wait...");
 						Registration registration = new Registration(this.socket);
 						registration.registerCustomer();
@@ -187,32 +191,36 @@ public class NewBankClientHandler extends Thread {
 		while (true) {
 			String request = "";
 			out.println("Please choose an option:"
-					+ "\n1. Show my accounts"
-					+ "\n2. Withdraw amount"
-					+ "\n3. Deposit amount"
-					+ "\n4. Create a new account"
-					+ "\n5. Remove an account"
-					+ "\n6. Request a loan"
-					+ "\n7. View my loan status"
-					+ "\n8. Pay back my loan"
-					+ "\n9. Show my recent transactions"
-					+ "\n10. Create Ethereum Wallet"
-					+ "\n11. Show Ethereum Wallet"
-					+ "\n12. Transfer Ether"
-					+ "\n13. Reset my password"
-					+ "\n13. Email my recent transactions"
-					+ "\n14. Go back to the main menu");
+					+ "\n1. Accounts"
+					+ "\n2. Statements"
+					+ "\n3. Loans"
+					+ "\n4. Ethereum wallet"
+					+ "\n5. Reset my password"
+					+ "\n6. Back to main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
       
-			if (request.equals("15")) {
+			if (request.equals("6")) {
 				break;
 			}
-			String response = bank.processCustomerRequest(customer, request, in, out);
-			out.println(response);
+
+			String response = ""; //bank.processCustomerRequest(customer, request, in, out);
+
+			switch(request){
+				case "1":
+					out.println(accountsMenu(customer));
+				case "2":
+					out.println(statementMenu(customer));
+				case "3":
+					out.println(loanMenu(customer));
+				case "4":
+					out.println(ethereumMenu(customer));
+				case "5":
+					out.println(bank.processCustomerRequest(customer, "14", in, out));
+			}
 		}
 	}
 
@@ -242,18 +250,39 @@ public class NewBankClientHandler extends Thread {
 		}
 	}
 
+
 	/**
 	 *
 	 */
-	private void loanMenu() {
-		//TODO:
+	private String accountsMenu(Customer customer) {
+		String test = "\n1. Show my accounts"
+				+ "\n2. Withdraw amount"
+				+ "\n3. Deposit amount"
+				+ "\n4. Create a new account"
+				+ "\n5. Close an account";
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	private void ethereumMenu() {
+	private String loanMenu(Customer customer) {
 		//TODO:
+		String test = "Request a loan"
+				+ "\n7. View my loan status"
+				+ "\n8. Pay back my loan";
+	}
+
+	/**
+	 *
+	 */
+	private String ethereumMenu(Customer customer) {
+		//TODO:
+		String test = "\n9. Show my recent transactions"
+				+ "\n13. Email my recent transactions";
+	}
+
+	private String statementMenu(Customer customer) {
+		
 	}
 
 	/**
