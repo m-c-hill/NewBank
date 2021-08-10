@@ -46,7 +46,7 @@ ALTER TABLE newbank.user AUTO_INCREMENT = 1;
 INSERT INTO newbank.account(account_number, account_name, customer_id, bank_id, account_type_id, balance, currency_id)
 VALUES
        ('08040302', 'Account1', 1, 1, 1, 5100, 'gbp'),
-       ('07776191', 'Account2', 1, 1, 1, 420, 'usd'),
+       ('07776191', 'Account2', 2, 1, 1, 420, 'usd'),
        ('39867532', 'Account3', 2, 1, 1, 2500, 'gbp'),
        ('29565555', 'Account4', 3, 1, 1, 600, 'gbp'),
        ('94580021', 'Account5', 3, 1, 1, 2, 'btc');

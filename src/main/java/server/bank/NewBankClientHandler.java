@@ -188,7 +188,6 @@ public class NewBankClientHandler extends Thread {
 	private void customerMenu(int userId) {
 
 		Customer customer = GetObject.getCustomer(userId);
-
 		while (true) {
 			String request = "";
 			out.println("\nCustomer Menu"
@@ -413,7 +412,7 @@ public class NewBankClientHandler extends Thread {
 	 */
 	private void accountRecoveryMenu() {
 		out.println("\nAccount Recovery \n" +
-				"+------------------------------+" +
+				"+------------------------------+\n" +
 				"1. Forgotten account login\n" +
 				"2. Forgotten account password\n" +
 				"3. Go back");
