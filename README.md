@@ -116,10 +116,10 @@ NewBank Main Menu
 
 ### Customers
 Customers of NewBank are able to open multiple accounts in a variety of currencies (both standard and crypto). The 
-application allows user to withdraw and deposit cash, request loans up to a set limit and view their recent 
+application allows users to withdraw and deposit cash, request loans up to a set limit and view their recent 
 transactions.  
 
-Here are some brief examples of tasks customer can carry out, using Jeremy Usborne as an example:  
+Here are some brief examples of tasks that customers can carry out, using Jeremy Usborne as an example:  
 
 View accounts  
 ![view accounts](https://imgur.com/RmItGVh.png)
