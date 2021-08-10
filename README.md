@@ -83,17 +83,17 @@ https://medium.com/datadriveninvestor/block-chain-using-javas-web3j-and-ethereum
 https://medium.datadriveninvestor.com/blockchain-using-java-part-iii-transaction-of-ethers-from-one-account-to-another-using-web3j-861c39e7a5e1 <br>
 
 
-### ** SMS & Email Functionalites:**
+### SMS & Email Functionalites:
 
 For this project we decided to use Twilio SMS hosting service API and JavaMail API. 
 
 These features allow:
 
-#### ** Sending SMS notifications when a user:**
+#### **Sending SMS notifications when a user:**
 
 Receives 2 factor authentication passcode, makes withdraw, makes Deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
 
-#### ** Sending Email notifications when a user:**
+#### **Sending Email notifications when a user:**
 
 Wants to receive the recent transactions statements
 
@@ -128,7 +128,7 @@ SENDER_EMAIL
 
 SENDER_PASSWORD 
 
-### Using the TWILIO Monitor To See the SMS Delivery Status and Messaging Activity Log.
+### Using the TWILIO Monitor To See the SMS Delivery Status and Messaging Activity Log
 
 Twilio service free trial gives the user a free US Mobile number to send the texts from. TWILIO_TRIAL_NUMBER is that number. For this project this number acts as our Bank System's number. You can enter your number in MY_PHONE_NUMBER to receive the messages.
 
