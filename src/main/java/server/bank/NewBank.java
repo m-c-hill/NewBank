@@ -38,57 +38,62 @@ public class NewBank {
 	 * @param out      Output PrintWriter
 	 * @return Response
 	 */
-	public synchronized String processCustomerRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
+	public synchronized String processCustomerAccountRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
+
 		switch (request) {
 			case "1":
 				return showMyAccounts(customer);
-			// "WITHDRAW" command
 			case "2":
 				return withdrawAmount(customer, in, out);
-			// "DEPOSIT" command
 			case "3":
 				return depositAmount(customer, in, out);
-			// "CREATE ACCOUNT" command
 			case "4":
 				return createAccount(customer, in, out);
-			// "REMOVE ACCOUNT" command
 			case "5":
 				return removeAccount(customer, in, out);
-			// "RLOAN" command	
-			case "6":
-				return requestLoan(customer, in, out);
-			// "SHOWMYLOANSTATUS" command
-			case "7":
-				return showMyLoanStatus(customer, in, out);
-			// "SHOWMYTRANSACTIONS" command
-			case "8":
-				return showMyTransactions(customer, in, out);
-			// "PAYBACKLOAN" command
-			case "9":
-				return payBackLoan(customer, in, out);
-			// "CREATE_ETHEREUM_WALLET" command
-			case "10":
-				return EthereumUtils.createEthereumWallet(customer, in, out);
-			// "SHOW_ETHEREUM_WALLET" command
-			case "11":
-				return EthereumUtils.showEthereumWalletInfo(customer, in, out);
-			// "TRANSFER_ETHER" command
-			case "12":
-				return EthereumUtils.transferEther(customer, in, out);
-			// "EMAILMYTRANSACTIONS" command
-			case "13":
-				return emailRecentTransactions(customer, in, out);
-			case "14":
-				try {
-					return resetPassword(customer, in, out);
-				} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-					e.printStackTrace();
-				}
+
 			default:
 				return "FAIL";
 		}
 	}
 
+	public synchronized String processCustomerLoanRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
+
+		switch (request) {
+			case "1":
+				return requestLoan(customer, in, out);
+			case "2":
+				return showMyLoanStatus(customer, in, out);
+			default:
+				return "FAIL";
+		}
+	}
+
+	public synchronized String processCustomerStatementRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
+
+		switch (request) {
+			case "1":
+				return showMyTransactions(customer, in, out);
+			case "2":
+				return emailRecentTransactions(customer, in, out);
+			default:
+				return "FAIL";
+		}
+	}
+
+	public synchronized String processCustomerEthereumRequest(Customer customer, String request, BufferedReader in, PrintWriter out) {
+
+		switch (request) {
+			case "1":
+				return EthereumUtils.createEthereumWallet(customer, in, out);
+			case "2":
+				return EthereumUtils.showEthereumWalletInfo(customer, in, out);
+			case "3":
+				return EthereumUtils.transferEther(customer, in, out);
+			default:
+				return "FAIL";
+		}
+	}
 
 	/**
 	 * Method to process an admin's request
@@ -530,7 +535,7 @@ public class NewBank {
 	 * @param in       Input
 	 * @param out      Output
 	 */
-	private String resetPassword(Customer customer, BufferedReader in, PrintWriter out) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public String resetPassword(Customer customer, BufferedReader in, PrintWriter out) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
 		out.println("Please enter your current password: ");
 		Password password = GetObject.getPassword(customer.getUserID()); // Retrieve password object

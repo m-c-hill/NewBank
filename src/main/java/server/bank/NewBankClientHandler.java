@@ -181,7 +181,7 @@ public class NewBankClientHandler extends Thread {
 	}
 
 	/**
-	 * Method to display the options available in the customer menu
+	 * Method to display the options available in the main customer menu
 	 * @param userId User ID
 	 */
 	private void customerMenu(int userId) {
@@ -190,7 +190,7 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("Please choose an option:"
+			out.println("\nPlease choose an option:"
 					+ "\n1. Accounts"
 					+ "\n2. Statements"
 					+ "\n3. Loans"
@@ -202,24 +202,32 @@ public class NewBankClientHandler extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-      
-			if (request.equals("6")) {
+
+			if(request.equals("6")){
 				break;
 			}
-
-			String response = ""; //bank.processCustomerRequest(customer, request, in, out);
 
 			switch(request){
 				case "1":
 					out.println(accountsMenu(customer));
+					break;
 				case "2":
 					out.println(statementMenu(customer));
+					break;
 				case "3":
 					out.println(loanMenu(customer));
+					break;
 				case "4":
 					out.println(ethereumMenu(customer));
+					break;
 				case "5":
-					out.println(bank.processCustomerRequest(customer, "14", in, out));
+					try {
+						assert customer != null;
+						out.println(bank.resetPassword(customer, in, out));
+					} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+						e.printStackTrace();
+					}
+					break;
 			}
 		}
 	}
@@ -233,10 +241,10 @@ public class NewBankClientHandler extends Thread {
 
 		while (true) {
 			String request = "";
-			out.println("Please choose an option:"
-					+ "\n1. Check loans list"
-					+ "\n2. Accept/Decline a loan request"
-					+ "\n3. Go back to the main menu");
+			out.println("\nPlease choose an option:"
+					+ "\n1. View active loans"
+					+ "\n2. Manage loan requests"
+					+ "\n3. Back to main menu");
 			try {
 				request = in.readLine();
 			} catch (IOException e) {
@@ -245,44 +253,115 @@ public class NewBankClientHandler extends Thread {
 			if (request.equals("3")) {
 				break;
 			}
-			String response = bank.processAdminRequest(admin, request, in, out);
-			out.println(response);
+			out.println(bank.processAdminRequest(admin, request, in, out));
 		}
 	}
 
-
 	/**
-	 *
+	 * Method to display the options available in the customer accounts submenu
+	 * @param customer Customer
+	 * @return Response
 	 */
 	private String accountsMenu(Customer customer) {
-		String test = "\n1. Show my accounts"
-				+ "\n2. Withdraw amount"
-				+ "\n3. Deposit amount"
-				+ "\n4. Create a new account"
-				+ "\n5. Close an account";
+
+		while (true) {
+			String request = "";
+			out.println("\n Accounts Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. Show my accounts"
+					+ "\n2. Withdraw amount"
+					+ "\n3. Deposit amount"
+					+ "\n4. Create a new account"
+					+ "\n5. Close an account"
+					+ "\n6. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("6")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerAccountRequest(customer, request, in, out);
+		}
 	}
 
 	/**
-	 *
+	 * Method to display the options available in the customer loans submenu
+	 * @param customer Customer
+	 * @return Response
 	 */
 	private String loanMenu(Customer customer) {
-		//TODO:
-		String test = "Request a loan"
-				+ "\n7. View my loan status"
-				+ "\n8. Pay back my loan";
+
+		while (true) {
+			String request = "";
+			out.println("\n Loans Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. View my loan status"
+					+ "\n2. Make loan payment"
+					+ "\n3. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("3")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerLoanRequest(customer, request, in, out);
+		}
 	}
 
 	/**
-	 *
+	 * Method to display the options available in the customer ethereum wallet submenu
+	 * @param customer Customer
+	 * @return Response
 	 */
-	private String ethereumMenu(Customer customer) {
-		//TODO:
-		String test = "\n9. Show my recent transactions"
-				+ "\n13. Email my recent transactions";
+	private String statementMenu(Customer customer) {
+
+		while (true) {
+			String request = "";
+			out.println("\n Statements Menu"
+					+ "\n+-----------------------+"
+					+ "\n1. View my recent transactions"
+					+ "\n2. Request statement email"
+					+ "\n3. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("3")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerStatementRequest(customer, request, in, out);
+		}
 	}
 
-	private String statementMenu(Customer customer) {
-		
+	/**
+	 * Method to display the options available in the customer statements submenu
+	 * @param customer Customer
+	 * @return Response
+	 */
+	private String ethereumMenu(Customer customer) {
+		while (true) {
+			String request = "";
+			out.println("\n My Ethereum Wallet"
+					+ "\n+-----------------------+"
+					+ "\n1. Create Ethereum wallet"
+					+ "\n2. Show Ethereum wallet"
+					+ "\n3. Transfer Ether"
+					+ "\n4. Back");
+			try {
+				request = in.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (request.equals("4")){
+				return "Returning to customer menu";
+			}
+			return bank.processCustomerEthereumRequest(customer, request, in, out);
+		}
 	}
 
 	/**
