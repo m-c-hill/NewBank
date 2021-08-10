@@ -36,7 +36,7 @@ While in the NewBank project directory:
 ### Login IDs
 The AWS database has been populated with a number of "dummy" records (users, accounts and transactions) to allow each 
 of the NewBank features to be tested first hand.  
-To access these account, the following dummy users have been set up:
+To access these accounts, the following dummy logins and passwords have been created:
 
 ####Customer 1
 ```
@@ -122,22 +122,20 @@ transactions.
 Here are some brief examples of tasks customer can carry out, using Jeremy Usborne as an example:  
 
 View accounts  
-![view accounts]()
+![view accounts](https://imgur.com/RmItGVh.png)
 
 Deposit cash  
-![deposit cash]()
+![deposit cash](https://imgur.com/puEZuQK.png)
 
-View recent transactions
-![view transactions]()
+View recent transactions  
+![view transactions](https://imgur.com/k3VfTg0.png)
 
-Request a loan
-![request a loan]()
+Request a loan  
+![request a loan](https://imgur.com/xicQCp3.png)
 
-View a loan status
-![view loan status]()
+View a loan status  
+![view loan status](https://imgur.com/mzzdjxi.png)
 
-Make a loan payment
-![make a loan payment]()
 
 ### Admins
 Admins are able to view active loan requests and approve/reject them. Future updates will allow admins to 

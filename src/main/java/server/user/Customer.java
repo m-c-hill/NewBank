@@ -22,6 +22,7 @@ public class Customer extends User {
 
 		super(userID, prefix, fName, lName, nationalInsuranceNumber, dateOfBirth, emailAddress, phoneNumber, address);
 		this.allowedToRequestLoan = true;
+		retrieveAccounts();
 		// TODO: add allowedToRequestLoan field to the database
 		// TODO: add a customer loan limit field and add to the database
 	}
