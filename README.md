@@ -83,13 +83,104 @@ https://medium.com/datadriveninvestor/block-chain-using-javas-web3j-and-ethereum
 https://medium.datadriveninvestor.com/blockchain-using-java-part-iii-transaction-of-ethers-from-one-account-to-another-using-web3j-861c39e7a5e1 <br>
 
 
+### SMS & Email Functionalites:
+
+For this project we decided to use Twilio SMS hosting service API and JavaMail API. 
+
+These features allow:
+
+#### **Sending SMS notifications when a user:**
+
+Receives 2 factor authentication passcode, makes withdraw, makes deposit, creates a new bank account, removes an existing bank account, makes a loan request, gets their loan request approved or rejected, and makes a loan payment.
+
+#### **Sending Email notifications when a user:**
+
+Wants to receive the recent transactions statements
+
+Optionally a user also receives additional notifications when a user makes withdraw, makes deposit, creates a new bank account, removes an existing bank account, makes a loan request, and makes a loan payment. (The console asks for a user if they want to receive an email copy of the transaction notice in addition to the SMS notification)
 
 
+Because we are using secret login IDs and passwords that we do not want to share publicly, we are using a secret directory to store those credential variables.
+For grading purposes we will provide the credentials to our class instructors only.
 
 
+If you are not an Instructor, all you need to do is:
+
+1-Create a Twilio Account - trial version is fine- and
+
+2-A Gmail account. 
+
+These are the following variables which you can use your own credentials in this project if you would like to see. 
+
+Twilio - SMS feature credentials - used in the SMS.java folder
+
+TWILIO_ACCOUNT_SID
+
+TWILIO_AUTH_TOKEN
+
+TWILIO_TRIAL_NUMBER 
+
+MY_PHONE_NUMBER 
+
+Gmail Account - Email feature credentials - Used in email.java folder 
+
+SENDER_EMAIL 
+
+SENDER_PASSWORD 
+
+### Using the TWILIO Monitor To See the SMS Delivery Status and Messaging Activity Log
+
+Twilio service free trial gives the user a free US Mobile number to send the texts from. TWILIO_TRIAL_NUMBER is that number. For this project this number acts as our Bank System's number. You can enter your number in MY_PHONE_NUMBER to receive the messages.
+
+Every country has alphanumeric sender ID requirements and when an entity wants to send an SMS, they need to register their information. We tried with Ece's American number as a proof of concept. Please check if your country has a requirement from this link before setting the variables. https://support.twilio.com/hc/en-us/articles/223133767-International-support-for-Alphanumeric-Sender-ID (International support for Alphanumeric Sender ID).
+
+Please click on the monitor tab on the left side of the page. (circled in red)
+
+<img width="807" alt="Screen Shot 2021-08-10 at 13 57 09" src="https://user-images.githubusercontent.com/68951000/128856104-548961db-20b3-4dee-9904-6e627c84df3f.png">
+
+This will give a dropdown menu options of Errors and Messaging. Please click on the Messaging title. (circled in red)
+
+<img width="847" alt="Screen Shot 2021-08-10 at 13 57 35" src="https://user-images.githubusercontent.com/68951000/128856324-5c154942-ae73-4374-b4ae-8b0135cf97d5.png">
+
+This will lead you to the page pf programmable message logs. You can see the history of messages sent via this monitor. To see the specific message details please click on the blue colored date line which is circled in red.
+
+<img width="891" alt="Screen Shot 2021-08-10 at 13 59 44" src="https://user-images.githubusercontent.com/68951000/128856396-6513bc7b-bf52-435a-8cfe-4355ea999f45.png">
+
+This will lead you the SMS message specifics as follows. You can see the body of the message as well.
+
+<img width="791" alt="Screen Shot 2021-08-10 at 14 00 57" src="https://user-images.githubusercontent.com/68951000/128856437-1ca0d6ad-759a-48cd-8c83-ecead2dc37ff.png">
+
+If you scroll down you can also see the detailed delivery steps that are followed in the server with their timings.
+
+<img width="468" alt="image" src="https://user-images.githubusercontent.com/68951000/128856548-2090f8a3-c58a-4707-a7ec-c0e86b8b315d.png">
+
+Here is an example of SMS messages sent by our system:
+
+<img width="506" alt="Screen Shot 2021-08-10 at 14 19 26" src="https://user-images.githubusercontent.com/68951000/128858217-e223f4f6-3bd9-4f1a-908a-0dac075a5a60.png">
+
+#### **Useful resources:**
+
+https://www.twilio.com/docs/sms
+https://www.twilio.com/docs/usage/secure-credentials
+https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html
+https://support.twilio.com/hc/en-us/articles/223133767-International-support-for-Alphanumeric-Sender-ID 
 
 
+### Using the JavaMail API To Send Emails Using a Gmail Account.
+For this project we are using JavaMail API. In our code we are using Gmail SMTP setup. 
 
+The sender email for the bank system is the team Gmail. The following login credentials are also stored in the secret folder shared with the instructors since we login to our email using the API and send our message to any email receiver.(Used in Email.java)
 
+SENDER_EMAIL 
 
+SENDER_PASSWORD 
+
+Here is an exaple email sent. The sender needs to be a Gmail with our SMTP setup for the gmail, however, the receiver could be using any email service. 
+
+<img width="344" alt="Screen Shot 2021-08-10 at 14 12 23" src="https://user-images.githubusercontent.com/68951000/128857110-beb38183-d095-4023-ac05-88290cf7b7ad.png">
+
+#### **Useful pages we checked:**
+https://docs.sendgrid.com/for-developers/sending-email/api-getting-started
+https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
+https://netcorecloud.com/tutorials/send-email-in-java-using-gmail-smtp/
 
