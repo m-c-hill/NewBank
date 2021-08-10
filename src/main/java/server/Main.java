@@ -1,26 +1,20 @@
 package server;
 
-import server.account.Account;
-import server.database.GetObject;
-import server.user.Customer;
 import server.user.Password;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 
+/**
+ * This class is for testing purposes/running small sections of code and will be deleted before final release
+ */
 public class Main {
 
-	/**
-	 * This is for testing purposes and will be deleted before final release
-	 * @param args Args
-	 */
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		// Generates logins and passwords for the dummy data (3 customers, 3 admins)
 		dummyLogins();
-		testSQL();
-		System.out.println("test");
+		System.out.println("Complete");
 	}
 
 	/**
