@@ -1,7 +1,5 @@
 # NewBank
 
-## Description
-
 ## Getting Started
 
 ### Dependencies
@@ -19,59 +17,61 @@
 
 ### Running NewBank
 While in the NewBank project directory:
-* Check the Maven is installed: ```mvn --version```
+* Check that Maven is installed: ```mvn --version```
 * Compile the project: ```mvn package```
 * Start the NewBank server: ```java -cp target/NewBank-1.0-SNAPSHOT.jar server.bank.NewBankServer```
-  * If successful, the message ```New Bank Server listening on 14002``` should appear in your terminal
-* Known bug: you may receive a "JNI error" after running the server command with the following message: ```Exception in thread "main" java.lang.SecurityException: Invalid signature file digest for Manifest main attributes```.
-  * To fix this issue, run the following command to fix the issue: ```zip -d target/NewBank-1.0-SNAPSHOT.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'```
+  * If successful, the message ```New Bank Server listening on 14002``` should appear in your terminal.
+* **Known bug**: you may receive a "JNI error" after running the server command with the following message: ```Exception in thread "main" java.lang.SecurityException: Invalid signature file digest for Manifest main attributes```.
+  * To fix this issue, run the following command: ```zip -d target/NewBank-1.0-SNAPSHOT.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'```
   * Then rerun the above server command.
   * This will be addressed in future releases.
 * With the server running, start a new terminal.
 * Start the NewBank client: ```java -cp target/NewBank-1.0-SNAPSHOT.jar client.ExampleClient```
-  * If successful, this should bring up the
+  * If successful, this should bring up the main menu, from which you'll be able to choose a various options using number inputs:
   
 ![Main menu](https://imgur.com/9omUzGo.png)
 
 ### Login IDs
 The AWS database has been populated with a number of "dummy" records (users, accounts and transactions) to allow each 
-of the NewBank features to be tested first hand.  
+of the NewBank features to be tested first hand. To view the full set of dummy data, please see the SQL schema and dummy data files:  
+* ```NewBank/src/main/sql/schema/populate_dummy_data.sql```
+* ```NewBank/src/main/sql/schema/new_bank_schema.sql```  
 To access these accounts, the following dummy logins and passwords have been created:
 
-####Customer 1
+* **Customer 1**
 ```
 - Login: jeremy  
 - Password: pw_jeremy
 ```
 
-####Customer 2
+* **Customer 2**
 ```
 - Login: alan  
 - Password: pw_alan
 ```
 
-####Admin 1
+* **Admin 1**
 ```
 - Login: simon
 - Password: pw_simon
 - Role: Loan manager
 ```
 
-####Admin 2
+* **Admin 2**
 ```
 - Login: april
 - Password: pw_april
 - Role: Bank manager
 ```
 
-####Admin 3
+* **Admin 3**
 ```
-- Login: Sophie
+- Login: sophie
 - Password: pw_sophie
 - Role: Account manager
 ```
 
-Please see the Guide below for full details on what each type of user has access to and what tasks they can carry out.
+Please see the Guide below for full details on what each type of user has access to and the tasks they can carry out.
 
 ## Guide
 
@@ -119,7 +119,7 @@ Customers of NewBank are able to open multiple accounts in a variety of currenci
 application allows users to withdraw and deposit cash, request loans up to a set limit and view their recent 
 transactions.  
 
-Here are some brief examples of tasks that customers can carry out, using Jeremy Usborne as an example:  
+Here are some examples of tasks that customers can carry out, using Jeremy Usborne as an example:  
 
 View accounts  
 ![view accounts](https://imgur.com/RmItGVh.png)
@@ -139,11 +139,11 @@ View a loan status
 
 ### Admins
 Admins are able to view active loan requests and approve/reject them. Future updates will allow admins to 
-also open new accounts for users, close accounts and view user statements. Different permissions are granted to admin 
+also open new accounts for customers, close accounts and view user statements. Different permissions are granted to admin 
 staff depending on their role within the bank (ie. loan manager, account manager). These permissions provide access 
 privileges for different activities within the application (for example, account managers would not be allowed to grant
 loans). Using the dummy logins provided, you'll see that April (a bank manager) is not able to access the loans menu,
-while Simon (a loan manager) is.  
+while Simon (a loan manager) is. These permissions are set via the database using the admin roles table.  
 
 April's loan access  
 ![April loan access](https://imgur.com/GgVIre7.png)
